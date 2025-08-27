@@ -18,6 +18,8 @@ public class TimeManager : MonoBehaviour
     [SerializeField] private Light globalLight;
 
     [SerializeField] private int minutes;
+    [SerializeField] private int _Rotation;
+    [SerializeField] private int _Speed;
 
     public int Minutes
     { get { return minutes; } set { minutes = value; OnMinutesChange(value); } }
@@ -82,6 +84,7 @@ public class TimeManager : MonoBehaviour
             StartCoroutine(LerpSkybox(skyboxSunset, skyboxNight, 10f));
             StartCoroutine(LerpLight(graddientSunsetToNight, 10f));
         }
+        RenderSettings.skybox.SetFloat("_Rotation", Time.time * _Speed);
     }
 
     private IEnumerator LerpSkybox(Texture2D a, Texture2D b, float time)

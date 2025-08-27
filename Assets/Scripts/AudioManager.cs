@@ -69,7 +69,7 @@ public class AudioManager : MonoBehaviour
         if (mixer != null && SFXSlider != null)
         {
             float volume = SFXSlider.value;
-            mixer.SetFloat("SFX", Mathf.Log10(volume) * 20);
+            mixer.SetFloat("SfxAudio", Mathf.Log10(volume) * 20);
             SFXSlider.value = volume;
             PlayerPrefs.SetFloat(SFXVolumeKey, volume);
             PlayerPrefs.Save();
