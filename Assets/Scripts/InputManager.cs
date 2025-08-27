@@ -7,6 +7,7 @@ public class InputManager : MonoBehaviour
     public string moveActionPath = "Player/Move";
     public string jumpActionPath = "Player/Jump";
     public string sprintActionPath = "Player/Sprint";
+    public string LockOnActionPath = "Player/LockOn";
 
     [Header("Refs")]
     public Transform cameraTransform;   // Main Camera (com Cinemachine Brain)
@@ -30,7 +31,7 @@ public class InputManager : MonoBehaviour
     public float jumpBuffer = 0.1f;
 
     CharacterController controller;
-    InputAction moveA, jumpA, sprintA;
+    InputAction moveA, jumpA, sprintA, LockOnA;
 
     float currentSpeed, verticalVel, rotVel;
     float coyoteCounter, jumpBufferCounter;
@@ -42,10 +43,11 @@ public class InputManager : MonoBehaviour
         moveA = asset.FindAction(moveActionPath, true);
         jumpA = asset.FindAction(jumpActionPath, true);
         sprintA = asset.FindAction(sprintActionPath, false);
+        LockOnA = asset.FindAction(LockOnActionPath, false);
         Cursor.lockState = CursorLockMode.Locked;
     }
-    void OnEnable() { moveA.Enable(); jumpA.Enable(); sprintA?.Enable(); }
-    void OnDisable() { moveA.Disable(); jumpA.Disable(); sprintA?.Disable(); }
+    void OnEnable() { moveA.Enable(); jumpA.Enable(); sprintA?.Enable(); LockOnA?.Enable(); }
+    void OnDisable() { moveA.Disable(); jumpA.Disable(); sprintA?.Disable(); LockOnA?.Disable(); }
 
     void Update()
     {
@@ -57,6 +59,11 @@ public class InputManager : MonoBehaviour
 
         HandleMovement(dt);
         HandleJumpAndGravity(dt);
+
+        if (LockOnA.WasPressedThisFrame())
+        {
+            Debug.Log("Lock ON");
+        }
     }
 
     void HandleMovement(float dt)
