@@ -1101,7 +1101,6 @@ MonoBehaviour:
   lockAction: {fileID: 3686463232332307751, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   switchAction: {fileID: 3478407370019717402, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   searchRadius: 20
-  searchFOV: 90
   enemyMask:
     serializedVersion: 2
     m_Bits: 128
@@ -1465,7 +1464,7 @@ MonoBehaviour:
     DefaultMode: 2
   DefaultBlend:
     Style: 1
-    Time: 2
+    Time: 1
     CustomCurve:
       serializedVersion: 2
       m_Curve: []
