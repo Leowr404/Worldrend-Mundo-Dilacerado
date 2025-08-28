@@ -1,3 +1,4 @@
+﻿using System.Collections.Generic;
 using System.Linq;
 using Unity.Cinemachine;
 using UnityEngine;
@@ -17,21 +18,28 @@ public class LockOnScript : MonoBehaviour
 
     [Header("Config")]
     public float searchRadius = 20f;
-    public float searchFOV = 80f;
     public LayerMask enemyMask;
 
     private Transform currentEnemy;
+    private List<Transform> nearbyEnemies = new List<Transform>();
 
     void Start()
     {
         targetGroup.Targets.Clear();
-
-        // adiciona o player
         targetGroup.AddMember(player, 1f, 0.8f);
     }
 
     void Update()
     {
+        // Atualiza a lista de inimigos a cada frame
+        UpdateNearbyEnemies();
+
+        // Se não houver inimigos próximos, cancela lock-on
+        if (currentEnemy != null && (nearbyEnemies.Count == 0 || !nearbyEnemies.Contains(currentEnemy)))
+        {
+            ClearLock();
+        }
+
         if (lockAction.action.WasPressedThisFrame())
         {
             if (currentEnemy == null) TryLockNearest();
@@ -40,86 +48,63 @@ public class LockOnScript : MonoBehaviour
 
         if (currentEnemy != null && switchAction.action.WasPressedThisFrame())
         {
-            float dir = switchAction.action.ReadValue<float>();
-            if (Mathf.Abs(dir) > 0.5f) SwitchTarget(dir > 0 ? 1 : -1);
-            Debug.Log(switchAction+"Pressionado");
-            //Nao Esta Trocando De Inimigos, Apenas Troca Uma Vez, Tem Que Corrigir
+            SwitchTarget();
         }
+    }
+
+    void UpdateNearbyEnemies()
+    {
+        nearbyEnemies = Physics.OverlapSphere(player.position, searchRadius, enemyMask)
+                               .Select(c => c.transform).ToList();
     }
 
     void TryLockNearest()
     {
-        var cam = Camera.main;
-        if (!cam) return;
+        if (nearbyEnemies.Count == 0) return;
 
-        var enemies = Physics.OverlapSphere(player.position, searchRadius, enemyMask)
-                             .Select(c => c.transform).ToArray();
-
-        Transform best = null;
-        float bestScore = float.MinValue;
-
-        foreach (var e in enemies)
-        {
-            Vector3 to = e.position - cam.transform.position;
-            float dist = to.magnitude;
-            float angle = Vector3.Angle(cam.transform.forward, to);
-            if (angle > searchFOV * 0.5f) continue;
-
-            float score = (1f / dist) + (1f - angle / (searchFOV * 0.5f));
-            if (score > bestScore) { bestScore = score; best = e; }
-        }
-
-        if (best != null) SetLock(best);
+        // pega o inimigo mais próximo
+        Transform nearest = nearbyEnemies.OrderBy(e => Vector3.Distance(player.position, e.position)).FirstOrDefault();
+        if (nearest != null) SetLock(nearest);
     }
 
     void SetLock(Transform enemy)
     {
         currentEnemy = enemy;
 
-        // garante que o player sempre est� no grupo
-        if (!targetGroup.Targets.Any(t => t.Object == player))
-            targetGroup.AddMember(player, 1f, 0.8f);
+        targetGroup.Targets.Clear();
+        targetGroup.AddMember(player, 1f, 0.8f);
+        targetGroup.AddMember(enemy, 1f, 0.8f);
 
-        // adiciona inimigo se ainda n�o estiver
-        if (!targetGroup.Targets.Any(t => t.Object == enemy))
-            targetGroup.AddMember(enemy, 1f, 0.8f);
-
-        // ativa c�mera lock
         vcamLockOn.Priority = vcamExplore.Priority + 1;
     }
 
     void ClearLock()
     {
-        if (currentEnemy != null)
-        {
-            targetGroup.RemoveMember(currentEnemy);
-            currentEnemy = null;
-        }
+        currentEnemy = null;
 
-        // volta pra c�mera normal
+        targetGroup.Targets.Clear();
+        targetGroup.AddMember(player, 1f, 0.8f);
+
         vcamLockOn.Priority = vcamExplore.Priority - 1;
     }
 
-    void SwitchTarget(int dir)
+    void SwitchTarget()
     {
-        var cam = Camera.main;
-        if (!cam || currentEnemy == null) return;
+        if (nearbyEnemies.Count <= 1) return;
 
-        var enemies = Physics.OverlapSphere(player.position, searchRadius, enemyMask)
-                             .Select(c => c.transform).Where(e => e != currentEnemy).ToArray();
+        // escolhe o inimigo mais próximo que NÃO seja o atual
+        Transform nearestOther = nearbyEnemies
+            .Where(e => e != currentEnemy)
+            .OrderBy(e => Vector3.Distance(player.position, e.position))
+            .FirstOrDefault();
 
-        Transform best = null;
-        float bestX = dir > 0 ? float.NegativeInfinity : float.PositiveInfinity;
+        if (nearestOther != null) SetLock(nearestOther);
+    }
 
-        foreach (var e in enemies)
-        {
-            Vector3 vp = cam.WorldToViewportPoint(e.position);
-            if (vp.z < 0) continue;
-
-            if (dir > 0 && vp.x > bestX) { bestX = vp.x; best = e; }
-            if (dir < 0 && vp.x < bestX) { bestX = vp.x; best = e; }
-        }
-
-        if (best != null) SetLock(best);
+    // 🔹 Gizmo para visualizar a área no editor
+    void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, searchRadius);
     }
 }

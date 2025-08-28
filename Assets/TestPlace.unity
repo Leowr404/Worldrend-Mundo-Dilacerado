@@ -690,7 +690,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 7.8499756, y: 53.49}
+  m_AnchoredPosition: {x: 7.8500977, y: 53.48999}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0, y: 0}
 --- !u!1 &135136377
@@ -1390,7 +1390,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 650198625}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.19785877, y: 0.11973079, z: -0.024357527, w: 0.97258586}
+  m_LocalRotation: {x: 0.19785875, y: 0.119730785, z: -0.024357526, w: 0.97258586}
   m_LocalPosition: {x: 0, y: 3.25, z: -4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -2316,12 +2316,12 @@ MonoBehaviour:
   TransparentLayers:
     serializedVersion: 2
     m_Bits: 0
-  MinimumDistanceFromTarget: 2
+  MinimumDistanceFromTarget: 0.5
   AvoidObstacles:
     Enabled: 1
-    DistanceLimit: 0.05
+    DistanceLimit: 0.3
     MinimumOcclusionTime: 0
-    CameraRadius: 0.5
+    CameraRadius: 0.6
     UseFollowTarget:
       Enabled: 0
       YOffset: 0.13
@@ -2447,9 +2447,9 @@ MonoBehaviour:
       Height: 2.25
     Bottom:
       Radius: 2.5
-      Height: 0.1
+      Height: -0.8
     SplineCurvature: 0.5
-  RecenteringTarget: 2
+  RecenteringTarget: 3
   HorizontalAxis:
     Value: 0
     Center: 0
