@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using TMPro;
+using UnityEngine;
 using UnityEngine.InputSystem;
 public class InputManager : MonoBehaviour
 {
@@ -36,6 +37,9 @@ public class InputManager : MonoBehaviour
     float currentSpeed, verticalVel, rotVel;
     float coyoteCounter, jumpBufferCounter;
 
+    [Header("Canvas Teste")]
+    public TextMeshProUGUI Speedtxt;
+
     void Awake()
     {
         controller = GetComponent<CharacterController>();
@@ -64,6 +68,8 @@ public class InputManager : MonoBehaviour
         {
             Debug.Log("Lock ON");
         }
+        //apenas teste de conversao de int/float para text
+        Speedtxt.text = sprintMultiplier.ToString();
     }
 
     void HandleMovement(float dt)

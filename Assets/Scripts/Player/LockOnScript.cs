@@ -38,10 +38,12 @@ public class LockOnScript : MonoBehaviour
             else ClearLock();
         }
 
-        if (currentEnemy != null)
+        if (currentEnemy != null && switchAction.action.WasPressedThisFrame())
         {
             float dir = switchAction.action.ReadValue<float>();
             if (Mathf.Abs(dir) > 0.5f) SwitchTarget(dir > 0 ? 1 : -1);
+            Debug.Log(switchAction+"Pressionado");
+            //Nao Esta Trocando De Inimigos, Apenas Troca Uma Vez, Tem Que Corrigir
         }
     }
 
