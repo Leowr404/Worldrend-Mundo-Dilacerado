@@ -1124,6 +1124,37 @@ MonoBehaviour:
     Weight: 0.8
     Radius: 1
   m_LegacyTargets: []
+--- !u!1 &486516855
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 486516856}
+  m_Layer: 0
+  m_Name: HudManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &486516856
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 486516855}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 9.60544, y: 0, z: 5.66593}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &502072499
 GameObject:
   m_ObjectHideFlags: 0
@@ -2138,6 +2169,8 @@ GameObject:
   - component: {fileID: 1102621446}
   - component: {fileID: 1102621447}
   - component: {fileID: 1102621448}
+  - component: {fileID: 1102621449}
+  - component: {fileID: 1102621450}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -2194,29 +2227,48 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1102621445}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 74dca6a787d4c3e4b9a37355edc902e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InputManager
-  actionsAsset: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
-  moveActionPath: Player/Move
-  jumpActionPath: Player/Jump
-  sprintActionPath: Player/Sprint
-  LockOnActionPath: Player/LockOn
-  cameraTransform: {fileID: 650198628}
-  walkSpeed: 4.5
-  sprintMultiplier: 2
+--- !u!114 &1102621449
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1102621445}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec494b7aada46d448abf5899a44549d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HealthPlayer
+  health: 0
+--- !u!114 &1102621450
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1102621445}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 703e09d9519802843adec71bc8f541d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerController
+  walkSpeed: 4.8
+  sprintMultiplier: 1.5
   acceleration: 20
   deceleration: 25
   faceCameraWhileMoving: 1
   rotationSmoothTime: 0.08
+  cameraTransform: {fileID: 650198628}
   gravity: -25
   fallMultiplier: 1.5
   jumpHeight: 1.6
   coyoteTime: 0.1
   jumpBuffer: 0.1
-  Speedtxt: {fileID: 128098431}
 --- !u!1 &1120740157
 GameObject:
   m_ObjectHideFlags: 0
@@ -2488,155 +2540,16 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1209710308}
-  - component: {fileID: 1209710307}
   - component: {fileID: 1209710309}
+  - component: {fileID: 1209710310}
+  - component: {fileID: 1209710311}
   m_Layer: 0
-  m_Name: TimeManager
+  m_Name: GameManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1209710307
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1209710306}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8759872ad89cdd345a2894e763041300, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TimeManager
-  skyboxNight: {fileID: 2800000, guid: 323f1ea1bce78fe4c90b2286fa1997e2, type: 3}
-  skyboxSunrise: {fileID: 2800000, guid: c15e36d3819e8d14ab21ab119e3fd4a7, type: 3}
-  skyboxDay: {fileID: 2800000, guid: 97c83ef8555216848ba4f98a7496a917, type: 3}
-  skyboxSunset: {fileID: 2800000, guid: 846cce7d90ad21b4b80fcb937193081e, type: 3}
-  graddientNightToSunrise:
-    serializedVersion: 2
-    key0: {r: 0.11764707, g: 0.14901961, b: 0.29411766, a: 1}
-    key1: {r: 0.6775098, g: 0.98403215, b: 0.990566, a: 1}
-    key2: {r: 0, g: 0, b: 0, a: 0}
-    key3: {r: 0, g: 0, b: 0, a: 0}
-    key4: {r: 0, g: 0, b: 0, a: 0}
-    key5: {r: 0, g: 0, b: 0, a: 0}
-    key6: {r: 0, g: 0, b: 0, a: 0}
-    key7: {r: 0, g: 0, b: 0, a: 0}
-    ctime0: 21010
-    ctime1: 65535
-    ctime2: 0
-    ctime3: 0
-    ctime4: 0
-    ctime5: 0
-    ctime6: 0
-    ctime7: 0
-    atime0: 197
-    atime1: 65535
-    atime2: 0
-    atime3: 0
-    atime4: 0
-    atime5: 0
-    atime6: 0
-    atime7: 0
-    m_Mode: 0
-    m_ColorSpace: -1
-    m_NumColorKeys: 2
-    m_NumAlphaKeys: 2
-  graddientSunriseToDay:
-    serializedVersion: 2
-    key0: {r: 0.6627451, g: 0.9607844, b: 0.9686275, a: 1}
-    key1: {r: 0.9716981, g: 0.9716981, b: 0.9716981, a: 1}
-    key2: {r: 0, g: 0, b: 0, a: 0}
-    key3: {r: 0, g: 0, b: 0, a: 0}
-    key4: {r: 0, g: 0, b: 0, a: 0}
-    key5: {r: 0, g: 0, b: 0, a: 0}
-    key6: {r: 0, g: 0, b: 0, a: 0}
-    key7: {r: 0, g: 0, b: 0, a: 0}
-    ctime0: 0
-    ctime1: 65535
-    ctime2: 0
-    ctime3: 0
-    ctime4: 0
-    ctime5: 0
-    ctime6: 0
-    ctime7: 0
-    atime0: 0
-    atime1: 65535
-    atime2: 0
-    atime3: 0
-    atime4: 0
-    atime5: 0
-    atime6: 0
-    atime7: 0
-    m_Mode: 2
-    m_ColorSpace: -1
-    m_NumColorKeys: 2
-    m_NumAlphaKeys: 2
-  graddientDayToSunset:
-    serializedVersion: 2
-    key0: {r: 1, g: 1, b: 1, a: 1}
-    key1: {r: 1, g: 0.6136808, b: 0, a: 1}
-    key2: {r: 0, g: 0, b: 0, a: 0}
-    key3: {r: 0, g: 0, b: 0, a: 0}
-    key4: {r: 0, g: 0, b: 0, a: 0}
-    key5: {r: 0, g: 0, b: 0, a: 0}
-    key6: {r: 0, g: 0, b: 0, a: 0}
-    key7: {r: 0, g: 0, b: 0, a: 0}
-    ctime0: 0
-    ctime1: 65535
-    ctime2: 0
-    ctime3: 0
-    ctime4: 0
-    ctime5: 0
-    ctime6: 0
-    ctime7: 0
-    atime0: 0
-    atime1: 65535
-    atime2: 0
-    atime3: 0
-    atime4: 0
-    atime5: 0
-    atime6: 0
-    atime7: 0
-    m_Mode: 0
-    m_ColorSpace: -1
-    m_NumColorKeys: 2
-    m_NumAlphaKeys: 2
-  graddientSunsetToNight:
-    serializedVersion: 2
-    key0: {r: 1, g: 0.47070256, b: 0, a: 1}
-    key1: {r: 0.11725702, g: 0.14970073, b: 0.2924528, a: 1}
-    key2: {r: 0, g: 0, b: 0, a: 0}
-    key3: {r: 0, g: 0, b: 0, a: 0}
-    key4: {r: 0, g: 0, b: 0, a: 0}
-    key5: {r: 0, g: 0, b: 0, a: 0}
-    key6: {r: 0, g: 0, b: 0, a: 0}
-    key7: {r: 0, g: 0, b: 0, a: 0}
-    ctime0: 0
-    ctime1: 44525
-    ctime2: 0
-    ctime3: 0
-    ctime4: 0
-    ctime5: 0
-    ctime6: 0
-    ctime7: 0
-    atime0: 9445
-    atime1: 36430
-    atime2: 0
-    atime3: 0
-    atime4: 0
-    atime5: 0
-    atime6: 0
-    atime7: 0
-    m_Mode: 2
-    m_ColorSpace: -1
-    m_NumColorKeys: 2
-    m_NumAlphaKeys: 2
-  globalLight: {fileID: 1588826292}
-  minutes: 0
-  _Rotation: 0
-  _Speed: 0
 --- !u!4 &1209710308
 Transform:
   m_ObjectHideFlags: 0
@@ -2824,6 +2737,30 @@ MonoBehaviour:
   minutes: 0
   hours: 0
   days: 0
+--- !u!114 &1209710310
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1209710306}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 375dbe19c6b23fc4bbafb089bf7ba023, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameManager
+--- !u!114 &1209710311
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1209710306}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74dca6a787d4c3e4b9a37355edc902e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InputManager
 --- !u!1 &1217509617
 GameObject:
   m_ObjectHideFlags: 0
@@ -3912,3 +3849,4 @@ SceneRoots:
   - {fileID: 846072354}
   - {fileID: 79235875}
   - {fileID: 610422903}
+  - {fileID: 486516856}
