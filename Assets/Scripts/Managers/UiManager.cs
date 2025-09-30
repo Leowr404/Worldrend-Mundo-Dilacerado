@@ -11,7 +11,7 @@ public class UiManager : MonoBehaviour
     public TMP_Text dialogueText;      // Texto da fala
 
     [Header("Typing Effect")]
-    public float typingSpeed = 0.5f;
+    public float typingSpeed = 0.1f;
 
     private Queue<string> sentences;
     private Coroutine typingCoroutine;

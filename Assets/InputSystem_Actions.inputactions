@@ -37,7 +37,7 @@
                     "name": "Interact",
                     "type": "Button",
                     "id": "852140f2-7766-474d-8707-702459ba45f3",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "Hold",
                     "initialStateCheck": false
@@ -109,15 +109,6 @@
                     "name": "Pause",
                     "type": "Button",
                     "id": "ebc427be-4496-496a-a70b-c2be5423e342",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "Interact1",
-                    "type": "Button",
-                    "id": "0da2882f-bf0f-42d8-9eed-2ac1fbc783e4",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -540,17 +531,6 @@
                     "processors": "",
                     "groups": "",
                     "action": "Pause",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "8e6ecfe2-1cc5-48c4-ae07-e892051ebbdf",
-                    "path": "<Keyboard>/e",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": ";Keyboard&Mouse",
-                    "action": "Interact1",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
@@ -1082,7 +1062,7 @@
                 {
                     "name": "",
                     "id": "af57cc22-0768-4a30-a336-f62fb3a34837",
-                    "path": "<Keyboard>/f",
+                    "path": "<Keyboard>/space",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
