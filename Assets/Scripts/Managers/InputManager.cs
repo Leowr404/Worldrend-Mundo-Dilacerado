@@ -13,7 +13,6 @@ public class InputManager : MonoBehaviour
     public bool LockOn { get; private set; }
     public bool Pause { get; private set; }
 
-    private bool Paused;
 
     private void Awake()
     {
@@ -22,17 +21,8 @@ public class InputManager : MonoBehaviour
     }
     private void Start()
     {
-        Cursor.lockState = CursorLockMode.Locked;
-        Paused = false;
-    }
-    private void PauseGame()
-    {
-        if (Pause)
-        {
-            Paused = !Paused; // inverte o estado
-            Time.timeScale = Paused ? 0f : 1f;
-            Debug.Log(Paused ? "Game Pausado" : "Game Despausado");
-        }
+        
+        
     }
 
     private void OnEnable()
@@ -47,12 +37,13 @@ public class InputManager : MonoBehaviour
 
     private void Update()
     {
-        PauseGame();
+        
         // Lê valores crus do Input System
         Move = inputActions.Player.Move.ReadValue<Vector2>();
         Jump = inputActions.Player.Jump.WasPressedThisFrame();
         Sprint = inputActions.Player.Sprint.IsPressed();
         LockOn = inputActions.Player.LockOn.WasPressedThisFrame();
         Pause = inputActions.Player.Pause.WasPressedThisFrame();
+        //Debug.Log("Move: " + Move);
     }
 }
