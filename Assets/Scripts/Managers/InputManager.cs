@@ -12,6 +12,8 @@ public class InputManager : MonoBehaviour
     public bool Sprint { get; private set; }
     public bool LockOn { get; private set; }
     public bool Pause { get; private set; }
+    public bool Interact { get; private set; }
+    public bool AdvanceDialogue { get; private set; }
 
 
     private void Awake()
@@ -34,6 +36,17 @@ public class InputManager : MonoBehaviour
     {
         inputActions.Disable();
     }
+    public void SwitchToPlayer()
+    {
+        inputActions.UI.Disable();
+        inputActions.Player.Enable();
+    }
+
+    public void SwitchToUI()
+    {
+        inputActions.Player.Disable();
+        inputActions.UI.Enable();
+    }
 
     private void Update()
     {
@@ -45,5 +58,9 @@ public class InputManager : MonoBehaviour
         LockOn = inputActions.Player.LockOn.WasPressedThisFrame();
         Pause = inputActions.Player.Pause.WasPressedThisFrame();
         //Debug.Log("Move: " + Move);
+        Interact = inputActions.Player.Interact.WasPressedThisFrame();
+        Debug.Log("Pressionado" + Interact);
+        //========UI BUTTONS========//
+        AdvanceDialogue = inputActions.UI.AdvanceDialogue.WasPressedThisFrame();
     }
 }
