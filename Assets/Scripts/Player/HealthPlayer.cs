@@ -1,17 +1,42 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class HealthPlayer : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    public int health;
+    [Header("Configuração de Vida")]
+    [SerializeField] private int maxHealth = 100;
+    [SerializeField] private int currentHealth;
+
+    [Header("UI")]
+    [SerializeField] private Slider healthBar;
+
     void Start()
     {
-        health = 100;
+        currentHealth = maxHealth;
+        UpdateHealthBar();
     }
 
-    // Update is called once per frame
-    void Update()
+    // Função para levar dano
+    public void TakeDamage(int amount)
     {
-        
+        currentHealth -= amount;
+        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+        UpdateHealthBar();
+    }
+
+    // Função para curar
+    public void Heal(int amount)
+    {
+        currentHealth += amount;
+        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+        UpdateHealthBar();
+    }
+
+    private void UpdateHealthBar()
+    {
+        if (healthBar != null)
+        {
+            healthBar.value = (float)currentHealth / maxHealth;
+        }
     }
 }
