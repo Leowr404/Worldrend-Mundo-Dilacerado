@@ -40,6 +40,8 @@ public class InputManager : MonoBehaviour
     [Header("Canvas Teste")]
     public TextMeshProUGUI Speedtxt;
 
+
+
     void Awake()
     {
         controller = GetComponent<CharacterController>();
@@ -49,6 +51,7 @@ public class InputManager : MonoBehaviour
         sprintA = asset.FindAction(sprintActionPath, false);
         LockOnA = asset.FindAction(LockOnActionPath, false);
         Cursor.lockState = CursorLockMode.Locked;
+       
     }
     void OnEnable() { moveA.Enable(); jumpA.Enable(); sprintA?.Enable(); LockOnA?.Enable(); }
     void OnDisable() { moveA.Disable(); jumpA.Disable(); sprintA?.Disable(); LockOnA?.Disable(); }
@@ -70,6 +73,8 @@ public class InputManager : MonoBehaviour
         }
         //apenas teste de conversao de int/float para text
         Speedtxt.text = sprintMultiplier.ToString();
+
+          
     }
 
     void HandleMovement(float dt)
@@ -119,4 +124,5 @@ public class InputManager : MonoBehaviour
         float g = verticalVel >= 0f ? gravity : gravity * fallMultiplier;
         verticalVel += g * dt;
     }
+
 }
