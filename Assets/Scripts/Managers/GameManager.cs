@@ -1,5 +1,7 @@
 using Unity.VisualScripting.Antlr3.Runtime;
+using UnityEditor.SearchService;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -10,10 +12,10 @@ public class GameManager : MonoBehaviour
     public GameObject pauseCanvas;
     void Start()
     {
+        Time.timeScale = 1.0f;
         inputManager = InputManager.Instance;
         Cursor.lockState = CursorLockMode.Locked;
         pauseCanvas.SetActive(false);
-
     }
 
     // Update is called once per frame
@@ -43,5 +45,9 @@ public class GameManager : MonoBehaviour
             pauseCanvas.SetActive(false);
         }
     }
-    
+
+    public void BackToMenu()
+    {
+        SceneManager.LoadScene("MainMenu");
+    }
 }
