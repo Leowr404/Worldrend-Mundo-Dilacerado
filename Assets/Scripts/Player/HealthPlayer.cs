@@ -36,7 +36,21 @@ public class HealthPlayer : MonoBehaviour
     {
         if (healthBar != null)
         {
-            healthBar.value = (float)currentHealth / maxHealth;
+            healthBar.value = (float)currentHealth / maxHealth;  
+        }
+        
+    }
+    private void Update()
+    {
+        Die();
+    }
+
+    void Die() 
+    {
+        if(currentHealth <= 0)
+        {
+            Debug.Log("Player Morreu");
+
         }
     }
 }

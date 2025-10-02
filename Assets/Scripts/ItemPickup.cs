@@ -14,6 +14,13 @@ public class ItemPickup : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             Collect(other.gameObject);
+            HealthPlayer health = other.GetComponent<HealthPlayer>();
+            if (health != null)
+            {
+                health.TakeDamage(Random.Range(50,5)); // aplica dano
+                Debug.Log("Playter Atingido");
+            }
+
         }
     }
 
@@ -21,6 +28,7 @@ public class ItemPickup : MonoBehaviour
     private void Collect(GameObject player)
     {
         Debug.Log("Coletou: " + itemName + " x" + amount);
+
 
         // 🔹 Aqui você pode ligar ao inventário do player futuramente:
         // player.GetComponent<Inventory>().AddItem(itemID, amount);
