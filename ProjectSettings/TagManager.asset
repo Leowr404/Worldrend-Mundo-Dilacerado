@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 3
   tags:
   - Limits
+  - CollectQuest
   layers:
   - Default
   - TransparentFX

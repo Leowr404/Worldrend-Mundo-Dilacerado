@@ -5,17 +5,24 @@ using UnityEngine;
 public class DialogueData : ScriptableObject
 {
     public string npcName;
-
-    [Header("Fal falas normais (se não tiver quest)")]
     [TextArea(2, 5)] public List<string> lines;
 
-    [Header("Quest ligada ao diálogo (opcional)")]
-    public Quest quest;
-
+    [Header("Falas da Quest")]
     [TextArea(2, 5)] public List<string> beforeQuest;
     [TextArea(2, 5)] public List<string> duringQuest;
     [TextArea(2, 5)] public List<string> afterQuest;
 
-    [Header("Opções de diálogo (botões)")]
+    [Header("Quest Opcional")]
+    public Quest quest;
+
+    [Header("Opções de Diálogo")]
     public List<DialogueOption> options;
+}
+
+[System.Serializable]
+public class DialogueOption
+{
+    public string optionText;
+    [TextArea(2, 5)] public List<string> response;
+    public bool acceptQuest;
 }

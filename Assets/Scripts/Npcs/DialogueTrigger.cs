@@ -20,6 +20,7 @@ public class DialogueTrigger : MonoBehaviour
         if (playerInRange && InputManager.Instance.Interact && !uiManager.IsDialogueActive())
         {
             InputManager.Instance.SwitchToUI();
+            Cursor.lockState = CursorLockMode.None;
             uiManager.StartDialogue(dialogue);
         }
 

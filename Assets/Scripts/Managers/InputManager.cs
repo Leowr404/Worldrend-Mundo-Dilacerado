@@ -1,7 +1,4 @@
-﻿using TMPro;
-using Unity.VisualScripting.Antlr3.Runtime;
-using UnityEngine;
-using UnityEngine.InputSystem;
+﻿using UnityEngine;
 public class InputManager : MonoBehaviour
 {
     public static InputManager Instance; // Singleton simples
@@ -23,8 +20,8 @@ public class InputManager : MonoBehaviour
     }
     private void Start()
     {
-        
-        
+
+
     }
 
     private void OnEnable()
@@ -50,7 +47,7 @@ public class InputManager : MonoBehaviour
 
     private void Update()
     {
-        
+
         // Lê valores crus do Input System
         Move = inputActions.Player.Move.ReadValue<Vector2>();
         Jump = inputActions.Player.Jump.WasPressedThisFrame();

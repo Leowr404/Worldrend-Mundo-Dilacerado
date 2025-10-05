@@ -21,6 +21,8 @@ public class UiManager : MonoBehaviour
 
     private Queue<string> sentences;
     private Sequence typingSequence;
+
+    private DialogueData currentDialogue;
     private Quest pendingQuest;
 
     private void Awake()
@@ -31,6 +33,15 @@ public class UiManager : MonoBehaviour
 
     public void StartDialogue(DialogueData data)
     {
+        if (data == null)
+        {
+            Debug.LogError("❌ DialogueData não atribuído no NPC!");
+            return;
+        }
+
+        currentDialogue = data;
+        pendingQuest = data.quest;
+
         dialoguePanel.SetActive(true);
         speakerNameText.text = data.npcName;
 
@@ -39,61 +50,53 @@ public class UiManager : MonoBehaviour
 
         sentences.Clear();
 
-        // Escolhe fala de acordo com quest
-        if (data.quest == null)
-            foreach (string l in data.lines) sentences.Enqueue(l);
-        else if (!QuestManager.Instance.HasQuest(data.quest) && !data.quest.isCompleted)
-            foreach (string l in data.beforeQuest) sentences.Enqueue(l);
-        else if (!data.quest.isCompleted)
-            foreach (string l in data.duringQuest) sentences.Enqueue(l);
-        else
-            foreach (string l in data.afterQuest) sentences.Enqueue(l);
-
-        pendingQuest = data.quest;
-
-        // Remove botões antigos
-        foreach (Transform child in optionsContainer)
-            Destroy(child.gameObject);
-
-        // Cria botões novos
-        if (data.options != null && data.options.Count > 0)
+        // 🔍 Lógica de qual fala usar
+        if (data.quest != null)
         {
-            foreach (DialogueOption opt in data.options)
-            {
-                GameObject btnObj = Instantiate(optionButtonPrefab, optionsContainer);
-                TMP_Text btnText = btnObj.GetComponentInChildren<TMP_Text>();
-                btnText.text = opt.optionText;
+            bool hasQuest = QuestManager.Instance.HasQuest(data.quest);
+            bool isCompleted = data.quest.isCompleted;
 
-                Button btn = btnObj.GetComponent<Button>();
-                btn.onClick.AddListener(() =>
-                {
-                    sentences.Clear();
-                    foreach (string resp in opt.response)
-                        sentences.Enqueue(resp);
-
-                    if (opt.acceptQuest && pendingQuest != null)
-                        QuestManager.Instance.AddQuest(pendingQuest);
-
-                    foreach (Transform c in optionsContainer)
-                        Destroy(c.gameObject);
-
-                    DisplayNextSentence();
-                });
-            }
+            if (!hasQuest)
+                EnqueueLines(data.beforeQuest);  // antes de aceitar
+            else if (hasQuest && !isCompleted)
+                EnqueueLines(data.duringQuest); // em progresso
+            else
+                EnqueueLines(data.afterQuest);  // depois de completa
+        }
+        else
+        {
+            EnqueueLines(data.lines);
         }
 
         DisplayNextSentence();
+    }
+
+    private void EnqueueLines(List<string> lines)
+    {
+        sentences.Clear();
+        foreach (string line in lines)
+            sentences.Enqueue(line);
     }
 
     public void DisplayNextSentence()
     {
         if (sentences.Count == 0)
         {
+            // Só mostra opções (ex: aceitar quest) se ainda não foi aceita
+            if (currentDialogue != null && currentDialogue.options != null &&
+                currentDialogue.options.Count > 0 &&
+                (currentDialogue.quest == null || !QuestManager.Instance.HasQuest(currentDialogue.quest)))
+            {
+                ShowOptions(currentDialogue.options);
+                return;
+            }
+
             EndDialogue();
             return;
         }
 
         string sentence = sentences.Dequeue();
+
         dialogueText.text = sentence;
         dialogueText.maxVisibleCharacters = 0;
 
@@ -107,7 +110,6 @@ public class UiManager : MonoBehaviour
             {
                 dialogueText.maxVisibleCharacters = index + 1;
                 dialogueText.ForceMeshUpdate();
-
                 var animator = new DOTweenTMPAnimator(dialogueText);
                 if (index < animator.textInfo.characterCount)
                 {
@@ -118,6 +120,41 @@ public class UiManager : MonoBehaviour
                 }
             });
             typingSequence.AppendInterval(charInterval);
+        }
+    }
+
+    private void ShowOptions(List<DialogueOption> options)
+    {
+        foreach (Transform c in optionsContainer)
+            Destroy(c.gameObject);
+
+        foreach (DialogueOption opt in options)
+        {
+            GameObject btnObj = Instantiate(optionButtonPrefab, optionsContainer);
+            TMP_Text btnText = btnObj.GetComponentInChildren<TMP_Text>();
+            btnText.text = opt.optionText;
+
+            btnObj.transform.localScale = Vector3.zero;
+            btnObj.transform.DOScale(Vector3.one, 0.3f).SetEase(Ease.OutBack);
+
+            Button btn = btnObj.GetComponent<Button>();
+            btn.onClick.AddListener(() =>
+            {
+                // Mostra respostas
+                EnqueueLines(opt.response);
+
+                // Se aceitar a quest, adiciona e marca como ativa
+                if (opt.acceptQuest && pendingQuest != null)
+                {
+                    QuestManager.Instance.AddQuest(pendingQuest);
+                }
+
+                // Remove opções e continua
+                foreach (Transform c in optionsContainer)
+                    Destroy(c.gameObject);
+
+                DisplayNextSentence();
+            });
         }
     }
 
@@ -132,15 +169,9 @@ public class UiManager : MonoBehaviour
                 speakerNameText.text = "";
                 dialogueText.text = "";
 
-                foreach (Transform child in optionsContainer)
-                    Destroy(child.gameObject);
-
                 InputManager.Instance.SwitchToPlayer();
             });
     }
 
-    public bool IsDialogueActive()
-    {
-        return dialoguePanel.activeSelf;
-    }
+    public bool IsDialogueActive() => dialoguePanel.activeSelf;
 }

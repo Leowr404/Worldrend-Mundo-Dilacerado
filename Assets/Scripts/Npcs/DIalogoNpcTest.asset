@@ -13,11 +13,16 @@ MonoBehaviour:
   m_Name: DIalogoNpcTest
   m_EditorClassIdentifier: Assembly-CSharp::DialogueData
   npcName: NPC DE TEST
-  lines:
-  - Isto e um Teste
-  - TESTE DA SEGUNDA LINHA
-  quest: {fileID: 0}
-  beforeQuest: []
-  duringQuest: []
-  afterQuest: []
-  options: []
+  lines: []
+  beforeQuest:
+  - Ola, Me Chamo Npc De Testes, Voce Poderia Coletar Para Mim 5 Esferas Azuis?
+  duringQuest:
+  - Voce Ainda Nao Coletou Todas Esferas
+  afterQuest:
+  - Obrigado Por Coletar As Esferas
+  quest: {fileID: 11400000, guid: c501a5ffa785d8544a806d636282b7d7, type: 2}
+  options:
+  - optionText: Aceitar
+    response:
+    - Obrigado!!
+    acceptQuest: 1
