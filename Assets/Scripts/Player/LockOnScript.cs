@@ -25,12 +25,25 @@ public class LockOnScript : MonoBehaviour
 
     void Start()
     {
+        if (targetGroup == null || player == null)
+        {
+            Debug.LogWarning("⚠️ LockOnScript: targetGroup ou player não atribuídos no Inspector!");
+            return;
+        }
+
         targetGroup.Targets.Clear();
         targetGroup.AddMember(player, 1f, 0.8f);
     }
 
     void Update()
     {
+        // Impede erro se referências faltarem
+        if (player == null || targetGroup == null || vcamExplore == null || vcamLockOn == null)
+            return;
+
+        if (lockAction == null || switchAction == null)
+            return;
+
         // Atualiza a lista de inimigos a cada frame
         UpdateNearbyEnemies();
 
@@ -54,21 +67,28 @@ public class LockOnScript : MonoBehaviour
 
     void UpdateNearbyEnemies()
     {
+        if (player == null) return;
+
         nearbyEnemies = Physics.OverlapSphere(player.position, searchRadius, enemyMask)
                                .Select(c => c.transform).ToList();
     }
 
     void TryLockNearest()
     {
-        if (nearbyEnemies.Count == 0) return;
+        if (nearbyEnemies.Count == 0 || player == null) return;
 
-        // pega o inimigo mais próximo
-        Transform nearest = nearbyEnemies.OrderBy(e => Vector3.Distance(player.position, e.position)).FirstOrDefault();
+        Transform nearest = nearbyEnemies
+            .OrderBy(e => Vector3.Distance(player.position, e.position))
+            .FirstOrDefault();
+
         if (nearest != null) SetLock(nearest);
     }
 
     void SetLock(Transform enemy)
     {
+        if (enemy == null || targetGroup == null || vcamExplore == null || vcamLockOn == null)
+            return;
+
         currentEnemy = enemy;
 
         targetGroup.Targets.Clear();
@@ -80,6 +100,9 @@ public class LockOnScript : MonoBehaviour
 
     void ClearLock()
     {
+        if (targetGroup == null || vcamExplore == null || vcamLockOn == null)
+            return;
+
         currentEnemy = null;
 
         targetGroup.Targets.Clear();
@@ -90,9 +113,8 @@ public class LockOnScript : MonoBehaviour
 
     void SwitchTarget()
     {
-        if (nearbyEnemies.Count <= 1) return;
+        if (nearbyEnemies.Count <= 1 || player == null) return;
 
-        // escolhe o inimigo mais próximo que NÃO seja o atual
         Transform nearestOther = nearbyEnemies
             .Where(e => e != currentEnemy)
             .OrderBy(e => Vector3.Distance(player.position, e.position))
@@ -101,7 +123,6 @@ public class LockOnScript : MonoBehaviour
         if (nearestOther != null) SetLock(nearestOther);
     }
 
-    // 🔹 Gizmo para visualizar a área no editor
     void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
