@@ -1,5 +1,4 @@
 {
-    "version": 1,
     "name": "InputSystem_Actions",
     "maps": [
         {
@@ -37,7 +36,7 @@
                     "name": "Interact",
                     "type": "Button",
                     "id": "852140f2-7766-474d-8707-702459ba45f3",
-                    "expectedControlType": "",
+                    "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "Hold",
                     "initialStateCheck": false
@@ -82,34 +81,7 @@
                     "name": "Sprint",
                     "type": "Button",
                     "id": "641cd816-40e6-41b4-8c3d-04687c349290",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "LockOn",
-                    "type": "Button",
-                    "id": "805ab004-b3f8-4668-91e3-11b5678ee860",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "SwitchLockOn",
-                    "type": "Button",
-                    "id": "c1806f27-8dcf-444b-843f-e98647563791",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": true
-                },
-                {
-                    "name": "Pause",
-                    "type": "Button",
-                    "id": "ebc427be-4496-496a-a70b-c2be5423e342",
-                    "expectedControlType": "",
+                    "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -500,50 +472,6 @@
                     "action": "Crouch",
                     "isComposite": false,
                     "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "8082af14-724e-4ccc-9c71-6a4cfa351f7f",
-                    "path": "<Mouse>/middleButton",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": ";Keyboard&Mouse",
-                    "action": "LockOn",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "1353ae53-4c17-4006-9b8a-9ccd9a1a696a",
-                    "path": "<Keyboard>/e",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": ";Keyboard&Mouse",
-                    "action": "SwitchLockOn",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "c949d3db-c781-4574-a955-a3b7bc65b0a8",
-                    "path": "<Keyboard>/escape",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Pause",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "aad6429b-d7fd-435a-8a70-ba49a0a75051",
-                    "path": "<Gamepad>/start",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": ";Joystick",
-                    "action": "Pause",
-                    "isComposite": false,
-                    "isPartOfComposite": false
                 }
             ]
         },
@@ -637,15 +565,6 @@
                     "type": "PassThrough",
                     "id": "9caa3d8a-6b2f-4e8e-8bad-6ede561bd9be",
                     "expectedControlType": "Quaternion",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "AdvanceDialogue",
-                    "type": "Button",
-                    "id": "d0f057a6-59d5-4701-a4d3-742f8b204357",
-                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -1067,17 +986,6 @@
                     "processors": "",
                     "groups": "XR",
                     "action": "TrackedDeviceOrientation",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "af57cc22-0768-4a30-a336-f62fb3a34837",
-                    "path": "<Keyboard>/space",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": ";Keyboard&Mouse",
-                    "action": "AdvanceDialogue",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
