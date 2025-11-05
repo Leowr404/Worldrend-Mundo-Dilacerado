@@ -1,8 +1,9 @@
-﻿using UnityEngine;
+using UnityEngine;
 public class InputManager : MonoBehaviour
 {
     public static InputManager Instance; // Singleton simples
     private InputSystem_Actions inputActions;
+    public InputSystem_Actions InputActions => inputActions;  //Pra poder ler o script de outro script
 
     public Vector2 Move { get; private set; }
     public bool Jump { get; private set; }
@@ -11,7 +12,7 @@ public class InputManager : MonoBehaviour
     public bool Pause { get; private set; }
     public bool Interact { get; private set; }
     public bool AdvanceDialogue { get; private set; }
-
+   public bool inventoryOpen { get; private set; }
 
     private void Awake()
     {
@@ -54,10 +55,12 @@ public class InputManager : MonoBehaviour
         Sprint = inputActions.Player.Sprint.IsPressed();
         LockOn = inputActions.Player.LockOn.WasPressedThisFrame();
         Pause = inputActions.Player.Pause.WasPressedThisFrame();
+        inventoryOpen = inputActions.Player.Inventory.WasPressedThisFrame();
         //Debug.Log("Move: " + Move);
         Interact = inputActions.Player.Interact.WasPressedThisFrame();
         Debug.Log("Pressionado" + Interact);
         //========UI BUTTONS========//
         AdvanceDialogue = inputActions.UI.AdvanceDialogue.WasPressedThisFrame();
+        inventoryOpen = inputActions.UI.Inventory.WasPressedThisFrame();
     }
 }
