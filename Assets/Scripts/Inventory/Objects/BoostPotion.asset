@@ -15,3 +15,4 @@ MonoBehaviour:
   itemName: Porcao de Velocidade
   descricaoItem: Aumenta a velocidade Temporariamente
   itemSprite: {fileID: 21300000, guid: ccbbcfd80d5c2444ab25761868022e69, type: 3}
+  isStackable: 1

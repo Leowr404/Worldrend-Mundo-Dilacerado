@@ -15,3 +15,4 @@ MonoBehaviour:
   itemName: Moeda de Prata
   descricaoItem: Moeda de Comercio do reino
   itemSprite: {fileID: 21300000, guid: 780d9f96376adc04eb19613d5c6f85a9, type: 3}
+  isStackable: 1

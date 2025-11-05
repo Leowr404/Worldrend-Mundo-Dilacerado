@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class InventoryController : MonoBehaviour
 {
@@ -13,7 +14,6 @@ public class InventoryController : MonoBehaviour
         if (inventoryPanel != null)
             inventoryPanel.SetActive(false);
 
-        // garante que o cursor começa escondido
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
     }
@@ -29,9 +29,16 @@ public class InventoryController : MonoBehaviour
 
         if (tabPressed && Time.time - lastToggleTime > toggleCooldown)
         {
-            ToggleInventory();
+            StartCoroutine(ToggleInventoryDelayed()); // 🔹 usa Coroutine pra garantir troca suave
             lastToggleTime = Time.time;
         }
+    }
+
+    private IEnumerator ToggleInventoryDelayed()
+    {
+        // 🔸 Espera 1 frame pra evitar conflito entre mapas de input
+        yield return null;
+        ToggleInventory();
     }
 
     private void ToggleInventory()
@@ -43,20 +50,16 @@ public class InventoryController : MonoBehaviour
 
         Debug.Log(isInventoryOpen ? "Inventário Aberto" : "Inventário Fechado");
 
-        // alterna o mapa de input
         if (isInventoryOpen)
         {
+            // 🔹 troca de mapa levemente atrasada pra não perder o input
             InputManager.Instance.SwitchToUI();
-
-            // 🔹 mostra e libera o cursor
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
         }
         else
         {
             InputManager.Instance.SwitchToPlayer();
-
-            // 🔹 esconde e trava o cursor
             Cursor.visible = false;
             Cursor.lockState = CursorLockMode.Locked;
         }
@@ -75,8 +78,6 @@ public class InventoryController : MonoBehaviour
         Debug.Log("Inventário Fechado via botão UI");
 
         InputManager.Instance.SwitchToPlayer();
-
-        // 🔹 esconde e trava o cursor
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
     }
