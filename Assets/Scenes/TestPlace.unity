@@ -335,7 +335,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &25225569
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5116,13 +5116,12 @@ GameObject:
   m_Component:
   - component: {fileID: 1102621446}
   - component: {fileID: 1102621447}
-  - component: {fileID: 1102621451}
   - component: {fileID: 1102621450}
   - component: {fileID: 1102621452}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: 5132851093641282708, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -5192,21 +5191,7 @@ MonoBehaviour:
   jumpHeight: 1.6
   coyoteTime: 0.1
   jumpBuffer: 0.1
---- !u!114 &1102621451
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1102621445}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ec494b7aada46d448abf5899a44549d4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::HealthPlayer
-  maxHealth: 200
-  currentHealth: 100
-  healthBar: {fileID: 1263193531}
+  sprintStaminaCostPerSecond: 15
 --- !u!114 &1102621452
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5224,12 +5209,12 @@ MonoBehaviour:
   currentXP: 0
   xpToNextLevel: 100
   statPoints: 0
-  strength: 5
-  defense: 5
-  vitality: 5
-  endurance: 5
-  intelligence: 5
-  agility: 5
+  strength: 1
+  defense: 1
+  vitality: 1
+  endurance: 1
+  intelligence: 1
+  agility: 1
   maxHealth: 0
   currentHealth: 0
   maxStamina: 0
@@ -5239,9 +5224,12 @@ MonoBehaviour:
   xpMultiplier: 1
   staminaRegenRate: 10
   healthRegenRate: 2
+  sprintCostPerSecond: 15
+  attackCost: 20
+  dodgeCost: 30
   healthBar: {fileID: 1263193531}
   staminaBar: {fileID: 929350}
-  statsUI: {fileID: 0}
+  statsUI: {fileID: 1607477515}
   fadeOverlay: {fileID: 0}
   respawnPoint: {fileID: 0}
 --- !u!1 &1110084917

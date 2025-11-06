@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
@@ -21,13 +21,19 @@ public class PlayerController : MonoBehaviour
     public float coyoteTime = 0.1f;
     public float jumpBuffer = 0.1f;
 
+    [Header("Stamina Config")]
+    public int sprintStaminaCostPerSecond = 15; // quanto gasta por segundo
+
     private CharacterController controller;
+    private PlayerStats stats;
     private float currentSpeed, verticalVel, rotVel;
     private float coyoteCounter, jumpBufferCounter;
+    private bool isSprinting;
 
     private void Awake()
     {
         controller = GetComponent<CharacterController>();
+        stats = GetComponent<PlayerStats>(); // ligação direta com o sistema de status
     }
 
     private void Update()
@@ -46,27 +52,48 @@ public class PlayerController : MonoBehaviour
     {
         Vector2 input = InputManager.Instance.Move;
         bool hasInput = input.sqrMagnitude > 0.0001f;
-        bool sprint = InputManager.Instance.Sprint;
+        bool sprintInput = InputManager.Instance.Sprint;
 
-        // Dire��es baseadas na c�mera
-        Vector3 f = cameraTransform != null ? cameraTransform.forward : Vector3.forward;
-        Vector3 r = cameraTransform != null ? cameraTransform.right : Vector3.right;
+        // Direções baseadas na câmera
+        Vector3 f = cameraTransform ? cameraTransform.forward : Vector3.forward;
+        Vector3 r = cameraTransform ? cameraTransform.right : Vector3.right;
         f.y = 0f; r.y = 0f; f.Normalize(); r.Normalize();
 
         Vector3 moveDir = (r * input.x + f * input.y);
         if (hasInput) moveDir.Normalize();
 
-        float targetSpeed = hasInput ? walkSpeed * (sprint ? sprintMultiplier : 1f) : 0f;
+        // ⚡ Sprint — integrado ao PlayerStats
+        if (sprintInput && hasInput)
+        {
+            if (stats.SpendStamina(PlayerStats.StaminaAction.Sprint))
+            {
+                isSprinting = true;
+            }
+            else
+            {
+                isSprinting = false; // sem stamina, para de correr
+            }
+        }
+        else
+        {
+            stats.StopConsumingStamina();
+            isSprinting = false;
+        }
+
+        // 🔹 velocidade e aceleração
+        float targetSpeed = hasInput ? walkSpeed * (isSprinting ? sprintMultiplier : 1f) : 0f;
         float accel = targetSpeed > currentSpeed ? acceleration : deceleration;
         currentSpeed = Mathf.MoveTowards(currentSpeed, targetSpeed, accel * dt);
 
-        if (hasInput && faceCameraWhileMoving && cameraTransform != null)
+        // 🔹 rotação baseada na câmera
+        if (hasInput && faceCameraWhileMoving && cameraTransform)
         {
             float camYaw = Mathf.Atan2(f.x, f.z) * Mathf.Rad2Deg;
             float y = Mathf.SmoothDampAngle(transform.eulerAngles.y, camYaw, ref rotVel, rotationSmoothTime);
             transform.rotation = Quaternion.Euler(0f, y, 0f);
         }
 
+        // 🔹 movimento final
         Vector3 horizontal = moveDir * currentSpeed;
         Vector3 velocity = horizontal + Vector3.up * verticalVel;
         controller.Move(velocity * dt);

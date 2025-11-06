@@ -14,7 +14,7 @@ public class ItemPickup : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             Collect(other.gameObject);
-            HealthPlayer health = other.GetComponent<HealthPlayer>();
+            PlayerStats health = other.GetComponent<PlayerStats>();
             if (health != null)
             {
                 health.TakeDamage(Random.Range(50,5)); // aplica dano

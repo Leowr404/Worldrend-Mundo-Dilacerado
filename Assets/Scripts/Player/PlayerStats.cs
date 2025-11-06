@@ -8,6 +8,8 @@ public class PlayerStats : MonoBehaviour
 {
     [Header("UI de Level Up")]
     public TextMeshProUGUI levelUpText;
+    private float staminaRegenDelayTimer = 0f;
+    private bool isConsumingStamina = false;
 
     [Header("Propriedades de Nível")]
     public int level = 1;
@@ -24,28 +26,33 @@ public class PlayerStats : MonoBehaviour
     public int agility = 5;
 
     [Header("Status Calculados")]
-    public int maxHealth;
-    public int currentHealth;
-    public int maxStamina;
-    public int currentStamina;
-    public int attackPower;
-    public int defensePower;
+    public float maxHealth;
+    public float currentHealth;
+    public float maxStamina;
+    public float currentStamina;
+    public float attackPower;
+    public float defensePower;
 
     [Header("Multiplicadores Globais")]
     public float xpMultiplier = 1.0f;
-    public float staminaRegenRate = 10f;
-    public float healthRegenRate = 2f; // 🩸 HP/s fora de combate
+    public float staminaRegenRate = 10f;   // ⚡ Pode ser 0.1~10 e ainda regenera corretamente
+    public float healthRegenRate = 2f;     // ❤️ Regenera mesmo com valores baixos
     private float lastHitTime;
-    private float combatCooldown = 5f; // tempo sem levar dano pra começar a curar
+    private float combatCooldown = 5f;
+
+    [Header("Custos de Stamina")]
+    public int sprintCostPerSecond = 15;
+    public int attackCost = 20;
+    public int dodgeCost = 30;
 
     [Header("Referências de UI")]
     public Slider healthBar;
     public Slider staminaBar;
     public PlayerStatsUI statsUI;
-    public Image fadeOverlay; // imagem preta na tela para fade
+    public Image fadeOverlay;
 
     [Header("Respawn")]
-    public Transform respawnPoint; // ponto de respawn configurado
+    public Transform respawnPoint;
     private bool isDead = false;
 
     private void Start()
@@ -66,18 +73,101 @@ public class PlayerStats : MonoBehaviour
         RegenerateStamina();
         RegenerateHealth();
         UpdateBars();
+#if UNITY_EDITOR
+        // 🔁 Atualiza em tempo real se algo for alterado no Inspector
+        RecalculateStats(false);
+#endif
     }
 
     // 🧮 Recalcula status com base nos atributos
-    public void RecalculateStats()
+    public void RecalculateStats(bool refill = false)
     {
+        float oldMaxHealth = maxHealth;
+        float oldMaxStamina = maxStamina;
+
+        // Calcula novos valores
         maxHealth = 100 + vitality * 25;
         maxStamina = 50 + endurance * 10;
         attackPower = 10 + strength * 3 + (level * 2);
         defensePower = 5 + defense * 2;
 
-        if (currentHealth > maxHealth) currentHealth = maxHealth;
-        if (currentStamina > maxStamina) currentStamina = maxStamina;
+        if (!refill)
+        {
+            float healthPercent = oldMaxHealth > 0 ? currentHealth / oldMaxHealth : 1f;
+            float staminaPercent = oldMaxStamina > 0 ? currentStamina / oldMaxStamina : 1f;
+
+            currentHealth = maxHealth * healthPercent;
+            currentStamina = maxStamina * staminaPercent;
+        }
+        else
+        {
+            currentHealth = maxHealth;
+            currentStamina = maxStamina;
+        }
+
+        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+        currentStamina = Mathf.Clamp(currentStamina, 0, maxStamina);
+
+        UpdateBars();
+        if (statsUI) statsUI.UpdateUI(this);
+    }
+
+    // ⚡ --- SISTEMA DE STAMINA CENTRALIZADO ---
+    public enum StaminaAction { Sprint, Attack, Dodge }
+
+    public bool SpendStamina(StaminaAction action)
+    {
+        int cost = 0;
+
+        switch (action)
+        {
+            case StaminaAction.Sprint:
+                cost = Mathf.CeilToInt(sprintCostPerSecond * Time.deltaTime);
+                break;
+            case StaminaAction.Attack:
+                cost = attackCost;
+                break;
+            case StaminaAction.Dodge:
+                cost = dodgeCost;
+                break;
+        }
+
+        if (currentStamina < cost)
+        {
+            Debug.Log($"⚠️ Stamina insuficiente para {action}");
+            return false;
+        }
+
+        // 🧠 Multiplicador de fadiga — quanto menor a stamina, mais caro agir
+        float staminaPercent = currentStamina / maxStamina;
+        float fatigueMultiplier = Mathf.Lerp(1.5f, 1.0f, staminaPercent);
+        cost = Mathf.CeilToInt(cost * fatigueMultiplier);
+
+        currentStamina -= cost;
+        currentStamina = Mathf.Clamp(currentStamina, 0, maxStamina);
+
+        // pausa regeneração
+        staminaRegenDelayTimer = Time.time + 1.2f;
+        isConsumingStamina = true;
+
+        UpdateBars();
+        return true;
+    }
+
+    public void StopConsumingStamina() => isConsumingStamina = false;
+
+    // ⚡ Regenera stamina suavemente, sem truncar
+    private void RegenerateStamina()
+    {
+        if (isConsumingStamina || Time.time < staminaRegenDelayTimer)
+            return;
+
+        if (currentStamina < maxStamina)
+        {
+            float regenAmount = staminaRegenRate * Time.deltaTime;
+            currentStamina += regenAmount;
+            currentStamina = Mathf.Min(currentStamina, maxStamina);
+        }
     }
 
     // 🩸 Dano e cura
@@ -85,71 +175,94 @@ public class PlayerStats : MonoBehaviour
     {
         if (isDead) return;
 
-        int damage = Mathf.Max(amount - defensePower, 1);
+        float damage = Mathf.Max(amount - defensePower, 1);
         currentHealth -= damage;
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
         lastHitTime = Time.time;
 
         UpdateBars();
-
         if (currentHealth <= 0)
             Die();
     }
 
-    public void Heal(int amount)
+    public void Heal(float amount)
     {
         if (isDead) return;
 
         currentHealth += amount;
-        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+        currentHealth = Mathf.Min(currentHealth, maxHealth);
         UpdateBars();
     }
 
-    // 🩹 Regenera HP gradualmente fora de combate
+    // 🩹 Regenera HP fora de combate (contínuo)
     private void RegenerateHealth()
     {
-        if (Time.time - lastHitTime > combatCooldown && currentHealth < maxHealth && !isDead)
+        if (isDead) return;
+
+        if (Time.time - lastHitTime > combatCooldown && currentHealth < maxHealth)
         {
-            currentHealth += Mathf.RoundToInt(healthRegenRate * Time.deltaTime);
-            currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+            float regenAmount = healthRegenRate * Time.deltaTime;
+            currentHealth += regenAmount;
+            currentHealth = Mathf.Min(currentHealth, maxHealth);
         }
     }
 
-    // ⚡ Regenera stamina com o tempo
-    private void RegenerateStamina()
-    {
-        if (currentStamina < maxStamina)
-        {
-            currentStamina += Mathf.RoundToInt(staminaRegenRate * Time.deltaTime);
-            if (currentStamina > maxStamina)
-                currentStamina = maxStamina;
-        }
-    }
-
-    // 🧃 Atualiza as barras
     private void UpdateBars()
     {
         if (healthBar)
-            healthBar.value = (float)currentHealth / maxHealth;
-        if (staminaBar)
-            staminaBar.value = (float)currentStamina / maxStamina;
-    }
-
-    // ⚡ Gastar stamina
-    public bool UseStamina(int cost)
-    {
-        if (currentStamina < cost)
         {
-            Debug.Log("⚠️ Sem stamina suficiente!");
-            return false;
+            healthBar.maxValue = 1f;
+            healthBar.value = currentHealth / maxHealth;
         }
 
-        currentStamina -= cost;
-        UpdateBars();
-        return true;
+        if (staminaBar)
+        {
+            staminaBar.maxValue = 1f;
+            staminaBar.value = currentStamina / maxStamina;
+        }
     }
 
-    // 💀 Morte do jogador
+    // --- XP / LEVEL UP ---
+    public void AddXP(int amount)
+    {
+        currentXP += Mathf.RoundToInt(amount * xpMultiplier);
+        if (currentXP >= xpToNextLevel)
+            LevelUp();
+        if (statsUI) statsUI.UpdateUI(this);
+    }
+
+    private void LevelUp()
+    {
+        currentXP -= xpToNextLevel;
+        level++;
+        xpToNextLevel = Mathf.RoundToInt(100 * Mathf.Pow(1.35f, level));
+        statPoints += 3;
+
+        RecalculateStats(true);
+        if (statsUI) statsUI.UpdateUI(this);
+
+        transform.DOScale(1.1f, 0.25f).SetLoops(2, LoopType.Yoyo);
+        Debug.Log($"✨ Subiu para o nível {level}!");
+
+        if (levelUpText != null)
+        {
+            levelUpText.gameObject.SetActive(true);
+            levelUpText.text = $"Level {level}!";
+            levelUpText.color = Color.yellow;
+            levelUpText.alpha = 1;
+
+            levelUpText.transform.localScale = Vector3.one;
+            levelUpText.transform.DOScale(1.5f, 0.5f)
+                .SetLoops(2, LoopType.Yoyo)
+                .SetEase(Ease.OutBack);
+
+            levelUpText.DOFade(0, 1.5f)
+                .SetDelay(0.3f)
+                .OnComplete(() => levelUpText.gameObject.SetActive(false));
+        }
+    }
+
+    // 💀 Morte e Respawn
     private void Die()
     {
         if (isDead) return;
@@ -159,43 +272,33 @@ public class PlayerStats : MonoBehaviour
         StartCoroutine(DeathSequence());
     }
 
-    // ☠️ Sequência de morte e respawn
     private IEnumerator DeathSequence()
     {
-        // desativa controle do player
         InputManager.Instance.SwitchToUI();
 
-        // fade para preto
         if (fadeOverlay)
             fadeOverlay.DOFade(1f, 1.2f);
 
-        // tempo da “morte”
         yield return new WaitForSeconds(2.5f);
-
         Respawn();
 
-        // fade de volta
         if (fadeOverlay)
             fadeOverlay.DOFade(0f, 1f);
     }
 
-    // 🔁 Respawn
     private void Respawn()
     {
         Debug.Log("🔄 Player respawnado!");
-
         currentHealth = maxHealth;
         currentStamina = maxStamina;
         isDead = false;
+
         transform.position = respawnPoint ? respawnPoint.position : Vector3.zero;
-
         InputManager.Instance.SwitchToPlayer();
-
         StartCoroutine(TemporaryInvulnerability());
         UpdateBars();
     }
 
-    // ⛨ Invulnerabilidade breve ao reviver
     private IEnumerator TemporaryInvulnerability()
     {
         float duration = 2f;
@@ -206,57 +309,11 @@ public class PlayerStats : MonoBehaviour
         {
             foreach (Renderer r in rends)
                 r.enabled = !r.enabled;
-
             yield return new WaitForSeconds(blinkRate);
         }
 
         foreach (Renderer r in rends)
             r.enabled = true;
-    }
-
-    // 🏆 XP e Level Up
-    public void AddXP(int amount)
-    {
-        currentXP += Mathf.RoundToInt(amount * xpMultiplier);
-        if (currentXP >= xpToNextLevel)
-            LevelUp();
-
-        if (statsUI) statsUI.UpdateUI(this);
-    }
-
-    private void LevelUp()
-    {
-        currentXP -= xpToNextLevel;
-        level++;
-        xpToNextLevel = Mathf.RoundToInt(100 * Mathf.Pow(1.25f, level));
-        statPoints += 3;
-
-        // ⚙️ Atualiza atributos e UI
-        RecalculateStats();
-        if (statsUI) statsUI.UpdateUI(this);
-
-        // ✨ Animação de "Level Up"
-        transform.DOScale(1.1f, 0.25f).SetLoops(2, LoopType.Yoyo);
-        Debug.Log($"✨ Subiu para o nível {level}!");
-
-        // 🧾 Mostra texto de Level Up na tela
-        if (levelUpText != null)
-        {
-            levelUpText.gameObject.SetActive(true);
-            levelUpText.text = $"Level {level}!";
-            levelUpText.color = Color.yellow;
-            levelUpText.alpha = 1;
-
-            // Efeito com DOTween
-            levelUpText.transform.localScale = Vector3.one;
-            levelUpText.transform.DOScale(1.5f, 0.5f)
-                .SetLoops(2, LoopType.Yoyo)
-                .SetEase(Ease.OutBack);
-
-            levelUpText.DOFade(0, 1.5f)
-                .SetDelay(0.3f)
-                .OnComplete(() => levelUpText.gameObject.SetActive(false));
-        }
     }
 
     // ⚙️ Pontos de atributo
@@ -272,7 +329,7 @@ public class PlayerStats : MonoBehaviour
         if (statPoints <= 0) return;
         attribute++;
         statPoints--;
-        RecalculateStats();
+        RecalculateStats(false);
         if (statsUI) statsUI.UpdateUI(this);
     }
 }
