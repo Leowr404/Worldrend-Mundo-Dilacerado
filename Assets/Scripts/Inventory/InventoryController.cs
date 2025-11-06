@@ -11,7 +11,6 @@ public class InventoryController : MonoBehaviour
 
     private void Start()
     {
-        if (inventoryPanel != null)
             inventoryPanel.SetActive(false);
 
         Cursor.visible = false;
