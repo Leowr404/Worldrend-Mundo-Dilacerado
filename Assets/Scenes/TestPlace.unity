@@ -5191,7 +5191,7 @@ MonoBehaviour:
   jumpHeight: 1.6
   coyoteTime: 0.1
   jumpBuffer: 0.1
-  sprintStaminaCostPerSecond: 15
+  sprintStaminaCostPerSecond: 5
 --- !u!114 &1102621452
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5209,12 +5209,12 @@ MonoBehaviour:
   currentXP: 0
   xpToNextLevel: 100
   statPoints: 0
-  strength: 1
-  defense: 1
-  vitality: 1
-  endurance: 1
-  intelligence: 1
-  agility: 1
+  strength: 10
+  defense: 10
+  vitality: 10
+  endurance: 10
+  intelligence: 10
+  agility: 10
   maxHealth: 0
   currentHealth: 0
   maxStamina: 0
@@ -5222,11 +5222,11 @@ MonoBehaviour:
   attackPower: 0
   defensePower: 0
   xpMultiplier: 1
-  staminaRegenRate: 10
+  staminaRegenRate: 50
   healthRegenRate: 2
-  sprintCostPerSecond: 15
-  attackCost: 20
-  dodgeCost: 30
+  sprintCostPerSecond: 2
+  attackCost: 5
+  dodgeCost: 5
   healthBar: {fileID: 1263193531}
   staminaBar: {fileID: 929350}
   statsUI: {fileID: 1607477515}

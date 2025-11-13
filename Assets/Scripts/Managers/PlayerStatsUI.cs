@@ -1,10 +1,10 @@
-using TMPro;
+ï»¿using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class PlayerStatsUI : MonoBehaviour
 {
-    [Header("Referências de texto")]
+    [Header("ReferÃªncias de texto")]
     public TMP_Text levelText;
     public TMP_Text xpText;
     public TMP_Text statPointsText;
@@ -15,7 +15,7 @@ public class PlayerStatsUI : MonoBehaviour
     public TMP_Text intelligenceText;
     public TMP_Text agilityText;
 
-    [Header("Botões de distribuição")]
+    [Header("BotÃµes de distribuiÃ§Ã£o")]
     public Button addStrengthButton;
     public Button addDefenseButton;
     public Button addVitalityButton;
@@ -28,34 +28,55 @@ public class PlayerStatsUI : MonoBehaviour
     private void Start()
     {
         player = FindAnyObjectByType<PlayerStats>();
+        if (player == null)
+        {
+            Debug.LogError("âš ï¸ PlayerStats nÃ£o encontrado na cena!");
+            enabled = false;
+            return;
+        }
+
         ConnectButtons();
-        UpdateUI(player);
+        UpdateUI();
+    }
+
+    private void Update()
+    {
+        // ðŸ” Atualiza em tempo real (quando valores mudam)
+        if (player != null)
+            UpdateUI();
     }
 
     private void ConnectButtons()
     {
-        addStrengthButton.onClick.AddListener(() => player.AddStrength());
-        addDefenseButton.onClick.AddListener(() => player.AddDefense());
-        addVitalityButton.onClick.AddListener(() => player.AddVitality());
-        addEnduranceButton.onClick.AddListener(() => player.AddEndurance());
-        addIntelligenceButton.onClick.AddListener(() => player.AddIntelligence());
-        addAgilityButton.onClick.AddListener(() => player.AddAgility());
+        addStrengthButton.onClick.AddListener(() => OnAddStat(player.AddStrength));
+        addDefenseButton.onClick.AddListener(() => OnAddStat(player.AddDefense));
+        addVitalityButton.onClick.AddListener(() => OnAddStat(player.AddVitality));
+        addEnduranceButton.onClick.AddListener(() => OnAddStat(player.AddEndurance));
+        addIntelligenceButton.onClick.AddListener(() => OnAddStat(player.AddIntelligence));
+        addAgilityButton.onClick.AddListener(() => OnAddStat(player.AddAgility));
     }
 
-    public void UpdateUI(PlayerStats stats)
+    private void OnAddStat(System.Action addAction)
     {
-        levelText.text = $"Nível: {stats.level}";
-        xpText.text = $"XP: {stats.currentXP}/{stats.xpToNextLevel}";
-        statPointsText.text = $"Pontos: {stats.statPoints}";
+        addAction.Invoke();
+        UpdateUI();
+    }
 
-        strengthText.text = $"Força: {stats.strength}";
-        defenseText.text = $"Defesa: {stats.defense}";
-        vitalityText.text = $"Vitalidade: {stats.vitality}";
-        enduranceText.text = $"Vigor: {stats.endurance}";
-        intelligenceText.text = $"Inteligência: {stats.intelligence}";
-        agilityText.text = $"Agilidade: {stats.agility}";
+    public void UpdateUI()
+    {
+        levelText.text = $"NÃ­vel: {player.level}";
+        xpText.text = $"XP: {player.currentXP}/{player.xpToNextLevel}";
+        statPointsText.text = $"Pontos: {player.statPoints}";
 
-        bool hasPoints = stats.statPoints > 0;
+        strengthText.text = $"ForÃ§a: {player.strength}";
+        defenseText.text = $"Defesa: {player.defense}";
+        vitalityText.text = $"Vitalidade: {player.vitality}";
+        enduranceText.text = $"Vigor: {player.endurance}";
+        intelligenceText.text = $"InteligÃªncia: {player.intelligence}";
+        agilityText.text = $"Agilidade: {player.agility}";
+
+        bool hasPoints = player.statPoints > 0;
+
         addStrengthButton.interactable = hasPoints;
         addDefenseButton.interactable = hasPoints;
         addVitalityButton.interactable = hasPoints;

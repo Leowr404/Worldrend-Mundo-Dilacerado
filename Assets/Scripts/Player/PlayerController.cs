@@ -21,9 +21,6 @@ public class PlayerController : MonoBehaviour
     public float coyoteTime = 0.1f;
     public float jumpBuffer = 0.1f;
 
-    [Header("Stamina Config")]
-    public int sprintStaminaCostPerSecond = 15; // quanto gasta por segundo
-
     private CharacterController controller;
     private PlayerStats stats;
     private float currentSpeed, verticalVel, rotVel;
