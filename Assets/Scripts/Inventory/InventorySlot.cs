@@ -1,48 +1,38 @@
 using UnityEngine;
-using UnityEngine.UI;
-using TMPro; // use isso se estiver usando TextMeshPro
+using UnityEngine.EventSystems;
+using TMPro;
 
-public class InventorySlot : MonoBehaviour
+public class InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-    [Header("Partes visuais do Slot")]
-    public Image itemIcon;        // mostra a imagem do item
-    public TMP_Text itemNameText; // mostra o nome do item
-    public TMP_Text itemCountText;// mostra a quantidade
+    [Header("UI")]
+    public TMP_Text itemCountText;
+    public UnityEngine.UI.Image itemIcon;
 
-    [Header("Dados do item")]
-    public Objects currentItem;   // referência ao ScriptableObject do item
-    public int itemCount;         // quantidade atual
-    public bool isStackable;      // se o item pode empilhar
+    [Header("Item")]
+    public Objects currentItem;
+    public int itemCount;
 
-    // Esse método é usado pra preencher o slot
-    public void SetItem(Objects newItem, int count = 1, bool stackable = false)
+    public void SetItem(Objects item, int count, bool stackable)
     {
-        currentItem = newItem;
+        currentItem = item;
         itemCount = count;
-        isStackable = stackable;
 
-        // Atualiza as partes visuais
-        itemIcon.sprite = newItem.itemSprite;
+        itemIcon.sprite = item.itemSprite;
         itemIcon.enabled = true;
 
-        itemNameText.text = newItem.itemName;
-
-        if (stackable && count > 1)
-            itemCountText.text = count.ToString();
-        else
-            itemCountText.text = "";
+        itemCountText.text = stackable ? count.ToString() : "";
     }
 
-    // Limpa o slot quando for remover o item
-    public void ClearSlot()
+    public void OnPointerEnter(PointerEventData eventData)
     {
-        currentItem = null;
-        itemCount = 0;
-        isStackable = false;
+        if (currentItem != null)
+        {
+            TooltipUI.Instance.Show(currentItem.descricaoItem);
+        }
+    }
 
-        itemIcon.sprite = null;
-        itemIcon.enabled = false;
-        itemNameText.text = "";
-        itemCountText.text = "";
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        TooltipUI.Instance.Hide();
     }
 }

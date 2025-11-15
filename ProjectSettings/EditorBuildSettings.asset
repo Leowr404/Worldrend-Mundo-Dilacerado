@@ -8,9 +8,12 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/SampleScene.unity
     guid: 99c9720ab356a0642a771bea13969a05
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/MainMenu.unity
     guid: 283ab7a72cdf83843b7e838532a53229
+  - enabled: 1
+    path: Assets/Mundo Dilacerado.unity
+    guid: eebb679bea77d86458962cd3893103b2
   - enabled: 1
     path: Assets/Scenes/TestPlace.unity
     guid: 5223edf1594c5394894928029435b743

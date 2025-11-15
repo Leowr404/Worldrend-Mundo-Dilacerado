@@ -1,57 +1,50 @@
 using UnityEngine;
-using System.Collections;
 
 public class InventoryController : MonoBehaviour
 {
     [SerializeField] private GameObject inventoryPanel;
 
-    private bool isInventoryOpen = false;
-    private float lastToggleTime = 0f;
-    private float toggleCooldown = 0.25f;
+    private InputSystem_Actions input;
+    private bool isInventoryOpen;
 
-    private void Start()
+    private void Awake()
     {
-            inventoryPanel.SetActive(false);
-
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
+        input = InputManager.Instance.InputActions;
     }
 
-    private void Update()
+    private void OnEnable()
     {
-        if (InputManager.Instance == null)
-            return;
+        // PLAYER: abre inventário
+        input.Player.Inventory.performed += OnInventoryToggle;
 
-        bool tabPressed =
-            InputManager.Instance.InputActions.Player.Inventory.triggered ||
-            InputManager.Instance.InputActions.UI.Inventory.triggered;
-
-        if (tabPressed && Time.time - lastToggleTime > toggleCooldown)
-        {
-            StartCoroutine(ToggleInventoryDelayed()); // 🔹 usa Coroutine pra garantir troca suave
-            lastToggleTime = Time.time;
-        }
+        // UI: fecha inventário
+        input.UI.CloseInventory.performed += OnCloseInventory;
     }
 
-    private IEnumerator ToggleInventoryDelayed()
+    private void OnDisable()
     {
-        // 🔸 Espera 1 frame pra evitar conflito entre mapas de input
-        yield return null;
+        input.Player.Inventory.performed -= OnInventoryToggle;
+        input.UI.CloseInventory.performed -= OnCloseInventory;
+    }
+
+    private void OnInventoryToggle(UnityEngine.InputSystem.InputAction.CallbackContext ctx)
+    {
         ToggleInventory();
+    }
+
+    private void OnCloseInventory(UnityEngine.InputSystem.InputAction.CallbackContext ctx)
+    {
+        if (isInventoryOpen)
+            ToggleInventory();
     }
 
     private void ToggleInventory()
     {
         isInventoryOpen = !isInventoryOpen;
-
-        if (inventoryPanel != null)
-            inventoryPanel.SetActive(isInventoryOpen);
-
-        Debug.Log(isInventoryOpen ? "Inventário Aberto" : "Inventário Fechado");
+        inventoryPanel.SetActive(isInventoryOpen);
 
         if (isInventoryOpen)
         {
-            // 🔹 troca de mapa levemente atrasada pra não perder o input
             InputManager.Instance.SwitchToUI();
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
@@ -64,20 +57,10 @@ public class InventoryController : MonoBehaviour
         }
     }
 
+    // Botão UI chama isso
     public void InventoryClose()
     {
-        if (!isInventoryOpen)
-            return;
-
-        isInventoryOpen = false;
-
-        if (inventoryPanel != null)
-            inventoryPanel.SetActive(false);
-
-        Debug.Log("Inventário Fechado via botão UI");
-
-        InputManager.Instance.SwitchToPlayer();
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
+        if (!isInventoryOpen) return;
+        ToggleInventory();
     }
 }

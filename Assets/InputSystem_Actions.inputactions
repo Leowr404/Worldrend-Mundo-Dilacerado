@@ -671,9 +671,9 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Inventory",
+                    "name": "CloseInventory",
                     "type": "Button",
-                    "id": "e2f97e33-956d-4fcb-b29a-e627324eabec",
+                    "id": "0f2ea4c7-91e0-482f-ad7a-ac117b1276c5",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -1112,12 +1112,12 @@
                 },
                 {
                     "name": "",
-                    "id": "e1b1faa2-f287-400d-9a65-e42e90b2ef07",
-                    "path": "<Keyboard>/tab",
-                    "interactions": "Press",
+                    "id": "0fe399ce-438d-4050-a501-7804002210a1",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
-                    "action": "Inventory",
+                    "action": "CloseInventory",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

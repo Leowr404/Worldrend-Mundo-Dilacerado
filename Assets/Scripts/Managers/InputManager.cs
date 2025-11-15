@@ -12,7 +12,10 @@ public class InputManager : MonoBehaviour
     public bool Pause { get; private set; }
     public bool Interact { get; private set; }
     public bool AdvanceDialogue { get; private set; }
-   public bool inventoryOpen { get; private set; }
+   
+   public bool InventoryPressed { get; private set; }
+
+   public bool CloseInventoryPressed { get; private set; }
 
     private void Awake()
     {
@@ -55,12 +58,16 @@ public class InputManager : MonoBehaviour
         Sprint = inputActions.Player.Sprint.IsPressed();
         LockOn = inputActions.Player.LockOn.WasPressedThisFrame();
         Pause = inputActions.Player.Pause.WasPressedThisFrame();
-        inventoryOpen = inputActions.Player.Inventory.WasPressedThisFrame();
+       
+        //Invetario Player
+        InventoryPressed = inputActions.Player.Inventory.WasPressedThisFrame();
+    
+
         //Debug.Log("Move: " + Move);
         Interact = inputActions.Player.Interact.WasPressedThisFrame();
-        Debug.Log("Pressionado" + Interact);
         //========UI BUTTONS========//
+         Debug.Log("Pressionado" + Interact);
         AdvanceDialogue = inputActions.UI.AdvanceDialogue.WasPressedThisFrame();
-        inventoryOpen = inputActions.UI.Inventory.WasPressedThisFrame();
+      
     }
 }
