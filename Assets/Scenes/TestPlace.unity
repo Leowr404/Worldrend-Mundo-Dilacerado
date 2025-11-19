@@ -562,7 +562,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: -404137896, guid: ab1d83956cff86641b18496998d4d598, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -4068,7 +4068,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: -881075013, guid: db2223a7963f45949b075af21c31527f, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -5191,7 +5191,6 @@ MonoBehaviour:
   jumpHeight: 1.6
   coyoteTime: 0.1
   jumpBuffer: 0.1
-  sprintStaminaCostPerSecond: 5
 --- !u!114 &1102621452
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5204,11 +5203,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08e15a3fdf71d4042861baaf0a55b6f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerStats
-  levelUpText: {fileID: 168713935}
   level: 1
   currentXP: 0
   xpToNextLevel: 100
   statPoints: 0
+  xpMultiplier: 1
   strength: 10
   defense: 10
   vitality: 10
@@ -5221,17 +5220,19 @@ MonoBehaviour:
   currentStamina: 0
   attackPower: 0
   defensePower: 0
-  xpMultiplier: 1
-  staminaRegenRate: 50
   healthRegenRate: 2
+  staminaRegenRate: 50
+  regenDelay: 1.2
+  combatCooldown: 5
   sprintCostPerSecond: 2
   attackCost: 5
   dodgeCost: 5
+  jumpCost: 10
   healthBar: {fileID: 1263193531}
   staminaBar: {fileID: 929350}
-  statsUI: {fileID: 1607477515}
-  fadeOverlay: {fileID: 0}
-  respawnPoint: {fileID: 0}
+  levelText: {fileID: 0}
+  xpText: {fileID: 0}
+  levelUpText: {fileID: 168713935}
 --- !u!1 &1110084917
 GameObject:
   m_ObjectHideFlags: 0
