@@ -1,46 +1,58 @@
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
-using UnityEngine.InputSystem; // <- IMPORTANTE
 
 public class TooltipUI : MonoBehaviour
 {
     public static TooltipUI Instance;
 
     [Header("Referências")]
-    public GameObject tooltipPanel;
-    public TMP_Text tooltipText;
+    public GameObject tooltipObject;   // painel do tooltip
+    public TMP_Text titleText;         // título do item
+    public TMP_Text descriptionText;   // descrição do item
+
+    private RectTransform rect;
 
     private void Awake()
     {
         Instance = this;
+        rect = tooltipObject.GetComponent<RectTransform>();
     }
 
     private void Start()
     {
-        tooltipPanel.SetActive(false);
+        tooltipObject.SetActive(false);
     }
 
-    private void Update()
+    public void ShowTooltip(string itemName, string description, Vector3 nearSlotPosition)
     {
-        if (tooltipPanel.activeSelf)
+        if (tooltipObject == null)
         {
-            // Mouse do novo Input System
-            Vector2 pos = Mouse.current.position.ReadValue();
-
-            Vector2 offset = new Vector2(15f, -15f);
-
-            tooltipPanel.transform.position = pos + offset;
+            Debug.LogError("TooltipObject não está atribuído no TooltipUI!");
+            return;
         }
+
+        // Define o conteúdo
+        titleText.text = itemName;
+        descriptionText.text = description;
+
+        // Posiciona o tooltip ao lado do slot
+        Vector3 offset = new Vector3(160f, 0f, 0f); // lado direito
+        Vector3 finalPos = nearSlotPosition + offset;
+
+        tooltipObject.transform.position = finalPos;
+
+        tooltipObject.SetActive(true);
     }
 
-    public void Show(string text)
+    public void HideTooltip()
     {
-        tooltipText.text = text;
-        tooltipPanel.SetActive(true);
-    }
+        if (tooltipObject == null)
+        {
+            Debug.LogError("TooltipObject não atribuído, não foi possível esconder.");
+            return;
+        }
 
-    public void Hide()
-    {
-        tooltipPanel.SetActive(false);
+        tooltipObject.SetActive(false);
     }
 }

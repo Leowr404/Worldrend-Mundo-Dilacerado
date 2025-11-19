@@ -1,48 +1,69 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
-using TMPro;
 using UnityEngine.UI;
+using TMPro;
 
-public class InventorySlot : MonoBehaviour,
-    IPointerEnterHandler, IPointerExitHandler,
-    IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler
+public class InventorySlot :
+    MonoBehaviour,
+    IPointerEnterHandler,
+    IPointerExitHandler,
+    IPointerDownHandler,
+    IBeginDragHandler,
+    IDragHandler,
+    IEndDragHandler,
+    IDropHandler
 {
-    [Header("Referências de UI")]
+    [Header("UI")]
     public Image itemIcon;
-    public TMP_Text itemNameText;
     public TMP_Text itemCountText;
 
-    [Header("Dados do Slot")]
+    [Header("Item")]
     public Objects currentItem;
     public int itemCount;
     public bool isStackable;
 
-    // máximo empilhável (configurável)
-    public static int maxStack = 5;
+    // ============================
+    // HOVER DELAY
+    // ============================
 
-    // ---------------------------
-    // Set / Clear
-    // ---------------------------
-    public void SetItem(Objects newItem, int count = 1, bool stackable = false)
+    private float hoverDelay = 2f;          // tempo para exibir tooltip
+    private float hoverTimer = 0f;          // cronômetro
+    private bool isHovering = false;        // se o mouse está em cima
+    private bool tooltipShown = false;      // previne mostrar 2x
+
+    private void Update()
+    {
+        if (isHovering && !tooltipShown && currentItem != null)
+        {
+            hoverTimer += Time.deltaTime;
+
+            if (hoverTimer >= hoverDelay)
+            {
+                tooltipShown = true;
+
+                TooltipUI.Instance.ShowTooltip(
+                    currentItem.itemName,
+                    currentItem.descricaoItem,
+                    transform.position
+                );
+            }
+        }
+    }
+
+    // ============================
+    // SET / CLEAR
+    // ============================
+
+    public void SetItem(Objects newItem, int count, bool stackable)
     {
         currentItem = newItem;
         itemCount = count;
         isStackable = stackable;
 
-        if (newItem != null)
-        {
-            itemIcon.sprite = newItem.itemSprite;
-            itemIcon.enabled = true;
-            itemNameText.text = newItem.itemName;
-        }
-        else
-        {
-            itemIcon.sprite = null;
-            itemIcon.enabled = false;
-            itemNameText.text = "";
-        }
+        itemIcon.sprite = newItem.itemSprite;
+        itemIcon.enabled = true;
 
-        itemCountText.text = (isStackable && itemCount > 1) ? itemCount.ToString() : "";
+        itemCountText.text = (stackable && count > 1) ? count.ToString() : "";
     }
 
     public void ClearSlot()
@@ -53,121 +74,79 @@ public class InventorySlot : MonoBehaviour,
 
         itemIcon.sprite = null;
         itemIcon.enabled = false;
-        itemNameText.text = "";
         itemCountText.text = "";
     }
 
-    // ---------------------------
-    // Tooltip (já existente)
-    // ---------------------------
+    // ============================
+    // TOOLTIP
+    // ============================
+
     public void OnPointerEnter(PointerEventData eventData)
     {
         if (currentItem == null) return;
 
-        string text = $"{currentItem.itemName}\n\n{currentItem.descricaoItem}";
-        if (isStackable)
-            text += $"\n\nQuantidade: {itemCount}";
-
-        TooltipUI.Instance.Show(text);
+        isHovering = true;
+        hoverTimer = 0f;
+        tooltipShown = false;
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        TooltipUI.Instance.Hide();
+        isHovering = false;
+        hoverTimer = 0f;
+        tooltipShown = false;
+
+        TooltipUI.Instance.HideTooltip();
     }
 
-    // ---------------------------
-    // Drag & Drop
-    // ---------------------------
+    // ============================
+    // DRAG & DROP
+    // ============================
+
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        if (currentItem == null) return;
+    }
+
     public void OnBeginDrag(PointerEventData eventData)
     {
-        // só inicia se houver item
         if (currentItem == null) return;
 
-        // começa visual de arrasto
+        // cancela tooltip durante drag
+        isHovering = false;
+        hoverTimer = 0f;
+        tooltipShown = false;
+        TooltipUI.Instance.HideTooltip();
+
         DragItem.Instance.BeginDrag(itemIcon.sprite, this);
     }
 
     public void OnDrag(PointerEventData eventData)
     {
-        // nada extra aqui — o DragItem já atualiza a posição no Update()
+        // DragItem já cuida do movimento
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        // se não houve drop válido, apenas termina o arrasto sem alterar os slots
         DragItem.Instance.EndDrag();
     }
 
     public void OnDrop(PointerEventData eventData)
     {
-        // quando outro slot solta em cima deste slot
+        if (DragItem.Instance.sourceSlot == null) return;
+
         InventorySlot from = DragItem.Instance.sourceSlot;
-        InventorySlot to = this;
+        if (from == this) return;
 
-        if (from == null) return; // nada para fazer
+        Objects tempItem = currentItem;
+        int tempCount = itemCount;
+        bool tempStack = isStackable;
 
-        // mesma referência: soltar no mesmo slot -> nada
-        if (from == to)
-        {
-            DragItem.Instance.EndDrag();
-            return;
-        }
+        SetItem(from.currentItem, from.itemCount, from.isStackable);
 
-        // Caso 1: to está vazio -> move tudo do from para to
-        if (to.currentItem == null)
-        {
-            to.SetItem(from.currentItem, from.itemCount, from.isStackable);
+        if (tempItem != null)
+            from.SetItem(tempItem, tempCount, tempStack);
+        else
             from.ClearSlot();
-            DragItem.Instance.EndDrag();
-            return;
-        }
-
-        // Caso 2: mesmo item e empilhável -> tenta empilhar
-        if (to.currentItem == from.currentItem && from.isStackable && to.isStackable)
-        {
-            int space = maxStack - to.itemCount;
-            if (space <= 0)
-            {
-                // sem espaço, faz swap
-                SwapSlots(from, to);
-            }
-            else if (from.itemCount <= space)
-            {
-                // cabe tudo
-                to.itemCount += from.itemCount;
-                to.itemCountText.text = to.itemCount.ToString();
-                from.ClearSlot();
-            }
-            else
-            {
-                // cabe parcialmente
-                to.itemCount = maxStack;
-                to.itemCountText.text = to.itemCount.ToString();
-                from.itemCount -= space;
-                from.itemCountText.text = from.itemCount.ToString();
-            }
-
-            DragItem.Instance.EndDrag();
-            return;
-        }
-
-        // Caso 3: itens diferentes -> swap
-        SwapSlots(from, to);
-        DragItem.Instance.EndDrag();
-    }
-
-    private void SwapSlots(InventorySlot a, InventorySlot b)
-    {
-        // salva A
-        Objects aItem = a.currentItem;
-        int aCount = a.itemCount;
-        bool aStack = a.isStackable;
-
-        // move B para A
-        a.SetItem(b.currentItem, b.itemCount, b.isStackable);
-
-        // move A salvo para B
-        b.SetItem(aItem, aCount, aStack);
     }
 }
