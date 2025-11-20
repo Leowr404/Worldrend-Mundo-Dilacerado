@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public enum QuestObjectiveType
 {
@@ -18,5 +18,13 @@ public class QuestObjective
     public bool IsComplete()
     {
         return currentAmount >= requiredAmount;
+    }
+
+    public void OnAreaReached(string areaID)
+    {
+        if (type == QuestObjectiveType.ReachLocation && areaID == targetID)
+        {
+            currentAmount++;
+        }
     }
 }

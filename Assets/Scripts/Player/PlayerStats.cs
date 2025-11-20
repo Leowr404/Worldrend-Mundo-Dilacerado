@@ -30,12 +30,17 @@ public class PlayerStats : MonoBehaviour
     public int defensePower;
 
     [Header("Regeneração")]
-    public float healthRegenRate = 2f;
-    public float staminaRegenRate = 10f;
+    [Tooltip("Quanto de HP regenera a cada intervalo")]
+    public int healthRegenAmount = 10;
+    [Tooltip("Intervalo entre as curas (em segundos)")]
+    public float healthRegenInterval = 5f;
+    [Tooltip("Velocidade de regeneração da stamina por segundo")]
+    public float staminaRegenRate = 15f;
     public float regenDelay = 1.2f;
-    private float staminaRegenDelayTimer = 0f;
+    private float nextHealthRegenTime = 0f;
+    private float staminaRegenDelayTimer;
     private float lastHitTime;
-    public float combatCooldown = 5f;
+    public float combatCooldown = 4f;
 
     [Header("Custos Fixos de Stamina")]
     public int sprintCostPerSecond = 15;
@@ -48,8 +53,6 @@ public class PlayerStats : MonoBehaviour
     public Slider staminaBar;
     public TextMeshProUGUI levelText;
     public TextMeshProUGUI xpText;
-
-    [Header("UI de Level Up")]
     public TextMeshProUGUI levelUpText;
 
     private bool isConsumingStamina = false;
@@ -67,7 +70,6 @@ public class PlayerStats : MonoBehaviour
         UpdateUI();
 
 #if UNITY_EDITOR
-        // Atualiza em tempo real se alterar valores no Inspector
         RecalculateStats(false);
 #endif
     }
@@ -129,24 +131,29 @@ public class PlayerStats : MonoBehaviour
 
     public void StopConsumingStamina() => isConsumingStamina = false;
 
-    // ♻️ Regeneração de Stamina
+    // ⚡ Regeneração contínua de stamina
     private void RegenerateStamina()
     {
         if (isConsumingStamina || Time.time < staminaRegenDelayTimer) return;
+
         if (currentStamina < maxStamina)
         {
-            currentStamina += Mathf.CeilToInt(staminaRegenRate * Time.deltaTime);
+            currentStamina += Mathf.RoundToInt(staminaRegenRate * Time.deltaTime);
             currentStamina = Mathf.Clamp(currentStamina, 0, maxStamina);
         }
     }
 
-    // ❤️ Regeneração de Vida
+    // ❤️ Regeneração de vida a cada X segundos
     private void RegenerateHealth()
     {
         if (Time.time - lastHitTime > combatCooldown && currentHealth < maxHealth)
         {
-            currentHealth += Mathf.CeilToInt(healthRegenRate * Time.deltaTime);
-            currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+            if (Time.time >= nextHealthRegenTime)
+            {
+                currentHealth += healthRegenAmount;
+                currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+                nextHealthRegenTime = Time.time + healthRegenInterval;
+            }
         }
     }
 
@@ -206,21 +213,13 @@ public class PlayerStats : MonoBehaviour
     private void UpdateUI()
     {
         if (healthBar)
-        {
             healthBar.value = (float)currentHealth / maxHealth;
-        }
         if (staminaBar)
-        {
             staminaBar.value = (float)currentStamina / maxStamina;
-        }
         if (levelText)
-        {
             levelText.text = $"LVL {level}";
-        }
         if (xpText)
-        {
             xpText.text = $"{currentXP} / {xpToNextLevel}";
-        }
     }
 
     // ➕ Distribuição de pontos

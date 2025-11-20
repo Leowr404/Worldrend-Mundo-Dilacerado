@@ -6,10 +6,12 @@ public class CollectibleItem : MonoBehaviour
     public string questName;  // Nome exato da quest no ScriptableObject
     public int amount = 1;    // Quanto esse item adiciona no progresso
     public bool destroyOnCollect = true; // se o item some ao coletar
+    [Header("Configuração do item")]
+    public string itemName = "Item Sem Nome";
 
-    private void OnTriggerEnter(Collider other)
+    private void OnCollisionEnter(Collision collision)
     {
-        if (!other.CompareTag("Player")) return;
+        if (!collision.collider.CompareTag("Player")) return;
 
         // Procura a quest correspondente
         Quest quest = QuestManager.Instance.activeQuests.Find(q => q.questName == questName);
@@ -28,6 +30,9 @@ public class CollectibleItem : MonoBehaviour
 
             // some com o item se configurado
             if (destroyOnCollect) Destroy(gameObject);
+            {
+             NotificationUI.Show(itemName + " coletado!");
+            }
         }
     }
 }

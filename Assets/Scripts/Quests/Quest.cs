@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 [CreateAssetMenu(fileName = "NewQuest", menuName = "RPG/Quest")]
 public class Quest : ScriptableObject
@@ -23,5 +23,12 @@ public class Quest : ScriptableObject
             collectedItems = requiredItems;
             isCompleted = true;
         }
+    }
+    public void GiveRewards(PlayerStats player)
+    {
+        Debug.Log($"🎁 Recompensa entregue pela quest: {questName}");
+        player.AddXP(1000);
+
+        
     }
 }

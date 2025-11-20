@@ -37,12 +37,14 @@ public class InputManager : MonoBehaviour
     {
         inputActions.UI.Disable();
         inputActions.Player.Enable();
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
     public void SwitchToUI()
     {
         inputActions.Player.Disable();
         inputActions.UI.Enable();
+        Cursor.lockState = CursorLockMode.None;
     }
 
     private void Update()

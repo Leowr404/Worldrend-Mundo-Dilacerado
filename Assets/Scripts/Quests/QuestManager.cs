@@ -33,5 +33,10 @@ public class QuestManager : MonoBehaviour
         if (quest == null) return;
         quest.isCompleted = true;
         Debug.Log($"✅ Quest concluída: {quest.questName}");
+        PlayerStats player = FindAnyObjectByType<PlayerStats>();
+        if (player != null)
+            quest.GiveRewards(player);
     }
+
+
 }

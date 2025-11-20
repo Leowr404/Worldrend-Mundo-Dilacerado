@@ -68,12 +68,15 @@ public class UiManager : MonoBehaviour
             EnqueueLines(data.lines);
         }
 
+        // ⚠ Se não carregou nenhuma fala, usa as falas básicas
+        if (sentences.Count == 0)
+            EnqueueLines(data.lines);
+
         DisplayNextSentence();
     }
 
     private void EnqueueLines(List<string> lines)
     {
-        sentences.Clear();
         foreach (string line in lines)
             sentences.Enqueue(line);
     }
