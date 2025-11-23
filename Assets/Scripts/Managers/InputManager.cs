@@ -11,6 +11,9 @@ public class InputManager : MonoBehaviour
     public bool Pause { get; private set; }
     public bool Interact { get; private set; }
     public bool AdvanceDialogue { get; private set; }
+    public bool OpenInventory { get; private set; }
+    public bool CloseInventory { get; private set; }
+
 
 
     private void Awake()
@@ -57,9 +60,11 @@ public class InputManager : MonoBehaviour
         LockOn = inputActions.Player.LockOn.WasPressedThisFrame();
         Pause = inputActions.Player.Pause.WasPressedThisFrame();
         //Debug.Log("Move: " + Move);
+        OpenInventory = inputActions.Player.OpenInventory.WasPressedThisFrame();
         Interact = inputActions.Player.Interact.WasPressedThisFrame();
         Debug.Log("Pressionado" + Interact);
         //========UI BUTTONS========//
         AdvanceDialogue = inputActions.UI.AdvanceDialogue.WasPressedThisFrame();
+        CloseInventory = inputActions.UI.CloseInventory.WasPressedThisFrame();
     }
 }
