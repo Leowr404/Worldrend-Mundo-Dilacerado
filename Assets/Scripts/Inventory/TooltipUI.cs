@@ -1,58 +1,48 @@
 using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
+using UnityEngine.InputSystem;
 
 public class TooltipUI : MonoBehaviour
 {
     public static TooltipUI Instance;
 
     [Header("Referências")]
-    public GameObject tooltipObject;   // painel do tooltip
-    public TMP_Text titleText;         // título do item
-    public TMP_Text descriptionText;   // descrição do item
+    public GameObject tooltipObject;
+    public RectTransform tooltipRect;
+    public TMP_Text titleText;
+    public TMP_Text descriptionText;
 
-    private RectTransform rect;
+    [Header("Offset (px)")]
+    public Vector2 offset = new Vector2(30f, 0f); // Tooltip 30px à direita do mouse
 
     private void Awake()
     {
         Instance = this;
-        rect = tooltipObject.GetComponent<RectTransform>();
+
+        if (tooltipObject != null)
+            tooltipObject.SetActive(false);
     }
 
-    private void Start()
+    private void Update()
     {
-        tooltipObject.SetActive(false);
-    }
-
-    public void ShowTooltip(string itemName, string description, Vector3 nearSlotPosition)
-    {
-        if (tooltipObject == null)
+        if (tooltipObject != null && tooltipObject.activeSelf)
         {
-            Debug.LogError("TooltipObject não está atribuído no TooltipUI!");
-            return;
+            Vector2 mousePos = Mouse.current.position.ReadValue();
+            tooltipRect.position = mousePos + offset;
         }
+    }
 
-        // Define o conteúdo
-        titleText.text = itemName;
-        descriptionText.text = description;
-
-        // Posiciona o tooltip ao lado do slot
-        Vector3 offset = new Vector3(160f, 0f, 0f); // lado direito
-        Vector3 finalPos = nearSlotPosition + offset;
-
-        tooltipObject.transform.position = finalPos;
+    public void ShowTooltip(string title, string description)
+    {
+        if (titleText != null) titleText.text = title;
+        if (descriptionText != null) descriptionText.text = description;
 
         tooltipObject.SetActive(true);
     }
 
     public void HideTooltip()
     {
-        if (tooltipObject == null)
-        {
-            Debug.LogError("TooltipObject não atribuído, não foi possível esconder.");
-            return;
-        }
-
-        tooltipObject.SetActive(false);
+        if (tooltipObject != null)
+            tooltipObject.SetActive(false);
     }
 }

@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class InventoryController : MonoBehaviour
 {
+    [Header("Painéis")]
     [SerializeField] private GameObject inventoryPanel;
 
     private InputSystem_Actions input;
@@ -14,10 +15,7 @@ public class InventoryController : MonoBehaviour
 
     private void OnEnable()
     {
-        // PLAYER: abre inventário
         input.Player.Inventory.performed += OnInventoryToggle;
-
-        // UI: fecha inventário
         input.UI.CloseInventory.performed += OnCloseInventory;
     }
 
@@ -38,11 +36,17 @@ public class InventoryController : MonoBehaviour
             ToggleInventory();
     }
 
-    private void ToggleInventory()
+    // ================================
+    // INVENTORY TOGGLE FINAL
+    // ================================
+    public void ToggleInventory()
     {
         isInventoryOpen = !isInventoryOpen;
+
+        // habilita/desabilita inventário
         inventoryPanel.SetActive(isInventoryOpen);
 
+        // controla cursor e input
         if (isInventoryOpen)
         {
             InputManager.Instance.SwitchToUI();
@@ -57,7 +61,7 @@ public class InventoryController : MonoBehaviour
         }
     }
 
-    // Botão UI chama isso
+    // botão UI chama isso
     public void InventoryClose()
     {
         if (!isInventoryOpen) return;

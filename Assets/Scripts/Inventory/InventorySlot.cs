@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.InputSystem;
 
 public class InventorySlot :
     MonoBehaviour,
@@ -22,30 +23,46 @@ public class InventorySlot :
     public int itemCount;
     public bool isStackable;
 
-    // ============================
-    // HOVER DELAY
-    // ============================
+    [Header("Tooltip")]
+    public float hoverDelay = 1f;
 
-    private float hoverDelay = 2f;          // tempo para exibir tooltip
-    private float hoverTimer = 0f;          // cronômetro
-    private bool isHovering = false;        // se o mouse está em cima
-    private bool tooltipShown = false;      // previne mostrar 2x
+    private bool pointerOver = false;
+    private float hoverStart;
+    private bool tooltipVisible = false;
+    private bool dragging = false;
 
     private void Update()
     {
-        if (isHovering && !tooltipShown && currentItem != null)
+        // ===== TOOLTIP COM DELAY =====
+        if (pointerOver && !tooltipVisible && !dragging && currentItem != null)
         {
-            hoverTimer += Time.deltaTime;
-
-            if (hoverTimer >= hoverDelay)
+            if (Time.unscaledTime - hoverStart >= hoverDelay)
             {
-                tooltipShown = true;
-
                 TooltipUI.Instance.ShowTooltip(
                     currentItem.itemName,
-                    currentItem.descricaoItem,
-                    transform.position
+                    currentItem.descricaoItem
                 );
+
+                tooltipVisible = true;
+            }
+        }
+
+        // ===== CLIQUE COM BOTÃO DIREITO PARA ABRIR O MENU =====
+        if (pointerOver && currentItem != null)
+        {
+            if (Mouse.current.rightButton.wasPressedThisFrame)
+            {
+                Vector2 mousePos = Mouse.current.position.ReadValue();
+                Vector3 pos3D = new Vector3(mousePos.x, mousePos.y, 0f);
+
+                ItemMenuUI.Instance.OpenMenu(this, pos3D);
+
+                // Fecha tooltip quando abrir menu
+                if (tooltipVisible)
+                {
+                    TooltipUI.Instance.HideTooltip();
+                    tooltipVisible = false;
+                }
             }
         }
     }
@@ -78,25 +95,27 @@ public class InventorySlot :
     }
 
     // ============================
-    // TOOLTIP
+    // POINTER / TOOLTIP
     // ============================
 
     public void OnPointerEnter(PointerEventData eventData)
     {
         if (currentItem == null) return;
 
-        isHovering = true;
-        hoverTimer = 0f;
-        tooltipShown = false;
+        pointerOver = true;
+        hoverStart = Time.unscaledTime;
+        tooltipVisible = false;
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        isHovering = false;
-        hoverTimer = 0f;
-        tooltipShown = false;
+        pointerOver = false;
 
-        TooltipUI.Instance.HideTooltip();
+        if (tooltipVisible)
+        {
+            TooltipUI.Instance.HideTooltip();
+            tooltipVisible = false;
+        }
     }
 
     // ============================
@@ -112,22 +131,22 @@ public class InventorySlot :
     {
         if (currentItem == null) return;
 
-        // cancela tooltip durante drag
-        isHovering = false;
-        hoverTimer = 0f;
-        tooltipShown = false;
-        TooltipUI.Instance.HideTooltip();
+        dragging = true;
+
+        if (tooltipVisible)
+        {
+            TooltipUI.Instance.HideTooltip();
+            tooltipVisible = false;
+        }
 
         DragItem.Instance.BeginDrag(itemIcon.sprite, this);
     }
 
-    public void OnDrag(PointerEventData eventData)
-    {
-        // DragItem já cuida do movimento
-    }
+    public void OnDrag(PointerEventData eventData) { }
 
     public void OnEndDrag(PointerEventData eventData)
     {
+        dragging = false;
         DragItem.Instance.EndDrag();
     }
 
@@ -136,6 +155,7 @@ public class InventorySlot :
         if (DragItem.Instance.sourceSlot == null) return;
 
         InventorySlot from = DragItem.Instance.sourceSlot;
+
         if (from == this) return;
 
         Objects tempItem = currentItem;
@@ -148,5 +168,10 @@ public class InventorySlot :
             from.SetItem(tempItem, tempCount, tempStack);
         else
             from.ClearSlot();
+    }
+
+    public void DeleteItemConfirmed()
+    {
+        ClearSlot();
     }
 }

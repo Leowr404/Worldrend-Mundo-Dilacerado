@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d0cad2fbddd03944680b4764f9cca722, type: 3}
-  m_Name: BeginBow
+  m_Name: DefensePotion
   m_EditorClassIdentifier: Assembly-CSharp::Objects
-  itemName: "Arco da Ascen\xE7\xE3o"
-  descricaoItem: Arco e flexa (Comum)
-  itemSprite: {fileID: 21300000, guid: 51311a794afa1df4c8f942808a0327dd, type: 3}
-  isStackable: 0
+  itemName: "Elixir Cora\xE7\xE3o de A\xE7o"
+  descricaoItem: "Po\xE7\xE3o de escudo \n"
+  itemSprite: {fileID: 0}
+  isStackable: 1
