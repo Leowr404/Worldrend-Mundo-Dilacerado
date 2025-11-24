@@ -13,6 +13,8 @@ public class UiManager : MonoBehaviour
     public TMP_Text dialogueText;
     public Transform optionsContainer;
     public GameObject optionButtonPrefab;
+    public GameObject playerStatsPanel;
+    public bool playerStatsTab;
 
     [Header("Typing Effect")]
     public float charInterval = 0.03f;
@@ -29,7 +31,30 @@ public class UiManager : MonoBehaviour
     {
         sentences = new Queue<string>();
         dialoguePanel.SetActive(false);
+        playerStatsPanel.SetActive(false);
     }
+
+    private void Update()
+    {
+        if (InputManager.Instance.OpenInventory && !playerStatsTab)
+            ToggleInventory(true);
+
+        // fechar inventário
+        if (InputManager.Instance.CloseInventory && playerStatsTab)
+            ToggleInventory(false);
+    }
+
+    private void ToggleInventory(bool open)
+    {
+        playerStatsTab = open;
+        playerStatsPanel.SetActive(open);
+
+        if (open)
+            InputManager.Instance.SwitchToUI();
+        else
+            InputManager.Instance.SwitchToPlayer();
+    }
+
 
     public void StartDialogue(DialogueData data)
     {

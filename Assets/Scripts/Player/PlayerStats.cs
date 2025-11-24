@@ -18,8 +18,8 @@ public class PlayerStats : MonoBehaviour
     public int defense = 5;
     public int vitality = 5;
     public int endurance = 5;
-    public int intelligence = 5;
-    public int agility = 5;
+    public int Lucky = 5;
+    //public int agility = 5;
 
     [Header("Status Atuais")]
     public int maxHealth;
@@ -227,8 +227,8 @@ public class PlayerStats : MonoBehaviour
     public void AddDefense() => AddPoint(ref defense);
     public void AddVitality() => AddPoint(ref vitality);
     public void AddEndurance() => AddPoint(ref endurance);
-    public void AddIntelligence() => AddPoint(ref intelligence);
-    public void AddAgility() => AddPoint(ref agility);
+    public void AddIntelligence() => AddPoint(ref Lucky);
+    //public void AddAgility() => AddPoint(ref agility);
 
     private void AddPoint(ref int attribute)
     {

@@ -12,16 +12,16 @@ public class PlayerStatsUI : MonoBehaviour
     public TMP_Text defenseText;
     public TMP_Text vitalityText;
     public TMP_Text enduranceText;
-    public TMP_Text intelligenceText;
-    public TMP_Text agilityText;
+    public TMP_Text LuckyText;
+    //public TMP_Text agilityText;
 
     [Header("Botões de distribuição")]
     public Button addStrengthButton;
     public Button addDefenseButton;
     public Button addVitalityButton;
     public Button addEnduranceButton;
-    public Button addIntelligenceButton;
-    public Button addAgilityButton;
+    public Button addLuckyButton;
+    //public Button addAgilityButton;
 
     private PlayerStats player;
 
@@ -52,8 +52,8 @@ public class PlayerStatsUI : MonoBehaviour
         addDefenseButton.onClick.AddListener(() => OnAddStat(player.AddDefense));
         addVitalityButton.onClick.AddListener(() => OnAddStat(player.AddVitality));
         addEnduranceButton.onClick.AddListener(() => OnAddStat(player.AddEndurance));
-        addIntelligenceButton.onClick.AddListener(() => OnAddStat(player.AddIntelligence));
-        addAgilityButton.onClick.AddListener(() => OnAddStat(player.AddAgility));
+        addLuckyButton.onClick.AddListener(() => OnAddStat(player.AddIntelligence));
+        //addAgilityButton.onClick.AddListener(() => OnAddStat(player.AddAgility));
     }
 
     private void OnAddStat(System.Action addAction)
@@ -68,12 +68,12 @@ public class PlayerStatsUI : MonoBehaviour
         xpText.text = $"XP: {player.currentXP}/{player.xpToNextLevel}";
         statPointsText.text = $"Pontos: {player.statPoints}";
 
-        strengthText.text = $"Força: {player.strength}";
-        defenseText.text = $"Defesa: {player.defense}";
-        vitalityText.text = $"Vitalidade: {player.vitality}";
-        enduranceText.text = $"Vigor: {player.endurance}";
-        intelligenceText.text = $"Inteligência: {player.intelligence}";
-        agilityText.text = $"Agilidade: {player.agility}";
+        strengthText.text = $"{player.attackPower}";
+        defenseText.text = $"{player.defensePower}";
+        vitalityText.text = $"{player.maxHealth}";
+        enduranceText.text = $"{player.maxStamina}";
+        LuckyText.text = $"{player.Lucky}";
+        //agilityText.text = $"Agilidade: {player.agility}";
 
         bool hasPoints = player.statPoints > 0;
 
@@ -81,7 +81,7 @@ public class PlayerStatsUI : MonoBehaviour
         addDefenseButton.interactable = hasPoints;
         addVitalityButton.interactable = hasPoints;
         addEnduranceButton.interactable = hasPoints;
-        addIntelligenceButton.interactable = hasPoints;
-        addAgilityButton.interactable = hasPoints;
+        addLuckyButton.interactable = hasPoints;
+        //addAgilityButton.interactable = hasPoints;
     }
 }

@@ -20,6 +20,7 @@ public class InputManager : MonoBehaviour
     {
         if (Instance == null) Instance = this;
         inputActions = new InputSystem_Actions();
+
     }
     private void Start()
     {
@@ -66,5 +67,6 @@ public class InputManager : MonoBehaviour
         //========UI BUTTONS========//
         AdvanceDialogue = inputActions.UI.AdvanceDialogue.WasPressedThisFrame();
         CloseInventory = inputActions.UI.CloseInventory.WasPressedThisFrame();
+        
     }
 }
