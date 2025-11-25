@@ -2,22 +2,20 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using TMPro;
-using UnityEngine.EventSystems;
 
 public class ItemMenuUI : MonoBehaviour
 {
     public static ItemMenuUI Instance;
 
     [Header("UI")]
-    public GameObject panel;                 
+    public GameObject panel;
     public Button useButton;
     public Button descriptionButton;
     public Button moveButton;
     public Button deleteButton;
 
     [Header("Offset do Menu")]
-    public Vector2 menuOffset = new Vector2(150f, -20f); 
-    // Agora você ajusta isso no Inspector :)
+    public Vector2 menuOffset = new Vector2(40f, -10f); // Pode ajustar no Inspector
 
     private InventorySlot currentSlot;
 
@@ -31,7 +29,7 @@ public class ItemMenuUI : MonoBehaviour
     {
         if (!panel.activeSelf) return;
 
-        // Detecta clique esquerdo com Input System
+        // Fecha menu se clicar fora
         if (Mouse.current.leftButton.wasPressedThisFrame)
         {
             Vector2 mousePos = Mouse.current.position.ReadValue();
@@ -46,16 +44,15 @@ public class ItemMenuUI : MonoBehaviour
         }
     }
 
-    public void OpenMenu(InventorySlot slot, Vector2 mousePos)
+    // CHAMADO PELO INVENTORYSLOT
+    public void OpenMenu(InventorySlot slot, Vector2 mousePosition, Vector2 offset)
     {
         currentSlot = slot;
 
         panel.SetActive(true);
 
         RectTransform rect = panel.GetComponent<RectTransform>();
-
-        // posição = mouse + offset
-        rect.position = mousePos + menuOffset;
+        rect.position = mousePosition + offset;
     }
 
     public void Close()
@@ -64,11 +61,11 @@ public class ItemMenuUI : MonoBehaviour
         currentSlot = null;
     }
 
-    // BOTÕES ==========================
+    // BOTÕES ===============================
 
     public void OnUseItem()
     {
-        Debug.Log("Usou o item: " + currentSlot.currentItem.itemName);
+        Debug.Log("Usou item: " + currentSlot.currentItem.itemName);
         Close();
     }
 
@@ -83,13 +80,13 @@ public class ItemMenuUI : MonoBehaviour
 
     public void OnMoveItem()
     {
-        Debug.Log("Mover item (futuro)");
+        Debug.Log("Mover item");
         Close();
     }
 
     public void OnDeleteItem()
     {
-        Debug.Log("Excluir item: " + currentSlot.currentItem.itemName);
+        Debug.Log("Item deletado: " + currentSlot.currentItem.itemName);
         currentSlot.ClearSlot();
         Close();
     }

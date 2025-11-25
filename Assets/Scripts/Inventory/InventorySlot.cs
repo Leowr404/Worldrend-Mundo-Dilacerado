@@ -33,7 +33,7 @@ public class InventorySlot :
 
     private void Update()
     {
-        // ===== TOOLTIP COM DELAY =====
+        // Tooltip com delay
         if (pointerOver && !tooltipVisible && !dragging && currentItem != null)
         {
             if (Time.unscaledTime - hoverStart >= hoverDelay)
@@ -46,30 +46,7 @@ public class InventorySlot :
                 tooltipVisible = true;
             }
         }
-
-        // ===== CLIQUE COM BOTÃO DIREITO PARA ABRIR O MENU =====
-        if (pointerOver && currentItem != null)
-        {
-            if (Mouse.current.rightButton.wasPressedThisFrame)
-            {
-                Vector2 mousePos = Mouse.current.position.ReadValue();
-                Vector3 pos3D = new Vector3(mousePos.x, mousePos.y, 0f);
-
-                ItemMenuUI.Instance.OpenMenu(this, pos3D);
-
-                // Fecha tooltip quando abrir menu
-                if (tooltipVisible)
-                {
-                    TooltipUI.Instance.HideTooltip();
-                    tooltipVisible = false;
-                }
-            }
-        }
     }
-
-    // ============================
-    // SET / CLEAR
-    // ============================
 
     public void SetItem(Objects newItem, int count, bool stackable)
     {
@@ -94,10 +71,6 @@ public class InventorySlot :
         itemCountText.text = "";
     }
 
-    // ============================
-    // POINTER / TOOLTIP
-    // ============================
-
     public void OnPointerEnter(PointerEventData eventData)
     {
         if (currentItem == null) return;
@@ -118,18 +91,31 @@ public class InventorySlot :
         }
     }
 
-    // ============================
-    // DRAG & DROP
-    // ============================
-
     public void OnPointerDown(PointerEventData eventData)
     {
         if (currentItem == null) return;
+
+        // BOTÃO DIREITO = abrir Item Menu
+        if (Mouse.current.rightButton.wasPressedThisFrame)
+        {
+            Vector2 mousePos = Mouse.current.position.ReadValue();
+
+            ItemMenuUI.Instance.OpenMenu(
+                this,
+                mousePos,
+                ItemMenuUI.Instance.menuOffset  // <<< AGORA ENVIAMOS O OFFSET
+            );
+        }
     }
 
+    // ---------- DRAG ----------
     public void OnBeginDrag(PointerEventData eventData)
     {
         if (currentItem == null) return;
+
+        // Somente botão esquerdo pode arrastar
+        if (!Mouse.current.leftButton.isPressed)
+            return;
 
         dragging = true;
 
@@ -150,6 +136,7 @@ public class InventorySlot :
         DragItem.Instance.EndDrag();
     }
 
+    // Troca de slots
     public void OnDrop(PointerEventData eventData)
     {
         if (DragItem.Instance.sourceSlot == null) return;

@@ -4,59 +4,38 @@ using UnityEngine.InputSystem;
 
 public class DragItem : MonoBehaviour
 {
-    public static DragItem Instance { get; private set; }
+    public static DragItem Instance;
 
-    [Header("Config")]
-    public Canvas rootCanvas;
-    public Vector2 offset = new Vector2(15f, -15f);
+    public Image dragIcon;
+    public RectTransform dragRect;
 
-    private GameObject iconGO;
-    private Image iconImage;
-    private RectTransform iconRect;
-
-    [HideInInspector] 
-    public InventorySlot sourceSlot;
+    [HideInInspector] public InventorySlot sourceSlot;
 
     private void Awake()
     {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
         Instance = this;
-
-        iconGO = new GameObject("DragIcon");
-        iconGO.transform.SetParent(rootCanvas.transform, false);
-
-        iconImage = iconGO.AddComponent<Image>();
-        iconImage.raycastTarget = false;
-
-        iconRect = iconGO.GetComponent<RectTransform>();
-        iconRect.sizeDelta = new Vector2(48, 48);
-
-        iconGO.SetActive(false);
+        dragIcon.enabled = false;
     }
 
     private void Update()
     {
-        if (!iconGO.activeSelf) return;
-
-        Vector2 mousePos = Mouse.current.position.ReadValue();
-        iconRect.position = mousePos + offset;
+        if (dragIcon.enabled)
+        {
+            Vector2 pos = Mouse.current.position.ReadValue();
+            dragRect.position = pos;
+        }
     }
 
-    public void BeginDrag(Sprite sprite, InventorySlot slot)
+    public void BeginDrag(Sprite icon, InventorySlot slot)
     {
         sourceSlot = slot;
-        iconImage.sprite = sprite;
-        iconGO.SetActive(true);
+        dragIcon.sprite = icon;
+        dragIcon.enabled = true;
     }
 
     public void EndDrag()
     {
+        dragIcon.enabled = false;
         sourceSlot = null;
-        iconGO.SetActive(false);
-        iconImage.sprite = null;
     }
 }
