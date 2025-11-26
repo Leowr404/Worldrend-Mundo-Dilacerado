@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using TMPro;
+using UnityEngine.EventSystems;
 
 public class ItemMenuUI : MonoBehaviour
 {
@@ -11,11 +12,10 @@ public class ItemMenuUI : MonoBehaviour
     public GameObject panel;
     public Button useButton;
     public Button descriptionButton;
-    public Button moveButton;
     public Button deleteButton;
 
     [Header("Offset do Menu")]
-    public Vector2 menuOffset = new Vector2(40f, -10f); // Pode ajustar no Inspector
+    public Vector2 menuOffset = new Vector2(150f, -20f);
 
     private InventorySlot currentSlot;
 
@@ -29,7 +29,7 @@ public class ItemMenuUI : MonoBehaviour
     {
         if (!panel.activeSelf) return;
 
-        // Fecha menu se clicar fora
+        // Fechar ao clicar fora
         if (Mouse.current.leftButton.wasPressedThisFrame)
         {
             Vector2 mousePos = Mouse.current.position.ReadValue();
@@ -44,15 +44,14 @@ public class ItemMenuUI : MonoBehaviour
         }
     }
 
-    // CHAMADO PELO INVENTORYSLOT
-    public void OpenMenu(InventorySlot slot, Vector2 mousePosition, Vector2 offset)
+    public void OpenMenu(InventorySlot slot, Vector2 mousePos, Vector2 offset)
     {
         currentSlot = slot;
 
         panel.SetActive(true);
 
         RectTransform rect = panel.GetComponent<RectTransform>();
-        rect.position = mousePosition + offset;
+        rect.position = mousePos + offset;
     }
 
     public void Close()
@@ -61,11 +60,13 @@ public class ItemMenuUI : MonoBehaviour
         currentSlot = null;
     }
 
-    // BOTÕES ===============================
+    // ============================
+    // BOTÕES
+    // ============================
 
     public void OnUseItem()
     {
-        Debug.Log("Usou item: " + currentSlot.currentItem.itemName);
+        Debug.Log("Usou o item: " + currentSlot.currentItem.itemName);
         Close();
     }
 
@@ -77,17 +78,10 @@ public class ItemMenuUI : MonoBehaviour
         );
         Close();
     }
-
-    public void OnMoveItem()
-    {
-        Debug.Log("Mover item");
-        Close();
-    }
-
     public void OnDeleteItem()
     {
-        Debug.Log("Item deletado: " + currentSlot.currentItem.itemName);
-        currentSlot.ClearSlot();
+        // 🔥 Agora usa confirmação!
+        DeleteItemConfirmPanel.Instance.OpenConfirm(currentSlot);
         Close();
     }
 }
