@@ -43,7 +43,7 @@ public class PlayerStats : MonoBehaviour
     public float combatCooldown = 4f;
 
     [Header("Custos Fixos de Stamina")]
-    public int sprintCostPerSecond = 15;
+    public int sprintCostPerSecond = 5;
     public int attackCost = 20;
     public int dodgeCost = 30;
     public int jumpCost = 10;
