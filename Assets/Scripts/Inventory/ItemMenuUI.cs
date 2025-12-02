@@ -80,7 +80,7 @@ public class ItemMenuUI : MonoBehaviour
     }
     public void OnDeleteItem()
     {
-        // 🔥 Agora usa confirmação!
+        //  Agora usa confirmação!
         DeleteItemConfirmPanel.Instance.OpenConfirm(currentSlot);
         Close();
     }

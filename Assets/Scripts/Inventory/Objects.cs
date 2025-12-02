@@ -1,10 +1,13 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "New Object", menuName = "Inventory Object/Create New")]
+[CreateAssetMenu(fileName = "NewItem", menuName = "Game/Item", order = 0)]
 public class Objects : ScriptableObject
 {
     public string itemName;
-    [TextArea] public string descricaoItem;
-    public Sprite itemSprite;
-    public bool isStackable;
+    public int itemId;
+    public Sprite itemSprite;    // <-- CAMPO QUE FALTAVA
+    public bool isStackable = true;
+
+    public string descricaoItem;
+    // Pode adicionar mais atributos depois (raridade, descrição, etc.)
 }

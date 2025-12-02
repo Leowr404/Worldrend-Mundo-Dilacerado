@@ -3,10 +3,10 @@ using UnityEngine;
 public class InventoryController : MonoBehaviour
 {
     [Header("Painéis")]
-    [SerializeField] private GameObject inventoryPanel;
+    public GameObject inventoryPanel;
 
     private InputSystem_Actions input;
-    private bool isInventoryOpen;
+    private bool isOpen;
 
     private void Awake()
     {
@@ -15,39 +15,33 @@ public class InventoryController : MonoBehaviour
 
     private void OnEnable()
     {
-        input.Player.Inventory.performed += OnInventoryToggle;
-        input.UI.CloseInventory.performed += OnCloseInventory;
+        input.Player.Inventory.performed += OnToggle;
+        input.UI.CloseInventory.performed += OnClose;
     }
 
     private void OnDisable()
     {
-        input.Player.Inventory.performed -= OnInventoryToggle;
-        input.UI.CloseInventory.performed -= OnCloseInventory;
+        input.Player.Inventory.performed -= OnToggle;
+        input.UI.CloseInventory.performed -= OnClose;
     }
 
-    private void OnInventoryToggle(UnityEngine.InputSystem.InputAction.CallbackContext ctx)
+    private void OnToggle(UnityEngine.InputSystem.InputAction.CallbackContext ctx)
     {
-        ToggleInventory();
+        Toggle();
     }
 
-    private void OnCloseInventory(UnityEngine.InputSystem.InputAction.CallbackContext ctx)
+    private void OnClose(UnityEngine.InputSystem.InputAction.CallbackContext ctx)
     {
-        if (isInventoryOpen)
-            ToggleInventory();
+        if (isOpen)
+            Toggle();
     }
 
-    // ================================
-    // INVENTORY TOGGLE FINAL
-    // ================================
-    public void ToggleInventory()
+    public void Toggle()
     {
-        isInventoryOpen = !isInventoryOpen;
+        isOpen = !isOpen;
+        inventoryPanel.SetActive(isOpen);
 
-        // habilita/desabilita inventário
-        inventoryPanel.SetActive(isInventoryOpen);
-
-        // controla cursor e input
-        if (isInventoryOpen)
+        if (isOpen)
         {
             InputManager.Instance.SwitchToUI();
             Cursor.visible = true;
@@ -59,12 +53,5 @@ public class InventoryController : MonoBehaviour
             Cursor.visible = false;
             Cursor.lockState = CursorLockMode.Locked;
         }
-    }
-
-    // botão UI chama isso
-    public void InventoryClose()
-    {
-        if (!isInventoryOpen) return;
-        ToggleInventory();
     }
 }

@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d0cad2fbddd03944680b4764f9cca722, type: 3}
-  m_Name: EpicSword
+  m_Name: CommonBow
   m_EditorClassIdentifier: Assembly-CSharp::Objects
-  itemName: "Espada Ca\xE7ador da Ruptura"
-  itemId: 7
-  itemSprite: {fileID: 0}
+  itemName: "Arco da Ascens\xE3o"
+  itemId: 12
+  itemSprite: {fileID: 21300000, guid: 51311a794afa1df4c8f942808a0327dd, type: 3}
   isStackable: 0
-  descricaoItem: "Espada \xC9pica"
+  descricaoItem: 'Arco e Flecha Comum '

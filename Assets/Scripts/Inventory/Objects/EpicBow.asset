@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0cad2fbddd03944680b4764f9cca722, type: 3}
   m_Name: EpicBow
   m_EditorClassIdentifier: Assembly-CSharp::Objects
-  itemName: "Arco Aniquilador Apocal\xEDptico "
-  descricaoItem: Arco e Flecha ( Epico )
+  itemName: "Arco Aniquilador Apocal\xEDptico"
+  itemId: 10
   itemSprite: {fileID: 0}
   isStackable: 0
+  descricaoItem: "Arco e Flecha \xC9pico"

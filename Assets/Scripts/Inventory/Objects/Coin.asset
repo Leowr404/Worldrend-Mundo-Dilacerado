@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d0cad2fbddd03944680b4764f9cca722, type: 3}
-  m_Name: EpicSword
+  m_Name: Coin
   m_EditorClassIdentifier: Assembly-CSharp::Objects
-  itemName: "Espada Ca\xE7ador da Ruptura"
-  itemId: 7
-  itemSprite: {fileID: 0}
-  isStackable: 0
-  descricaoItem: "Espada \xC9pica"
+  itemName: Moedas Eterion
+  itemId: 1
+  itemSprite: {fileID: 21300000, guid: 780d9f96376adc04eb19613d5c6f85a9, type: 3}
+  isStackable: 1
+  descricaoItem: Moedas de comercio do jogo
