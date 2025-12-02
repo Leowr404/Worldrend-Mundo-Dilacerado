@@ -16,6 +16,8 @@ public static class SaveSystem
         string path = GetPath(slot);
         File.WriteAllText(path, json);
         Debug.Log($"💾 Save criado no slot {slot} em:\n{path}");
+        Debug.Log("SAVE PATH: " + GetPath(slot)); // pra identificar o endereco do save
+
     }
 
     // ===============================

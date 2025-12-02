@@ -19851,9 +19851,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SaveManager
   totalSlots: 3
-  inventorySaver: {fileID: 0}
-  player: {fileID: 0}
-  cameraTransform: {fileID: 0}
+  inventorySaver: {fileID: 1188111510}
+  player: {fileID: 1102621446}
+  cameraTransform: {fileID: 650198628}
 --- !u!1 &1610989377
 GameObject:
   m_ObjectHideFlags: 0
