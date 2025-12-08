@@ -14,7 +14,9 @@ public class FSM_Enemy_Combate : StateMachineBehaviour
        if (GameObject.Find ("Player"))
         {
             Player = GameObject.Find("Player");
+            animator.transform.GetChild(0).rotation = Quaternion.LookRotation(Player.transform.position - animator.transform.GetChild(0).position);
         }
+        contadorDisparo = 0f;
     }
 
     //OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
@@ -31,8 +33,10 @@ public class FSM_Enemy_Combate : StateMachineBehaviour
                     animator.transform.GetChild(0).transform.position,
                     animator.transform.GetChild(0).transform.rotation
                 );
+                 animator.transform.GetComponent<NavMeshAgent>().destination = Player.transform.position;
 
                 novoProjetil.transform.GetComponent<Rigidbody>().AddForce(novoProjetil.transform.forward * 1000 * Time.deltaTime,ForceMode.VelocityChange);
+              
                 GameObject.Destroy(novoProjetil, 3);
 
                 contadorDisparo = 0f;           

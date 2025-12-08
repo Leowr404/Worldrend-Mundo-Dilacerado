@@ -8,7 +8,7 @@ public class SaveData
     // === Dados de mundo / jogador ===
     public Vector3 playerPosition;
     public Quaternion cameraRotation;
-
+    public int playerHealth;
     // Tempo de jogo
     public int playTimeSeconds;
 

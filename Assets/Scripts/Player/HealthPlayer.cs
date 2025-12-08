@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 public class HealthPlayer : MonoBehaviour
 {
-    [Header("Configuração de Vida")]
+    [Header("Configuraï¿½ï¿½o de Vida")]
     [SerializeField] private int maxHealth = 100;
     [SerializeField] private int currentHealth;
 
@@ -16,7 +16,7 @@ public class HealthPlayer : MonoBehaviour
         UpdateHealthBar();
     }
 
-    // Função para levar dano
+    // Funï¿½ï¿½o para levar dano
     public void TakeDamage(int amount)
     {
         currentHealth -= amount;
@@ -24,7 +24,7 @@ public class HealthPlayer : MonoBehaviour
         UpdateHealthBar();
     }
 
-    // Função para curar
+    // Funï¿½ï¿½o para curar
     public void Heal(int amount)
     {
         currentHealth += amount;
@@ -43,6 +43,14 @@ public class HealthPlayer : MonoBehaviour
     private void Update()
     {
         Die();
+    }
+
+    public int CurrentHealth => currentHealth;
+
+        public void SetHealth(int newHealth)
+    {
+        currentHealth = Mathf.Clamp(newHealth, 0, maxHealth);
+        UpdateHealthBar();
     }
 
     void Die() 

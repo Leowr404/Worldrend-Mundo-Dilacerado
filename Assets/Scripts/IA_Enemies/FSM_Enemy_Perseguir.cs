@@ -11,7 +11,7 @@ public class FSM_Enemy_Perseguir : StateMachineBehaviour
        if (GameObject.Find ("Player"))
         {
             Player = GameObject.Find("Player");
-            animator.transform.GetChild(0).transform.Rotate( 90, 0, 0);
+           
         }
     }
 

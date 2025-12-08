@@ -29,7 +29,6 @@ public class SaveManager : MonoBehaviour
 
     private void Update()
     {
-        // Vamos contar tempo de jogo continuamente
         playtimeCounter += Time.deltaTime;
     }
 
@@ -40,13 +39,20 @@ public class SaveManager : MonoBehaviour
     {
         SaveData data = new SaveData();
 
+        // SALVAR VIDA DO PLAYER
+        HealthPlayer hp = player.GetComponent<HealthPlayer>();
+        if (hp != null)
+        {
+            data.playerHealth = hp.CurrentHealth;
+        }
+
         // SALVAR POSIÇÃO DO PLAYER
         if (player != null)
         {
             data.playerPosition = player.position;
         }
 
-        // SALVAR ROTAÇÃO DA CÂMERA (opcional)
+        // SALVAR ROTAÇÃO DA CÂMERA
         if (cameraTransform != null)
         {
             data.cameraRotation = cameraTransform.rotation;
@@ -58,17 +64,18 @@ public class SaveManager : MonoBehaviour
             data.inventory = inventorySaver.SaveInventory();
         }
 
-        // TEMPO TOTAL DE JOGO
+        // TEMPO DE JOGO
         data.playTimeSeconds = Mathf.FloorToInt(playtimeCounter);
 
-        // DATA E HORA
+        // DATA E HORA DO SAVE
         string now = System.DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
         data.saveDate = now;
         data.lastSaveDate = now;
 
-        // SERIALIZAR
+        // SERIALIZAR PARA JSON
         string json = JsonUtility.ToJson(data, true);
 
+        // SALVAR EM ARQUIVO
         SaveSystem.Save(slotIndex, json);
 
         Debug.Log($"💾 Slot {slotIndex} salvo!");
@@ -93,6 +100,13 @@ public class SaveManager : MonoBehaviour
         {
             Debug.LogError("SaveManager: Erro ao decodificar SaveData!");
             return;
+        }
+
+        // RESTAURAR VIDA DO PLAYER
+        HealthPlayer hp = player.GetComponent<HealthPlayer>();
+        if (hp != null)
+        {
+            hp.SetHealth(data.playerHealth);
         }
 
         // RESTAURAR POSIÇÃO DO PLAYER
@@ -120,7 +134,7 @@ public class SaveManager : MonoBehaviour
     }
 
     // ======================================================
-    // PEGAR SOMENTE METADADOS (para UI)
+    // PEGAR METADADOS (para UI)
     // ======================================================
     public SaveData Peek(int slotIndex)
     {
@@ -141,7 +155,7 @@ public class SaveManager : MonoBehaviour
     }
 
     // ======================================================
-    // VERIFICAR SE UM SLOT POSSUI SAVE
+    // VERIFICAR SE EXISTE SAVE
     // ======================================================
     public bool SlotExists(int slotIndex)
     {

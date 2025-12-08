@@ -19,7 +19,7 @@ public class FSM_Enemy_Patrulha : StateMachineBehaviour
                 WaypointArea = GameObject.Find(WaypointArea_Name);
                 WaypointArea_Count = WaypointArea.transform.childCount;
                 WaypointArea_Choice = Random.Range( 0, WaypointArea_Count);
-                animator.transform.GetChild(0).transform.Rotate( -90, 0, 0);
+                animator.transform.GetChild(0).transform.rotation = Quaternion.Euler( 90, 0, 0);
             }
         }
     }
