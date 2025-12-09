@@ -29,7 +29,7 @@ public class ItemCollector : MonoBehaviour
         }
     }
 
-    public bool AddItemToInventory(Objects item)
+    private bool AddItemToInventory(Objects item)
     {
         // 🔹 1. Verifica se o item já existe e pode empilhar
         if (item.isStackable)

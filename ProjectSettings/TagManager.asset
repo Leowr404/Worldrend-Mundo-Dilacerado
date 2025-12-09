@@ -4,8 +4,8 @@
 TagManager:
   serializedVersion: 3
   tags:
-  - Limits
-  - CollectQuest
+  - Waypoint
+  - Enemy
   layers:
   - Default
   - TransparentFX

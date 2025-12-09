@@ -9,14 +9,17 @@ EditorBuildSettings:
     path: Assets/Scenes/SampleScene.unity
     guid: 99c9720ab356a0642a771bea13969a05
   - enabled: 0
-    path: Assets/Scenes/MainMenu.unity
-    guid: 283ab7a72cdf83843b7e838532a53229
-  - enabled: 1
     path: Assets/Mundo Dilacerado.unity
     guid: eebb679bea77d86458962cd3893103b2
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/TestPlace.unity
     guid: 5223edf1594c5394894928029435b743
+  - enabled: 1
+    path: Assets/Scenes/Inventario.unity
+    guid: fd533971ff88f884f99ead3af9204371
+  - enabled: 1
+    path: Assets/Scenes/MainMenu.unity
+    guid: 283ab7a72cdf83843b7e838532a53229
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

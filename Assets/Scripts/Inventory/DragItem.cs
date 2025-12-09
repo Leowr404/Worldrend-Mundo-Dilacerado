@@ -2,58 +2,40 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
 
-/// <summary>
-/// Gerencia o visual do item sendo arrastado (singleton).
-/// </summary>
 public class DragItem : MonoBehaviour
 {
-    public static DragItem Instance { get; private set; }
+    public static DragItem Instance;
 
-    [Header("Config")]
-    public Canvas rootCanvas;            // arraste seu Canvas aqui no Inspector
-    public Vector2 offset = new Vector2(15f, -15f);
+    public Image dragIcon;
+    public RectTransform dragRect;
 
-    private GameObject iconGO;
-    private Image iconImage;
-    private RectTransform iconRect;
-    [HideInInspector] public InventorySlot sourceSlot; // slot de origem enquanto arrasta
+    [HideInInspector] public InventorySlot sourceSlot;
 
     private void Awake()
     {
-        if (Instance != null && Instance != this) { Destroy(gameObject); return; }
         Instance = this;
-
-        // cria o ícone de arrasto dinamicamente
-        iconGO = new GameObject("DragIcon");
-        iconGO.transform.SetParent(rootCanvas.transform, false);
-        iconImage = iconGO.AddComponent<Image>();
-        iconImage.raycastTarget = false; // não bloquear raycasts
-        iconRect = iconGO.GetComponent<RectTransform>();
-        iconRect.sizeDelta = new Vector2(48, 48);
-        iconGO.SetActive(false);
+        dragIcon.enabled = false;
     }
 
     private void Update()
     {
-        if (!iconGO.activeSelf) return;
-
-        // pega posição do mouse usando novo Input System
-        Vector2 mousePos = Mouse.current.position.ReadValue();
-        iconRect.position = (Vector3)mousePos + (Vector3)offset;
+        if (dragIcon.enabled)
+        {
+            Vector2 pos = Mouse.current.position.ReadValue();
+            dragRect.position = pos;
+        }
     }
 
-    public void BeginDrag(Sprite sprite, InventorySlot fromSlot)
+    public void BeginDrag(Sprite icon, InventorySlot slot)
     {
-        if (sprite == null || fromSlot == null) return;
-        sourceSlot = fromSlot;
-        iconImage.sprite = sprite;
-        iconGO.SetActive(true);
+        sourceSlot = slot;
+        dragIcon.sprite = icon;
+        dragIcon.enabled = true;
     }
 
     public void EndDrag()
     {
+        dragIcon.enabled = false;
         sourceSlot = null;
-        iconGO.SetActive(false);
-        iconImage.sprite = null;
     }
 }

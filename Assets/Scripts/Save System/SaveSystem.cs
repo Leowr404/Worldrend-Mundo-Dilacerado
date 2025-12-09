@@ -1,38 +1,66 @@
-using System.IO;
 using UnityEngine;
+using System.IO;
 
 public static class SaveSystem
 {
-    private static string savePath = Application.persistentDataPath + "/save.json";
-
-    // 🟢 Salvar dados
-    public static void Save(string json)
+    private static string GetPath(int slot)
     {
-        File.WriteAllText(savePath, json);
-        Debug.Log("💾 Jogo salvo em: " + savePath);
+        return Path.Combine(Application.persistentDataPath, $"save_slot_{slot}.json");
     }
 
-    // 🟡 Carregar dados
-    public static string Load()
+    // ===============================
+    // SALVAR
+    // ===============================
+    public static void Save(int slot, string json)
     {
-        if (File.Exists(savePath))
+        string path = GetPath(slot);
+        File.WriteAllText(path, json);
+        Debug.Log($"💾 Save criado no slot {slot} em:\n{path}");
+        Debug.Log("SAVE PATH: " + GetPath(slot)); // pra identificar o endereco do save
+
+    }
+
+    // ===============================
+    // CARREGAR
+    // ===============================
+    public static string Load(int slot)
+    {
+        string path = GetPath(slot);
+
+        if (File.Exists(path))
         {
-            string json = File.ReadAllText(savePath);
-            Debug.Log("📂 Jogo carregado de: " + savePath);
+            string json = File.ReadAllText(path);
+            Debug.Log($"📂 Save carregado do slot {slot}.");
             return json;
         }
 
-        Debug.LogWarning("⚠️ Nenhum save encontrado!");
+        Debug.LogWarning($"⚠ Nenhum save encontrado no slot {slot}.");
         return null;
     }
 
-    // 🔴 Deletar save (opcional)
-    public static void DeleteSave()
+    // ===============================
+    // EXCLUIR
+    // ===============================
+    public static void Delete(int slot)
     {
-        if (File.Exists(savePath))
+        string path = GetPath(slot);
+
+        if (File.Exists(path))
         {
-            File.Delete(savePath);
-            Debug.Log("🗑️ Save deletado!");
+            File.Delete(path);
+            Debug.Log($"🗑 Save do slot {slot} foi deletado.");
         }
+        else
+        {
+            Debug.LogWarning($"⚠ Tentou deletar o slot {slot}, mas não existe arquivo.");
+        }
+    }
+
+    // ===============================
+    // VERIFICAR SE EXISTE SAVE
+    // ===============================
+    public static bool Exists(int slot)
+    {
+        return File.Exists(GetPath(slot));
     }
 }
