@@ -108,12 +108,20 @@ public class SaveManager : MonoBehaviour
         {
             hp.SetHealth(data.playerHealth);
         }
+        // ==========================  
+        CharacterController cc = player.GetComponent<CharacterController>();
+        if (cc != null) cc.enabled = false; // 🔥 DESATIVAR PARA PERMITIR TELEPORTE
+        // ==========================  
 
         // RESTAURAR POSIÇÃO DO PLAYER
         if (player != null)
         {
             player.position = data.playerPosition;
         }
+
+        // ==========================  
+        if (cc != null) cc.enabled = true;  // 🔥 REATIVAR APÓS TELEPORTE
+        // ==========================  
 
         // RESTAURAR ROTAÇÃO DA CÂMERA
         if (cameraTransform != null)

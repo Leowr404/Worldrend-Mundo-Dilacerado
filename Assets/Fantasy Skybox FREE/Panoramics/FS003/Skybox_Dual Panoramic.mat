@@ -39,8 +39,8 @@ Material:
     - _ImageType: 0
     - _Layout: 0
     - _MirrorOnBack: 0
-    - _Rotation1: 211.76253
-    - _Rotation2: 211.76253
+    - _Rotation1: 111.645
+    - _Rotation2: 111.645
     m_Colors:
     - _Tint1: {r: 0.5, g: 0.5, b: 0.5, a: 0.5}
     - _Tint2: {r: 0.5, g: 0.5, b: 0.5, a: 0.5}
