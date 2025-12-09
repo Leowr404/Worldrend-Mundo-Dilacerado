@@ -1,8 +1,10 @@
-﻿using UnityEngine;
+﻿using Unity.Cinemachine;
+using UnityEngine;
 public class InputManager : MonoBehaviour
 {
     public static InputManager Instance; // Singleton simples
     private InputSystem_Actions inputActions;
+    CinemachineOrbitalFollow cinemachineOrbitalFollow;
 
     public Vector2 Move { get; private set; }
     public bool Jump { get; private set; }
@@ -20,6 +22,7 @@ public class InputManager : MonoBehaviour
     {
         if (Instance == null) Instance = this;
         inputActions = new InputSystem_Actions();
+        cinemachineOrbitalFollow = FindAnyObjectByType<CinemachineOrbitalFollow>();
 
     }
     private void Start()
@@ -42,6 +45,7 @@ public class InputManager : MonoBehaviour
         inputActions.UI.Disable();
         inputActions.Player.Enable();
         Cursor.lockState = CursorLockMode.Locked;
+        cinemachineOrbitalFollow.enabled = true;
     }
 
     public void SwitchToUI()
@@ -49,6 +53,7 @@ public class InputManager : MonoBehaviour
         inputActions.Player.Disable();
         inputActions.UI.Enable();
         Cursor.lockState = CursorLockMode.None;
+        cinemachineOrbitalFollow.enabled = false;
     }
 
     private void Update()
@@ -63,7 +68,6 @@ public class InputManager : MonoBehaviour
         //Debug.Log("Move: " + Move);
         OpenInventory = inputActions.Player.OpenInventory.WasPressedThisFrame();
         Interact = inputActions.Player.Interact.WasPressedThisFrame();
-        Debug.Log("Pressionado" + Interact);
         //========UI BUTTONS========//
         AdvanceDialogue = inputActions.UI.AdvanceDialogue.WasPressedThisFrame();
         CloseInventory = inputActions.UI.CloseInventory.WasPressedThisFrame();

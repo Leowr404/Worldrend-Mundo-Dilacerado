@@ -1,9 +1,8 @@
-using System.Collections.Generic;
 using UnityEngine;
 
-public class DialogueTrigger : MonoBehaviour
+public class OpenShop : MonoBehaviour
 {
-    public DialogueData dialogue;
+    public GameObject ShopCanvas;
     public GameObject interactionIcon;
 
     private UiManager uiManager;
@@ -13,28 +12,27 @@ public class DialogueTrigger : MonoBehaviour
 
     void Start()
     {
-        uiManager = FindAnyObjectByType<UiManager>();
+        //uiManager = FindAnyObjectByType<UiManager>();
         if (interactionIcon) interactionIcon.SetActive(false);
-        audioManager = AudioManager.instancia;
+        //audioManager = AudioManager.instancia;
+        ShopCanvas.SetActive(false);
     }
 
     void Update()
     {
-        if (playerInRange && InputManager.Instance.Interact && !uiManager.IsDialogueActive())
+        if (playerInRange && InputManager.Instance.Interact)
         {
-            audioManager.PlayNPCTalk();
+            //audioManager.PlayNPCTalk();
             InputManager.Instance.SwitchToUI();
             Cursor.lockState = CursorLockMode.None;
-            uiManager.StartDialogue(dialogue);
+            ShopCanvas.SetActive(true );
         }
-
-        if (uiManager.IsDialogueActive() && InputManager.Instance.AdvanceDialogue)
-        {
-            //Lembrete!! Mudar a Forma de trigger dos Dialogos
-            Cursor.lockState = CursorLockMode.None;
-            uiManager.DisplayNextSentence();
-            audioManager.PlayNPCTalk();
-        }
+    }
+    public void CloseShop()
+    {
+        ShopCanvas.SetActive(false);
+        Cursor.lockState = CursorLockMode.Locked;
+        InputManager.Instance.SwitchToPlayer();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -52,7 +50,7 @@ public class DialogueTrigger : MonoBehaviour
         {
             playerInRange = false;
             if (interactionIcon) interactionIcon.SetActive(false);
-            uiManager.EndDialogue();
+            ShopCanvas.SetActive(false);
         }
     }
 }

@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
@@ -19,7 +19,7 @@ public class AudioManager : MonoBehaviour
 
 
     [Header("Configuracoes de Sons")]
-    public AudioClip Tiro_sound;
+    public AudioClip purchase;
     public AudioClip Coletavel;
     public AudioClip Select;
     public AudioClip Hit;
@@ -28,10 +28,18 @@ public class AudioManager : MonoBehaviour
     public AudioClip BossDeath;
     public AudioClip backgroundMusicMenu;
     public AudioClip backgroundMusicGameplay;
+    [Header("UI Sons")]
+    public AudioClip ClickButton;
+
     private AudioSource backgroundMusicSource;
     //
     public AudioClip MouseEnter;
     public AudioClip MouseClick;
+
+
+    [Header("NPC Talk")]
+    public AudioClip[] npcTalks;
+    private int lastNpcIndex = -1;
 
     private void Awake()
     {
@@ -82,7 +90,7 @@ public class AudioManager : MonoBehaviour
         if (mixer != null && MusicSlider != null)
         {
             float volume = MusicSlider.value;
-            mixer.SetFloat("Music", Mathf.Log10(volume) * 20);
+            mixer.SetFloat("MusicAudio", Mathf.Log10(volume) * 20);
             MusicSlider.value = volume;
             PlayerPrefs.SetFloat(MusicVolumeKey, volume);
             PlayerPrefs.Save();
@@ -100,7 +108,7 @@ public class AudioManager : MonoBehaviour
         }
         else
         {
-            SFXsource.PlayOneShot(clip);       // Usa PlayOneShot para n�o interromper o som atual
+            SFXsource.PlayOneShot(clip);       // Usa PlayOneShot para não interromper o som atual
         }
 
     }
@@ -108,5 +116,24 @@ public class AudioManager : MonoBehaviour
     {
         loopingSFXSource.Stop();
         loopingSFXSource.loop = false;
+    }
+
+    public void PlayNPCTalk()
+    {
+        if (npcTalks.Length == 0) return;
+
+        int index;
+        do
+        {
+            index = Random.Range(0, npcTalks.Length);
+        }
+        while (index == lastNpcIndex && npcTalks.Length > 1);
+
+        lastNpcIndex = index;
+
+        // 🔵 Corta o som atual antes de tocar outro
+        SFXsource.Stop();
+        SFXsource.clip = npcTalks[index];
+        SFXsource.Play();             // ⬅️ Não use PlayOneShot aqui
     }
 }

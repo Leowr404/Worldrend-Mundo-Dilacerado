@@ -81,7 +81,7 @@ public class PlayerStats : MonoBehaviour
         float oldMaxStamina = maxStamina;
 
         maxHealth = 100 + vitality * 25;
-        maxStamina = 50 + endurance * 10;
+        maxStamina = 200 + endurance * 10;
         attackPower = 10 + strength * 3 + level * 2;
         defensePower = 5 + defense * 2;
 

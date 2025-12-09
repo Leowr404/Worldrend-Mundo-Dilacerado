@@ -8,12 +8,14 @@ public class GameManager : MonoBehaviour
     private bool Paused;
     //=======//
     public GameObject pauseCanvas;
+    public GameObject settingsGame;
     void Start()
     {
         Time.timeScale = 1.0f;
         inputManager = InputManager.Instance;
         Cursor.lockState = CursorLockMode.Locked;
         pauseCanvas.SetActive(false);
+        settingsGame.SetActive(false);
     }
 
     // Update is called once per frame
@@ -47,5 +49,13 @@ public class GameManager : MonoBehaviour
     public void BackToMenu()
     {
         SceneManager.LoadScene("MainMenu");
+    }
+    public void OpenSettingsGame()
+    {
+        settingsGame.SetActive(true);
+    }
+    public void CloseSettingsGame()
+    {
+        settingsGame.SetActive(false);
     }
 }

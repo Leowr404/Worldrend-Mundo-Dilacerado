@@ -26,12 +26,14 @@ public class UiManager : MonoBehaviour
 
     private DialogueData currentDialogue;
     private Quest pendingQuest;
+    AudioManager audioManager;
 
     private void Awake()
     {
         sentences = new Queue<string>();
         dialoguePanel.SetActive(false);
         playerStatsPanel.SetActive(false);
+        audioManager = AudioManager.instancia;
     }
 
     private void Update()
@@ -98,6 +100,7 @@ public class UiManager : MonoBehaviour
             EnqueueLines(data.lines);
 
         DisplayNextSentence();
+        
     }
 
     private void EnqueueLines(List<string> lines)
@@ -148,6 +151,7 @@ public class UiManager : MonoBehaviour
                 }
             });
             typingSequence.AppendInterval(charInterval);
+            
         }
     }
 
