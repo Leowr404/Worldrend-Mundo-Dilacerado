@@ -9,6 +9,7 @@ public class Quest : ScriptableObject
     public int requiredItems = 3;
     public int collectedItems = 0;
     public int rewardMoney;
+    public int XpReward;
     public bool money;
 
     public void ResetProgress()
@@ -29,8 +30,18 @@ public class Quest : ScriptableObject
     public void GiveRewards(PlayerStats player)
     {
         Debug.Log($"🎁 Recompensa entregue pela quest: {questName}");
-        player.AddXP(1000);
-        if(money == true ) 
+        player.AddXP(XpReward);
+        player.AddXP(XpReward);
+        player.AddXP(XpReward);
+        player.AddXP(XpReward);
+        player.AddXP(XpReward);
+        player.AddXP(XpReward);
+        player.AddXP(XpReward);
+        player.AddXP(XpReward);
+        player.AddXP(XpReward);
+        player.AddXP(XpReward);
+        player.AddXP(XpReward);
+        if (money == true ) 
         {
             EconomyManager.Instance.AddMoney(rewardMoney);
             AudioManager.instancia.PlaySFX(AudioManager.instancia.rewardMoney, false);

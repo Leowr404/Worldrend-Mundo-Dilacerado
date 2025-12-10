@@ -18,4 +18,5 @@ MonoBehaviour:
   requiredItems: 5
   collectedItems: 5
   rewardMoney: 250
+  XpReward: 9999999
   money: 1
