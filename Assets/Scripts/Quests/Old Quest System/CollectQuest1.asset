@@ -17,3 +17,5 @@ MonoBehaviour:
   isCompleted: 0
   requiredItems: 5
   collectedItems: 0
+  rewardMoney: 0
+  money: 0
