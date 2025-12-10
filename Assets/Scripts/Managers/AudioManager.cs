@@ -20,6 +20,7 @@ public class AudioManager : MonoBehaviour
 
     [Header("Configuracoes de Sons")]
     public AudioClip purchase;
+    public AudioClip rewardMoney;
     public AudioClip Coletavel;
     public AudioClip Select;
     public AudioClip Hit;

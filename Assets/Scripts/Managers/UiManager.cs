@@ -53,6 +53,7 @@ public class UiManager : MonoBehaviour
             ToggleInventory(false);
     }
 
+
     private void ToggleInventory(bool open)
     {
         playerStatsTab = open;
@@ -125,6 +126,7 @@ public class UiManager : MonoBehaviour
         
     }
 
+
     private void EnqueueLines(List<string> lines)
     {
         foreach (string line in lines)
@@ -179,9 +181,63 @@ public class UiManager : MonoBehaviour
 
     private void ShowOptions(List<DialogueOption> options)
     {
+        // Limpa botões antigos
         foreach (Transform c in optionsContainer)
             Destroy(c.gameObject);
 
+        bool canOfferQuest = pendingQuest != null && !QuestManager.Instance.HasQuest(pendingQuest);
+
+        // =====================================================
+        //    1️⃣ SE EXISTE QUEST PENDENTE → MOSTRAR 2 BOTÕES
+        // =====================================================
+        if (canOfferQuest)
+        {
+            // -------------------------
+            // BOTÃO ACEITAR QUEST
+            // -------------------------
+            GameObject acceptBtn = Instantiate(optionButtonPrefab, optionsContainer);
+            TMP_Text acceptTxt = acceptBtn.GetComponentInChildren<TMP_Text>();
+            acceptTxt.text = "Aceitar Quest";
+
+            acceptBtn.transform.localScale = Vector3.zero;
+            acceptBtn.transform.DOScale(Vector3.one, 0.3f).SetEase(Ease.OutBack);
+
+            acceptBtn.GetComponent<Button>().onClick.AddListener(() =>
+            {
+                QuestManager.Instance.AddQuest(pendingQuest);
+
+                // Remove botões
+                foreach (Transform c in optionsContainer)
+                    Destroy(c.gameObject);
+
+                DisplayNextSentence();
+            });
+
+            // -------------------------
+            // BOTÃO RECUSAR QUEST
+            // -------------------------
+            GameObject declineBtn = Instantiate(optionButtonPrefab, optionsContainer);
+            TMP_Text declineTxt = declineBtn.GetComponentInChildren<TMP_Text>();
+            declineTxt.text = "Recusar";
+
+            declineBtn.transform.localScale = Vector3.zero;
+            declineBtn.transform.DOScale(Vector3.one, 0.3f).SetEase(Ease.OutBack);
+
+            declineBtn.GetComponent<Button>().onClick.AddListener(() =>
+            {
+                // Apenas fecha diálogo
+                foreach (Transform c in optionsContainer)
+                    Destroy(c.gameObject);
+
+                EndDialogue();
+            });
+
+            return;
+        }
+
+        // =====================================================
+        //    2️⃣ SE NÃO É QUEST → MOSTRA OPÇÕES NORMAIS
+        // =====================================================
         foreach (DialogueOption opt in options)
         {
             GameObject btnObj = Instantiate(optionButtonPrefab, optionsContainer);
@@ -192,18 +248,11 @@ public class UiManager : MonoBehaviour
             btnObj.transform.DOScale(Vector3.one, 0.3f).SetEase(Ease.OutBack);
 
             Button btn = btnObj.GetComponent<Button>();
+
             btn.onClick.AddListener(() =>
             {
-                // Mostra respostas
                 EnqueueLines(opt.response);
 
-                // Se aceitar a quest, adiciona e marca como ativa
-                if (opt.acceptQuest && pendingQuest != null)
-                {
-                    QuestManager.Instance.AddQuest(pendingQuest);
-                }
-
-                // Remove opções e continua
                 foreach (Transform c in optionsContainer)
                     Destroy(c.gameObject);
 

@@ -6,10 +6,10 @@ public class EconomyManager : MonoBehaviour
 {
     public static EconomyManager Instance;
 
-    public Action OnMoneyChanged; // Evento
+    public Action OnMoneyChanged; // Evento chamado quando o dinheiro muda
 
     [Header("Configuração")]
-    public int startingMoney = 100;
+    public int startingMoney = 1000;
 
     [Header("UI")]
     public TMP_Text moneyText;
@@ -28,6 +28,13 @@ public class EconomyManager : MonoBehaviour
         UpdateMoneyUI();
     }
 
+    // ===============================
+    //         MÉTODOS PRINCIPAIS
+    // ===============================
+
+    /// <summary>
+    /// Tenta comprar algo. Retorna true se conseguiu.
+    /// </summary>
     public bool TryBuy(int value)
     {
         if (currentMoney >= value)
@@ -41,18 +48,47 @@ public class EconomyManager : MonoBehaviour
         return false;
     }
 
-    public void Sell(int value)
+    /// <summary>
+    /// Adiciona dinheiro (ex: venda, recompensa, drop).
+    /// </summary>
+    public void AddMoney(int amount)
     {
-        currentMoney += value;
+        currentMoney += amount;
         UpdateMoneyUI();
     }
+
+    /// <summary>
+    /// Remove dinheiro diretamente (opcional).
+    /// </summary>
+    public void RemoveMoney(int amount)
+    {
+        currentMoney -= amount;
+
+        if (currentMoney < 0)
+            currentMoney = 0;
+
+        UpdateMoneyUI();
+    }
+
+    /// <summary>
+    /// Usado quando o player vende itens.
+    /// </summary>
+    public void Sell(int value)
+    {
+        AddMoney(value);
+    }
+
+    // ===============================
+    //     ATUALIZAÇÃO DE UI + EVENTO
+    // ===============================
 
     private void UpdateMoneyUI()
     {
         if (moneyText != null)
             moneyText.text = $"{currentMoney}";
 
-        OnMoneyChanged?.Invoke(); // Avisar todo mundo que o dinheiro mudou
+        // Avisar botões e sistemas que dependem do dinheiro
+        OnMoneyChanged?.Invoke();
     }
 
     public int GetMoney() => currentMoney;

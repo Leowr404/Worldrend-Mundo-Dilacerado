@@ -14,6 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Quest
   questName: Collect5Fruits
   description: Quest Do Npc Da Ponte, Coletar 5 Frutas
-  isCompleted: 0
+  isCompleted: 1
   requiredItems: 5
-  collectedItems: 0
+  collectedItems: 5
+  rewardMoney: 250
+  money: 1
