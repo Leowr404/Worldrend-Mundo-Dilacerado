@@ -80,9 +80,9 @@ public class PlayerStats : MonoBehaviour
         float oldMaxHealth = maxHealth;
         float oldMaxStamina = maxStamina;
 
-        maxHealth = 100 + vitality * 25;
-        maxStamina = 200 + endurance * 10;
-        attackPower = 10 + strength * 3 + level * 2;
+        maxHealth = 150 + vitality * 25;
+        maxStamina = 300 + endurance * 10;
+        attackPower = 15 + strength * 3 + level * 2;
         defensePower = 5 + defense * 2;
 
         if (!refill)

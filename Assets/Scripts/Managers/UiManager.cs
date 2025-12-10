@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine.UI;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class UiManager : MonoBehaviour
 {
@@ -14,6 +15,9 @@ public class UiManager : MonoBehaviour
     public Transform optionsContainer;
     public GameObject optionButtonPrefab;
     public GameObject playerStatsPanel;
+    public GameObject backgroundPlayer;
+    public GameObject playerInv;
+    public GameObject playerStats;
     public bool playerStatsTab;
 
     [Header("Typing Effect")]
@@ -33,6 +37,9 @@ public class UiManager : MonoBehaviour
         sentences = new Queue<string>();
         dialoguePanel.SetActive(false);
         playerStatsPanel.SetActive(false);
+        backgroundPlayer.SetActive(false);
+        playerInv.SetActive(false);
+        playerStats.SetActive(false);
         audioManager = AudioManager.instancia;
     }
 
@@ -50,11 +57,26 @@ public class UiManager : MonoBehaviour
     {
         playerStatsTab = open;
         playerStatsPanel.SetActive(open);
+        backgroundPlayer.SetActive(open);
+        playerInv.SetActive(open);
+        playerStats.SetActive(false);
 
         if (open)
             InputManager.Instance.SwitchToUI();
         else
             InputManager.Instance.SwitchToPlayer();
+    }
+
+    public void OpenStats()
+    {
+        Debug.Log("funcionja");
+        playerStats.SetActive(true);
+        playerInv.SetActive(false);
+    }
+    public void CloseStats()
+    {
+        playerStats.SetActive(false);
+        playerInv.SetActive(true);
     }
 
 

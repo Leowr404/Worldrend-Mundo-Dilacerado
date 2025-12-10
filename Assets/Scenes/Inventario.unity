@@ -1651,6 +1651,7 @@ MonoBehaviour:
   questName: Colete 5 Esferas
   amount: 1
   destroyOnCollect: 1
+  itemName: Item Sem Nome
 --- !u!1 &87026264
 GameObject:
   m_ObjectHideFlags: 0
@@ -2576,6 +2577,7 @@ MonoBehaviour:
   questName: Colete 5 Esferas
   amount: 1
   destroyOnCollect: 1
+  itemName: Item Sem Nome
 --- !u!1 &151002845
 GameObject:
   m_ObjectHideFlags: 0
@@ -3561,6 +3563,7 @@ MonoBehaviour:
   questName: Colete 5 Esferas
   amount: 1
   destroyOnCollect: 1
+  itemName: Item Sem Nome
 --- !u!1 &207305771
 GameObject:
   m_ObjectHideFlags: 0
@@ -5020,6 +5023,7 @@ MonoBehaviour:
   questName: Colete 5 Esferas
   amount: 1
   destroyOnCollect: 1
+  itemName: Item Sem Nome
 --- !u!1 &305648650
 GameObject:
   m_ObjectHideFlags: 0
@@ -21425,6 +21429,7 @@ MonoBehaviour:
   questName: Colete 5 Esferas
   amount: 1
   destroyOnCollect: 1
+  itemName: Item Sem Nome
 --- !u!1 &1503168057
 GameObject:
   m_ObjectHideFlags: 0
@@ -29373,7 +29378,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &2097809771
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -29392,7 +29397,7 @@ MonoBehaviour:
   SFXsource: {fileID: 1848803331}
   SFXSlider: {fileID: 214644238}
   MusicSlider: {fileID: 0}
-  Tiro_sound: {fileID: 0}
+  purchase: {fileID: 0}
   Coletavel: {fileID: 0}
   Select: {fileID: 0}
   Hit: {fileID: 0}
@@ -29401,8 +29406,10 @@ MonoBehaviour:
   BossDeath: {fileID: 0}
   backgroundMusicMenu: {fileID: 0}
   backgroundMusicGameplay: {fileID: 0}
+  ClickButton: {fileID: 0}
   MouseEnter: {fileID: 0}
   MouseClick: {fileID: 0}
+  npcTalks: []
 --- !u!4 &2097809772
 Transform:
   m_ObjectHideFlags: 0

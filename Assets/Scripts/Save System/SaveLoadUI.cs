@@ -18,9 +18,7 @@ public class SaveLoadUI : MonoBehaviour
     private void Awake()
     {
         Instance = this;
-
         panel.SetActive(false);
-
         // Liga eventos dos botões
         saveButton.onClick.AddListener(OnSavePressed);
         loadButton.onClick.AddListener(OnLoadPressed);
@@ -38,6 +36,7 @@ public class SaveLoadUI : MonoBehaviour
 
     public void Open()
     {
+        Debug.Log("abriu");
         panel.SetActive(true);
         RefreshAll();
         selectedSlot = -1;
