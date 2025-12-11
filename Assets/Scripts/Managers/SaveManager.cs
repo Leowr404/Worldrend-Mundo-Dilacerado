@@ -17,14 +17,7 @@ public class SaveManager : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-
         Instance = this;
-        DontDestroyOnLoad(gameObject);
     }
 
     private void Update()
@@ -78,7 +71,7 @@ public class SaveManager : MonoBehaviour
         // SALVAR EM ARQUIVO
         SaveSystem.Save(slotIndex, json);
 
-        Debug.Log($"💾 Slot {slotIndex} salvo!");
+        //Debug.Log($"💾 Slot {slotIndex} salvo!");
     }
 
     // ======================================================
@@ -90,7 +83,7 @@ public class SaveManager : MonoBehaviour
 
         if (string.IsNullOrEmpty(json))
         {
-            Debug.LogWarning($"⚠️ Nenhum save encontrado no slot {slotIndex}");
+            //Debug.LogWarning($"⚠️ Nenhum save encontrado no slot {slotIndex}");
             return;
         }
 
@@ -98,7 +91,7 @@ public class SaveManager : MonoBehaviour
 
         if (data == null)
         {
-            Debug.LogError("SaveManager: Erro ao decodificar SaveData!");
+           // Debug.LogError("SaveManager: Erro ao decodificar SaveData!");
             return;
         }
 
@@ -138,7 +131,7 @@ public class SaveManager : MonoBehaviour
         // RESTAURAR TEMPO DE JOGO
         playtimeCounter = data.playTimeSeconds;
 
-        Debug.Log($"📂 Slot {slotIndex} carregado!");
+        //Debug.Log($"📂 Slot {slotIndex} carregado!");
     }
 
     // ======================================================
@@ -159,7 +152,7 @@ public class SaveManager : MonoBehaviour
     public void DeleteSlot(int slotIndex)
     {
         SaveSystem.Delete(slotIndex);
-        Debug.Log($"🗑️ Slot {slotIndex} deletado!");
+        //Debug.Log($"🗑️ Slot {slotIndex} deletado!");
     }
 
     // ======================================================

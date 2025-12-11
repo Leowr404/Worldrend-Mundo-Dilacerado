@@ -29,7 +29,7 @@ public class Quest : ScriptableObject
     }
     public void GiveRewards(PlayerStats player)
     {
-        Debug.Log($"🎁 Recompensa entregue pela quest: {questName}");
+        //Debug.Log($"🎁 Recompensa entregue pela quest: {questName}");
         player.AddXP(XpReward);
         player.AddXP(XpReward);
         player.AddXP(XpReward);

@@ -18,8 +18,7 @@ public class EconomyManager : MonoBehaviour
 
     void Awake()
     {
-        if (Instance == null) Instance = this;
-        else Destroy(gameObject);
+        Instance = this; 
     }
 
     void Start()
@@ -44,7 +43,7 @@ public class EconomyManager : MonoBehaviour
             return true;
         }
 
-        Debug.Log("⚠️ Dinheiro insuficiente!");
+        //Debug.Log("⚠️ Dinheiro insuficiente!");
         return false;
     }
 

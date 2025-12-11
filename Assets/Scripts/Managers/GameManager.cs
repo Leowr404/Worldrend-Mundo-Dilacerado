@@ -37,13 +37,13 @@ public class GameManager : MonoBehaviour
         {
             // Libera o mouse
             Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
+           // Cursor.visible = true;
             pauseCanvas.SetActive(true);
         }
         else
         {
             Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
+            //Cursor.visible = false;
             pauseCanvas.SetActive(false);
         }
     }

@@ -41,6 +41,7 @@ public class UiManager : MonoBehaviour
         playerInv.SetActive(false);
         playerStats.SetActive(false);
         audioManager = AudioManager.instancia;
+        ToggleInventory(false);
     }
 
     private void Update()
@@ -70,7 +71,7 @@ public class UiManager : MonoBehaviour
 
     public void OpenStats()
     {
-        Debug.Log("funcionja");
+        //Debug.Log("funcionja");
         playerStats.SetActive(true);
         playerInv.SetActive(false);
     }

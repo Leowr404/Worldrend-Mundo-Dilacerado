@@ -1,4 +1,4 @@
-﻿using UnityEditor.Purchasing;
+﻿
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -22,7 +22,7 @@ public class ShopItem : MonoBehaviour
     {
         if (EconomyManager.Instance.TryBuy(price))
         {
-            Debug.Log($"🛒 Item comprado: {itemName}");
+            //Debug.Log($"🛒 Item comprado: {itemName}");
             audioManager.PlaySFX(audioManager.purchase, false);
         }
 

@@ -57,7 +57,7 @@ public class HealthPlayer : MonoBehaviour
     {
         if(currentHealth <= 0)
         {
-            Debug.Log("Player Morreu");
+            //Debug.Log("Player Morreu");
 
         }
     }

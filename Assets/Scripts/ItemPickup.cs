@@ -18,7 +18,7 @@ public class ItemPickup : MonoBehaviour
             if (health != null)
             {
                 health.TakeDamage(Random.Range(50,5)); // aplica dano
-                Debug.Log("Playter Atingido");
+                //Debug.Log("Playter Atingido");
             }
 
         }
@@ -27,7 +27,7 @@ public class ItemPickup : MonoBehaviour
     // Lógica da coleta
     private void Collect(GameObject player)
     {
-        Debug.Log("Coletou: " + itemName + " x" + amount);
+        //Debug.Log("Coletou: " + itemName + " x" + amount);
 
 
         // 🔹 Aqui você pode ligar ao inventário do player futuramente:

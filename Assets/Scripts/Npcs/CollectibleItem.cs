@@ -19,12 +19,12 @@ public class CollectibleItem : MonoBehaviour
         if (quest != null && !quest.isCompleted)
         {
             quest.AddProgress(amount);
-            Debug.Log($"🧺 Coletado +{amount} para a quest: {quest.questName} ({quest.collectedItems}/{quest.requiredItems})");
+            //Debug.Log($"🧺 Coletado +{amount} para a quest: {quest.questName} ({quest.collectedItems}/{quest.requiredItems})");
 
             // Verifica se completou
             if (quest.isCompleted)
             {
-                Debug.Log($"✅ Quest '{quest.questName}' completada!");
+                //Debug.Log($"✅ Quest '{quest.questName}' completada!");
                 QuestManager.Instance.CompleteQuest(quest);
             }
 

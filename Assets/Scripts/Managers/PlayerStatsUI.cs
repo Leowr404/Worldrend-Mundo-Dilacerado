@@ -30,7 +30,7 @@ public class PlayerStatsUI : MonoBehaviour
         player = FindAnyObjectByType<PlayerStats>();
         if (player == null)
         {
-            Debug.LogError("⚠️ PlayerStats não encontrado na cena!");
+            //Debug.LogError("⚠️ PlayerStats não encontrado na cena!");
             enabled = false;
             return;
         }

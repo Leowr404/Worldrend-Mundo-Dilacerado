@@ -20,7 +20,7 @@ public class QuestManager : MonoBehaviour
         quest.ResetProgress(); // ✅ Garante que não inicie completa
         activeQuests.Add(quest);
 
-        Debug.Log($"📜 Nova quest adicionada: {quest.questName}");
+        //Debug.Log($"📜 Nova quest adicionada: {quest.questName}");
     }
 
     public bool HasQuest(Quest quest)
@@ -32,7 +32,7 @@ public class QuestManager : MonoBehaviour
     {
         if (quest == null) return;
         quest.isCompleted = true;
-        Debug.Log($"✅ Quest concluída: {quest.questName}");
+        //Debug.Log($"✅ Quest concluída: {quest.questName}");
         PlayerStats player = FindAnyObjectByType<PlayerStats>();
         if (player != null)
             quest.GiveRewards(player);
