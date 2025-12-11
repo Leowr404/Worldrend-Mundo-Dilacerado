@@ -15,6 +15,10 @@ public class EconomyManager : MonoBehaviour
     public TMP_Text moneyText;
 
     private int currentMoney;
+    public GameObject potionLife;
+    public GameObject potionStamina;
+    public GameObject loot;
+    public GameObject Spawnloot;
 
     void Awake()
     {

@@ -16,6 +16,7 @@ public class ShopItem : MonoBehaviour
         UpdateButtonState();
         EconomyManager.Instance.OnMoneyChanged += UpdateButtonState;
         audioManager = AudioManager.instancia;
+
     }
 
     public void Buy()

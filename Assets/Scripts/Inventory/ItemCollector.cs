@@ -5,6 +5,11 @@ public class ItemCollector : MonoBehaviour
     [Header("Referência ao Inventário")]
     public InventorySlot[] inventorySlots; // arraste seus slots aqui no Inspector
     public int maxStack = 5; // máximo de itens empilháveis
+    AudioManager audioManager;
+    public void Start()
+    {
+        audioManager = AudioManager.instancia;
+    }
 
     private void OnTriggerEnter(Collider other)
     {
@@ -21,6 +26,7 @@ public class ItemCollector : MonoBehaviour
         if (added)
         {
             Debug.Log($"Item coletado: {item.itemName}");
+            audioManager.PlaySFX(AudioManager.instancia.Coletavel);
             Destroy(other.gameObject); // remove o item da cena
         }
         else

@@ -39,7 +39,8 @@ public class FSM_Enemy_Combate : StateMachineBehaviour
               
                 GameObject.Destroy(novoProjetil, 3);
 
-                contadorDisparo = 0f;           
+                contadorDisparo = 0f;
+                AudioManager.instancia.PlaySFX(AudioManager.instancia.purchase);
             }
             animator.transform.GetComponent<Animator>().SetFloat("distancia", Vector3.Distance(animator.transform.position,Player.transform.position));
         }
