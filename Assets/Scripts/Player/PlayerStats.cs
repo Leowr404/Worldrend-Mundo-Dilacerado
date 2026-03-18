@@ -178,16 +178,19 @@ public class PlayerStats : MonoBehaviour
     public void AddXP(int amount)
     {
         currentXP += Mathf.RoundToInt(amount * xpMultiplier);
-        if (currentXP >= xpToNextLevel)
+
+        // ✅ Loop pra caso ganhe XP suficiente pra múltiplos levels de uma vez
+        while (currentXP >= xpToNextLevel)
             LevelUp();
+
         UpdateUI();
     }
 
     private void LevelUp()
     {
-        currentXP -= xpToNextLevel;
         level++;
-        xpToNextLevel = Mathf.RoundToInt(100 * Mathf.Pow(1.35f, level));
+        currentXP = 0; // ✅ reseta o XP completamente
+        xpToNextLevel = level * 100;
         statPoints += 3;
         RecalculateStats(true);
 

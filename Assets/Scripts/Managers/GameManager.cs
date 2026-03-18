@@ -9,8 +9,6 @@ public class GameManager : MonoBehaviour
     //=======//
     public GameObject pauseCanvas;
     public GameObject settingsGame;
-    public GameObject statsUI;
-    public GameObject invUI;
     void Start()
     {
         Time.timeScale = 1.0f;
