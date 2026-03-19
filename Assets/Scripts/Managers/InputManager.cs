@@ -8,6 +8,7 @@ public class InputManager : MonoBehaviour
 
     public Vector2 Move { get; private set; }
     public bool Attack { get; private set; }
+    public bool Attack2 { get; private set; }
     public bool Jump { get; private set; }
     public bool Sprint { get; private set; }
     public bool LockOn { get; private set; }
@@ -62,6 +63,7 @@ public class InputManager : MonoBehaviour
 
         // Lê valores crus do Input System
         Attack = inputActions.Player.Attack.WasPressedThisFrame();
+        Attack2 = inputActions.Player.Attack2.WasPressedThisFrame();
         Move = inputActions.Player.Move.ReadValue<Vector2>();
         Jump = inputActions.Player.Jump.WasPressedThisFrame();
         Sprint = inputActions.Player.Sprint.IsPressed();
