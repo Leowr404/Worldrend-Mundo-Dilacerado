@@ -17,3 +17,7 @@ MonoBehaviour:
   itemSprite: {fileID: 0}
   isStackable: 0
   descricaoItem: "Armadura \xC9pica"
+  itemType: 2
+  healAmount: 0
+  attackBonus: 0
+  defenseBonus: 10

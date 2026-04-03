@@ -17,3 +17,7 @@ MonoBehaviour:
   itemSprite: {fileID: 0}
   isStackable: 0
   descricaoItem: Espada Comum
+  itemType: 2
+  healAmount: 0
+  attackBonus: 10
+  defenseBonus: 0

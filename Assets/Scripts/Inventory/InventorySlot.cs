@@ -156,7 +156,30 @@ public class InventorySlot :
         else
             from.ClearSlot();
     }
+    public void RemoveOneItem()
+    {
+        Debug.Log("RemoveOneItem entrou");
 
+        if (currentItem == null)
+        {
+            Debug.LogWarning("currentItem está null em RemoveOneItem");
+            return;
+        }
+
+        Debug.Log("Antes de remover -> item: " + currentItem.itemName + " | quantidade: " + itemCount);
+
+        if (isStackable && itemCount > 1)
+        {
+            itemCount--;
+            itemCountText.text = itemCount.ToString();
+            Debug.Log("Depois de remover -> nova quantidade: " + itemCount);
+        }
+        else
+        {
+            Debug.Log("Limpando slot");
+            ClearSlot();
+        }
+    }
     public void DeleteItemConfirmed()
     {
         ClearSlot();

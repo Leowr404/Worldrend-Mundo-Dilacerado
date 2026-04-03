@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 public class HealthPlayer : MonoBehaviour
 {
-    [Header("Configura��o de Vida")]
+    [Header("Configuracao de Vida")]
     [SerializeField] private int maxHealth = 100;
     [SerializeField] private int currentHealth;
 
@@ -16,7 +16,7 @@ public class HealthPlayer : MonoBehaviour
         UpdateHealthBar();
     }
 
-    // Fun��o para levar dano
+    // Funcao para levar dano
     public void TakeDamage(int amount)
     {
         currentHealth -= amount;
@@ -24,21 +24,28 @@ public class HealthPlayer : MonoBehaviour
         UpdateHealthBar();
     }
 
-    // Fun��o para curar
+    // Funcao para curar
     public void Heal(int amount)
     {
+
         currentHealth += amount;
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+
+
         UpdateHealthBar();
     }
 
-    private void UpdateHealthBar()
+    private void UpdateHealthBar() // Atualiza a barra de vida
+
     {
-        if (healthBar != null)
+        if (healthBar == null)
         {
-            healthBar.value = (float)currentHealth / maxHealth;  
+            Debug.LogWarning("healthBar está NULL");
+            return;
         }
-        
+
+        healthBar.value = currentHealth;
+
     }
     private void Update()
     {

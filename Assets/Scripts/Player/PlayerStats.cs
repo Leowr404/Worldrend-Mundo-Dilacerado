@@ -54,6 +54,10 @@ public class PlayerStats : MonoBehaviour
     public TextMeshProUGUI levelText;
     public TextMeshProUGUI xpText;
     public TextMeshProUGUI levelUpText;
+   
+    [Header("Buffs Temporários")]       // buff que aumenta a stamina por um tempo 60 segundos
+    private Coroutine staminaBuffCoroutine;
+    private int originalMaxStamina;
 
     private bool isConsumingStamina = false;
 
@@ -236,5 +240,43 @@ public class PlayerStats : MonoBehaviour
         attribute++;
         statPoints--;
         RecalculateStats(false);
+    }
+
+    public void ApplyStaminaBuff(int bonus, float duration)     // Método para aplicar um buff temporário de stamina
+    {
+        Debug.Log("Buff de stamina aplicado");
+
+        // Se já tiver buff ativo, cancela o anterior
+        if (staminaBuffCoroutine != null)
+        {
+            StopCoroutine(staminaBuffCoroutine);
+            ResetStaminaBuff();
+        }
+
+        staminaBuffCoroutine = StartCoroutine(StaminaBuffRoutine(bonus, duration));
+    }
+
+    private IEnumerator StaminaBuffRoutine(int bonus, float duration)   // Coroutine que aplica o buff e depois reseta
+    {
+        originalMaxStamina = maxStamina;
+
+        maxStamina += bonus;
+        currentStamina = Mathf.Clamp(currentStamina, 0, maxStamina);
+
+        Debug.Log("Stamina aumentada para: " + maxStamina);
+
+        yield return new WaitForSeconds(duration);
+
+        ResetStaminaBuff();
+    }
+
+    private void ResetStaminaBuff()       // Método para resetar o buff de stamina, voltando ao valor original
+    {
+        maxStamina = originalMaxStamina;
+        currentStamina = Mathf.Clamp(currentStamina, 0, maxStamina);
+
+        Debug.Log("Buff de stamina terminou. Voltou para: " + maxStamina);
+
+        staminaBuffCoroutine = null;
     }
 }

@@ -17,3 +17,9 @@ MonoBehaviour:
   itemSprite: {fileID: 661498520, guid: 92630331353bc5846b603ef9b2b3c426, type: 3}
   isStackable: 1
   descricaoItem: "Por\xE7ao de Cura, recupera uma parte do HP"
+  itemType: 0
+  healAmount: 100
+  attackBonus: 0
+  defenseBonus: 0
+  staminaBonus: 0
+  staminaDuration: 0

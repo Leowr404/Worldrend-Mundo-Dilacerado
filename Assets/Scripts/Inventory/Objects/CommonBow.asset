@@ -17,3 +17,7 @@ MonoBehaviour:
   itemSprite: {fileID: 21300000, guid: 51311a794afa1df4c8f942808a0327dd, type: 3}
   isStackable: 0
   descricaoItem: 'Arco e Flecha Comum '
+  itemType: 1
+  healAmount: 0
+  attackBonus: 10
+  defenseBonus: 0
