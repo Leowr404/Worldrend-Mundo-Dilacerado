@@ -3892,7 +3892,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 732420522}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 441.72888, y: 10, z: 223.02696}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -3903,7 +3903,7 @@ Transform:
   - {fileID: 1300324999}
   - {fileID: 1271080680}
   - {fileID: 752488157}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 2045007619}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &752488156
 GameObject:
@@ -11486,7 +11486,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 0}
+    m_TransformParent: {fileID: 2045007619}
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 514c60ae92ca21c4bba61116de5a6814, type: 3}
       propertyPath: m_LocalPosition.x
@@ -11599,6 +11599,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 514c60ae92ca21c4bba61116de5a6814, type: 3}
       propertyPath: m_Name
       value: blocagem01
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 514c60ae92ca21c4bba61116de5a6814, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8745307231860170900, guid: 514c60ae92ca21c4bba61116de5a6814, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
@@ -11990,7 +11994,9 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 732420523}
+  - {fileID: 2043692518}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2092962426
@@ -12179,5 +12185,3 @@ SceneRoots:
   m_Roots:
   - {fileID: 402822220}
   - {fileID: 2045007619}
-  - {fileID: 732420523}
-  - {fileID: 2043692517}
