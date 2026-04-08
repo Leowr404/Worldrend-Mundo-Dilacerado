@@ -15,11 +15,11 @@ public class EnemyHitHeavy : MonoBehaviour
     [Header("Ragdoll")]
     public float ragdollDuration = 1.8f;
 
-    //[Header("Som")]
-    //public AudioClip heavyHitSound;
+    [Header("Som")]
+    public AudioClip heavyHitSound;
 
     private Rigidbody rb;
-    //private AudioSource audioSource;
+    private AudioSource audioSource;
     private Animator animator;
     private bool isInRagdoll = false;
     private UnityEngine.AI.NavMeshAgent navAgent;
@@ -28,9 +28,12 @@ public class EnemyHitHeavy : MonoBehaviour
     {
        // audioManager = AudioManager.instancia;
         rb = GetComponent<Rigidbody>();
-        //audioSource = GetComponent<AudioSource>();
+        audioSource = GetComponent<AudioSource>();
         animator = GetComponent<Animator>();
         navAgent = GetComponent<UnityEngine.AI.NavMeshAgent>();
+        audioSource.spatialBlend = 1f;
+        audioSource.maxDistance = 60f;
+        audioSource.rolloffMode = AudioRolloffMode.Linear;
 
         rb.isKinematic = true;
         rb.constraints = RigidbodyConstraints.FreezeAll;
@@ -50,6 +53,9 @@ public class EnemyHitHeavy : MonoBehaviour
 
         if (AudioManager.instancia != null)
             AudioManager.instancia.PlaySFX(AudioManager.instancia.HeavyHit);
+        //AudioManager.instancia.PlaySFX(AudioManager.instancia.Scream);
+        if (heavyHitSound != null)
+            audioSource.PlayOneShot(heavyHitSound);
 
         rb.isKinematic = false;
         rb.constraints = RigidbodyConstraints.None;

@@ -22,6 +22,7 @@ public class AudioManager : MonoBehaviour
     public AudioClip purchase;
     public AudioClip rewardMoney;
     public AudioClip HeavyHit;
+    public AudioClip Scream;
     public AudioClip Coletavel;
     public AudioClip Select;
     public AudioClip Hit;

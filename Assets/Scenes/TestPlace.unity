@@ -1423,7 +1423,7 @@ Rigidbody:
   m_Mass: 1
   m_LinearDamping: 0
   m_AngularDamping: 0.01
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_CenterOfMass: {x: 0, y: 2, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
   m_IncludeLayers:
@@ -1432,7 +1432,7 @@ Rigidbody:
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
-  m_ImplicitCom: 1
+  m_ImplicitCom: 0
   m_ImplicitTensor: 1
   m_UseGravity: 0
   m_IsKinematic: 1
@@ -1451,10 +1451,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 489e0246bdc4a664d9097ec8897e3206, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyHitHeavy
-  knockbackForce: 25
+  knockbackForce: 100
   upwardForce: 5
   torqueForce: 50
   ragdollDuration: 2
+  heavyHitSound: {fileID: 8300000, guid: 0099e36828b77e5439b5f86c167392d0, type: 3}
 --- !u!82 &30971194
 AudioSource:
   m_ObjectHideFlags: 0
@@ -1477,9 +1478,9 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 500
+  MaxDistance: 150
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -4052,7 +4053,7 @@ Rigidbody:
   m_Mass: 1
   m_LinearDamping: 0
   m_AngularDamping: 0.01
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_CenterOfMass: {x: 0, y: 2, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
   m_IncludeLayers:
@@ -4061,7 +4062,7 @@ Rigidbody:
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
-  m_ImplicitCom: 1
+  m_ImplicitCom: 0
   m_ImplicitTensor: 1
   m_UseGravity: 0
   m_IsKinematic: 1
@@ -4080,10 +4081,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 489e0246bdc4a664d9097ec8897e3206, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyHitHeavy
-  knockbackForce: 25
+  knockbackForce: 100
   upwardForce: 5
   torqueForce: 50
   ragdollDuration: 2
+  heavyHitSound: {fileID: 8300000, guid: 0099e36828b77e5439b5f86c167392d0, type: 3}
 --- !u!82 &81017252
 AudioSource:
   m_ObjectHideFlags: 0
@@ -4096,7 +4098,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
@@ -4106,9 +4108,9 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 500
+  MaxDistance: 150
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -28864,7 +28866,7 @@ Rigidbody:
   m_Mass: 1
   m_LinearDamping: 0
   m_AngularDamping: 0.01
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_CenterOfMass: {x: 0, y: 2, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
   m_IncludeLayers:
@@ -28873,7 +28875,7 @@ Rigidbody:
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
-  m_ImplicitCom: 1
+  m_ImplicitCom: 0
   m_ImplicitTensor: 1
   m_UseGravity: 0
   m_IsKinematic: 1
@@ -28892,10 +28894,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 489e0246bdc4a664d9097ec8897e3206, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyHitHeavy
-  knockbackForce: 25
+  knockbackForce: 100
   upwardForce: 5
   torqueForce: 50
   ragdollDuration: 2
+  heavyHitSound: {fileID: 8300000, guid: 0099e36828b77e5439b5f86c167392d0, type: 3}
 --- !u!82 &703106980
 AudioSource:
   m_ObjectHideFlags: 0
@@ -28918,9 +28921,9 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 500
+  MaxDistance: 150
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -29953,7 +29956,7 @@ Rigidbody:
   m_Mass: 1
   m_LinearDamping: 0
   m_AngularDamping: 0.01
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_CenterOfMass: {x: 0, y: 2, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
   m_IncludeLayers:
@@ -29962,7 +29965,7 @@ Rigidbody:
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
-  m_ImplicitCom: 1
+  m_ImplicitCom: 0
   m_ImplicitTensor: 1
   m_UseGravity: 0
   m_IsKinematic: 1
@@ -29981,10 +29984,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 489e0246bdc4a664d9097ec8897e3206, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyHitHeavy
-  knockbackForce: 25
+  knockbackForce: 100
   upwardForce: 5
   torqueForce: 50
   ragdollDuration: 2
+  heavyHitSound: {fileID: 8300000, guid: 0099e36828b77e5439b5f86c167392d0, type: 3}
 --- !u!82 &719798033
 AudioSource:
   m_ObjectHideFlags: 0
@@ -30007,9 +30011,9 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 500
+  MaxDistance: 150
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -32091,7 +32095,7 @@ Rigidbody:
   m_Mass: 1
   m_LinearDamping: 0
   m_AngularDamping: 0.01
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_CenterOfMass: {x: 0, y: 2, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
   m_IncludeLayers:
@@ -32100,7 +32104,7 @@ Rigidbody:
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
-  m_ImplicitCom: 1
+  m_ImplicitCom: 0
   m_ImplicitTensor: 1
   m_UseGravity: 0
   m_IsKinematic: 1
@@ -32119,10 +32123,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 489e0246bdc4a664d9097ec8897e3206, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyHitHeavy
-  knockbackForce: 25
+  knockbackForce: 100
   upwardForce: 5
   torqueForce: 50
   ragdollDuration: 2
+  heavyHitSound: {fileID: 8300000, guid: 0099e36828b77e5439b5f86c167392d0, type: 3}
 --- !u!82 &778993710
 AudioSource:
   m_ObjectHideFlags: 0
@@ -32145,9 +32150,9 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 500
+  MaxDistance: 150
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -44615,7 +44620,7 @@ MonoBehaviour:
   strength: 10
   defense: 10
   vitality: 10
-  endurance: 10
+  endurance: 50
   Lucky: 5
   maxHealth: 0
   currentHealth: 0
@@ -44625,7 +44630,7 @@ MonoBehaviour:
   defensePower: 0
   healthRegenAmount: 15
   healthRegenInterval: 5
-  staminaRegenRate: 300
+  staminaRegenRate: 600
   regenDelay: 1
   combatCooldown: 5
   sprintCostPerSecond: 1
@@ -45348,7 +45353,7 @@ Rigidbody:
   m_Mass: 1
   m_LinearDamping: 0
   m_AngularDamping: 0.01
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_CenterOfMass: {x: 0, y: 2, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
   m_IncludeLayers:
@@ -45357,7 +45362,7 @@ Rigidbody:
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
-  m_ImplicitCom: 1
+  m_ImplicitCom: 0
   m_ImplicitTensor: 1
   m_UseGravity: 0
   m_IsKinematic: 1
@@ -45376,10 +45381,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 489e0246bdc4a664d9097ec8897e3206, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyHitHeavy
-  knockbackForce: 25
+  knockbackForce: 100
   upwardForce: 5
   torqueForce: 50
   ragdollDuration: 2
+  heavyHitSound: {fileID: 8300000, guid: 0099e36828b77e5439b5f86c167392d0, type: 3}
 --- !u!82 &1112205407
 AudioSource:
   m_ObjectHideFlags: 0
@@ -45402,9 +45408,9 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 500
+  MaxDistance: 150
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -63418,7 +63424,7 @@ Rigidbody:
   m_Mass: 1
   m_LinearDamping: 0
   m_AngularDamping: 0.01
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_CenterOfMass: {x: 0, y: 2, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
   m_IncludeLayers:
@@ -63427,7 +63433,7 @@ Rigidbody:
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
-  m_ImplicitCom: 1
+  m_ImplicitCom: 0
   m_ImplicitTensor: 1
   m_UseGravity: 0
   m_IsKinematic: 1
@@ -63446,10 +63452,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 489e0246bdc4a664d9097ec8897e3206, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyHitHeavy
-  knockbackForce: 25
+  knockbackForce: 100
   upwardForce: 5
   torqueForce: 50
   ragdollDuration: 2
+  heavyHitSound: {fileID: 8300000, guid: 0099e36828b77e5439b5f86c167392d0, type: 3}
 --- !u!82 &1554962378
 AudioSource:
   m_ObjectHideFlags: 0
@@ -63472,9 +63479,9 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 500
+  MaxDistance: 150
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -90976,7 +90983,7 @@ Rigidbody:
   m_Mass: 1
   m_LinearDamping: 0
   m_AngularDamping: 0.01
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_CenterOfMass: {x: 0, y: 2, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
   m_IncludeLayers:
@@ -90985,7 +90992,7 @@ Rigidbody:
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
-  m_ImplicitCom: 1
+  m_ImplicitCom: 0
   m_ImplicitTensor: 1
   m_UseGravity: 0
   m_IsKinematic: 1
@@ -91004,10 +91011,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 489e0246bdc4a664d9097ec8897e3206, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyHitHeavy
-  knockbackForce: 25
+  knockbackForce: 100
   upwardForce: 5
   torqueForce: 50
   ragdollDuration: 2
+  heavyHitSound: {fileID: 8300000, guid: 0099e36828b77e5439b5f86c167392d0, type: 3}
 --- !u!82 &2063183832
 AudioSource:
   m_ObjectHideFlags: 0
@@ -91030,9 +91038,9 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 500
+  MaxDistance: 150
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -92332,7 +92340,8 @@ MonoBehaviour:
   MusicSlider: {fileID: 483766168}
   purchase: {fileID: 8300000, guid: 9bfca597c7b75f64b92d0d9a8b1ec032, type: 3}
   rewardMoney: {fileID: 8300000, guid: 0902bc94530ba744db0ed5e41fc39296, type: 3}
-  HeavyHit: {fileID: 8300000, guid: 4faf30f83b004e140b3d9b551d7ab598, type: 3}
+  HeavyHit: {fileID: 8300000, guid: 3e9e360facfffd6479e8384b5aef4c04, type: 3}
+  Scream: {fileID: 8300000, guid: e9e9ba1e4a78f1349926f780352764a5, type: 3}
   Coletavel: {fileID: 8300000, guid: 449bea4c4b1e98243922971af3e6305f, type: 3}
   Select: {fileID: 0}
   Hit: {fileID: 0}
