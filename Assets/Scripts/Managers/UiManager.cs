@@ -1,0 +1,281 @@
+﻿using DG.Tweening;
+using System.Collections;
+using System.Collections.Generic;
+using TMPro;
+using UnityEngine.UI;
+using UnityEngine;
+using UnityEngine.InputSystem;
+
+public class UiManager : MonoBehaviour
+{
+    [Header("UI Elements")]
+    public GameObject dialoguePanel;
+    public TMP_Text speakerNameText;
+    public TMP_Text dialogueText;
+    public Transform optionsContainer;
+    public GameObject optionButtonPrefab;
+    public GameObject playerStatsPanel;
+    public GameObject backgroundPlayer;
+    public GameObject playerInv;
+    public GameObject playerStats;
+    public bool playerStatsTab;
+
+    [Header("Typing Effect")]
+    public float charInterval = 0.03f;
+    public float jumpPower = 90f;
+    public float jumpDuration = 0.15f;
+
+    private Queue<string> sentences;
+    private Sequence typingSequence;
+
+    private DialogueData currentDialogue;
+    private Quest pendingQuest;
+    AudioManager audioManager;
+
+    private void Awake()
+    {
+        sentences = new Queue<string>();
+        dialoguePanel.SetActive(false);
+        playerStatsPanel.SetActive(false);
+        backgroundPlayer.SetActive(false);
+        playerInv.SetActive(false);
+        playerStats.SetActive(false);
+        audioManager = AudioManager.instancia;
+        ToggleInventory(false);
+    }
+
+    private void Update()
+    {
+        if (InputManager.Instance.OpenInventory && !playerStatsTab)
+            ToggleInventory(true);
+
+        // fechar inventário
+        if (InputManager.Instance.CloseInventory && playerStatsTab)
+            ToggleInventory(false);
+    }
+
+
+    private void ToggleInventory(bool open)
+    {
+        playerStatsTab = open;
+        playerStatsPanel.SetActive(open);
+        backgroundPlayer.SetActive(open);
+        playerInv.SetActive(open);
+        playerStats.SetActive(false);
+
+        if (open)
+            InputManager.Instance.SwitchToUI();
+        else
+            InputManager.Instance.SwitchToPlayer();
+    }
+
+    public void OpenStats()
+    {
+        //Debug.Log("funcionja");
+        playerStats.SetActive(true);
+        playerInv.SetActive(false);
+    }
+    public void CloseStats()
+    {
+        playerStats.SetActive(false);
+        playerInv.SetActive(true);
+    }
+
+
+    public void StartDialogue(DialogueData data)
+    {
+        if (data == null)
+        {
+            Debug.LogError("❌ DialogueData não atribuído no NPC!");
+            return;
+        }
+
+        currentDialogue = data;
+        pendingQuest = data.quest;
+
+        dialoguePanel.SetActive(true);
+        speakerNameText.text = data.npcName;
+
+        dialoguePanel.transform.localScale = Vector3.zero;
+        dialoguePanel.transform.DOScale(Vector3.one, 0.3f).SetEase(Ease.OutBack);
+
+        sentences.Clear();
+
+        // 🔍 Lógica de qual fala usar
+        if (data.quest != null)
+        {
+            bool hasQuest = QuestManager.Instance.HasQuest(data.quest);
+            bool isCompleted = data.quest.isCompleted;
+
+            if (!hasQuest)
+                EnqueueLines(data.beforeQuest);  // antes de aceitar
+            else if (hasQuest && !isCompleted)
+                EnqueueLines(data.duringQuest); // em progresso
+            else
+                EnqueueLines(data.afterQuest);  // depois de completa
+        }
+        else
+        {
+            EnqueueLines(data.lines);
+        }
+
+        // ⚠ Se não carregou nenhuma fala, usa as falas básicas
+        if (sentences.Count == 0)
+            EnqueueLines(data.lines);
+
+        DisplayNextSentence();
+        
+    }
+
+
+    private void EnqueueLines(List<string> lines)
+    {
+        foreach (string line in lines)
+            sentences.Enqueue(line);
+    }
+
+    public void DisplayNextSentence()
+    {
+        if (sentences.Count == 0)
+        {
+            // Só mostra opções (ex: aceitar quest) se ainda não foi aceita
+            if (currentDialogue != null && currentDialogue.options != null &&
+                currentDialogue.options.Count > 0 &&
+                (currentDialogue.quest == null || !QuestManager.Instance.HasQuest(currentDialogue.quest)))
+            {
+                ShowOptions(currentDialogue.options);
+                return;
+            }
+
+            EndDialogue();
+            return;
+        }
+
+        string sentence = sentences.Dequeue();
+
+        dialogueText.text = sentence;
+        dialogueText.maxVisibleCharacters = 0;
+
+        if (typingSequence != null) typingSequence.Kill();
+        typingSequence = DOTween.Sequence();
+
+        for (int i = 0; i < sentence.Length; i++)
+        {
+            int index = i;
+            typingSequence.AppendCallback(() =>
+            {
+                dialogueText.maxVisibleCharacters = index + 1;
+                dialogueText.ForceMeshUpdate();
+                var animator = new DOTweenTMPAnimator(dialogueText);
+                if (index < animator.textInfo.characterCount)
+                {
+                    animator
+                        .DOOffsetChar(index, new Vector3(0, jumpPower, 0), jumpDuration)
+                        .SetEase(Ease.OutQuad)
+                        .SetLoops(2, LoopType.Yoyo);
+                }
+            });
+            typingSequence.AppendInterval(charInterval);
+            
+        }
+    }
+
+    private void ShowOptions(List<DialogueOption> options)
+    {
+        // Limpa botões antigos
+        foreach (Transform c in optionsContainer)
+            Destroy(c.gameObject);
+
+        bool canOfferQuest = pendingQuest != null && !QuestManager.Instance.HasQuest(pendingQuest);
+
+        // =====================================================
+        //    1️⃣ SE EXISTE QUEST PENDENTE → MOSTRAR 2 BOTÕES
+        // =====================================================
+        if (canOfferQuest)
+        {
+            // -------------------------
+            // BOTÃO ACEITAR QUEST
+            // -------------------------
+            GameObject acceptBtn = Instantiate(optionButtonPrefab, optionsContainer);
+            TMP_Text acceptTxt = acceptBtn.GetComponentInChildren<TMP_Text>();
+            acceptTxt.text = "Aceitar Quest";
+
+            acceptBtn.transform.localScale = Vector3.zero;
+            acceptBtn.transform.DOScale(Vector3.one, 0.3f).SetEase(Ease.OutBack);
+
+            acceptBtn.GetComponent<Button>().onClick.AddListener(() =>
+            {
+                QuestManager.Instance.AddQuest(pendingQuest);
+
+                // Remove botões
+                foreach (Transform c in optionsContainer)
+                    Destroy(c.gameObject);
+
+                DisplayNextSentence();
+            });
+
+            // -------------------------
+            // BOTÃO RECUSAR QUEST
+            // -------------------------
+            GameObject declineBtn = Instantiate(optionButtonPrefab, optionsContainer);
+            TMP_Text declineTxt = declineBtn.GetComponentInChildren<TMP_Text>();
+            declineTxt.text = "Recusar";
+
+            declineBtn.transform.localScale = Vector3.zero;
+            declineBtn.transform.DOScale(Vector3.one, 0.3f).SetEase(Ease.OutBack);
+
+            declineBtn.GetComponent<Button>().onClick.AddListener(() =>
+            {
+                // Apenas fecha diálogo
+                foreach (Transform c in optionsContainer)
+                    Destroy(c.gameObject);
+
+                EndDialogue();
+            });
+
+            return;
+        }
+
+        // =====================================================
+        //    2️⃣ SE NÃO É QUEST → MOSTRA OPÇÕES NORMAIS
+        // =====================================================
+        foreach (DialogueOption opt in options)
+        {
+            GameObject btnObj = Instantiate(optionButtonPrefab, optionsContainer);
+            TMP_Text btnText = btnObj.GetComponentInChildren<TMP_Text>();
+            btnText.text = opt.optionText;
+
+            btnObj.transform.localScale = Vector3.zero;
+            btnObj.transform.DOScale(Vector3.one, 0.3f).SetEase(Ease.OutBack);
+
+            Button btn = btnObj.GetComponent<Button>();
+
+            btn.onClick.AddListener(() =>
+            {
+                EnqueueLines(opt.response);
+
+                foreach (Transform c in optionsContainer)
+                    Destroy(c.gameObject);
+
+                DisplayNextSentence();
+            });
+        }
+    }
+
+    public void EndDialogue()
+    {
+        if (typingSequence != null) typingSequence.Kill();
+
+        dialoguePanel.transform.DOScale(Vector3.zero, 0.2f).SetEase(Ease.InBack)
+            .OnComplete(() =>
+            {
+                dialoguePanel.SetActive(false);
+                speakerNameText.text = "";
+                dialogueText.text = "";
+
+                InputManager.Instance.SwitchToPlayer();
+            });
+    }
+
+    public bool IsDialogueActive() => dialoguePanel.activeSelf;
+}

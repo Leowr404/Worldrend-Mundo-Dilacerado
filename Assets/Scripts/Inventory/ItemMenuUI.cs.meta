@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: d60d3b1476ceec546a87b2469d262681
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - panel: {instanceID: 0}
+  - useButton: {instanceID: 0}
+  - descriptionButton: {instanceID: 0}
+  - moveButton: {instanceID: 0}
+  - deleteButton: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

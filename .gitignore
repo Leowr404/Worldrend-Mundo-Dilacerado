@@ -1,0 +1,8 @@
+Library/
+Temp/
+Build/
+Logs/
+obj/
+UserSettings/
+MemoryCaptures/
+.unitypackage
