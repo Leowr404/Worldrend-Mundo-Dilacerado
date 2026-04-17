@@ -5,12 +5,14 @@ using UnityEngine;
 public class DialogueData : ScriptableObject
 {
     public string npcName;
-    [TextArea(2, 5)] public List<string> lines;
+
+    [Header("Falas Genéricas")]
+    public List<DialogueLine> lines;
 
     [Header("Falas da Quest")]
-    [TextArea(2, 5)] public List<string> beforeQuest;
-    [TextArea(2, 5)] public List<string> duringQuest;
-    [TextArea(2, 5)] public List<string> afterQuest;
+    public List<DialogueLine> beforeQuest;
+    public List<DialogueLine> duringQuest;
+    public List<DialogueLine> afterQuest;
 
     [Header("Quest Opcional")]
     public Quest quest;
@@ -20,9 +22,14 @@ public class DialogueData : ScriptableObject
 }
 
 [System.Serializable]
+public class DialogueLine
+{
+    [TextArea(2, 5)] public string text;
+}
+
+[System.Serializable]
 public class DialogueOption
 {
     public string optionText;
-    [TextArea(2, 5)] public List<string> response;
-    public bool acceptQuest;
+    public List<DialogueLine> response;
 }

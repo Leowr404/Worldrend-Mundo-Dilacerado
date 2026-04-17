@@ -151,7 +151,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26ccd7b2b4109754cbdde9b42d01679b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CollectibleItem
-  questName: Collect5Fruits
+  itemID: 12
+  itemName: "Ma\xE7\xE3"
   amount: 1
   destroyOnCollect: 1
-  itemName: "Ma\xE7\xE3"

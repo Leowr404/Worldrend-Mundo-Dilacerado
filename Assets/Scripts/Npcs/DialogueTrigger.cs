@@ -1,58 +1,59 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 public class DialogueTrigger : MonoBehaviour
 {
-    public DialogueData dialogue;
-    public GameObject interactionIcon;
+    [SerializeField] private DialogueData dialogue;
+    [SerializeField] private string npcID;
+    [SerializeField] private GameObject interactionIcon;
 
-    private UiManager uiManager;
     private bool playerInRange;
 
-    AudioManager audioManager;
-
-    void Start()
+    private void Start()
     {
-        uiManager = FindAnyObjectByType<UiManager>();
         if (interactionIcon) interactionIcon.SetActive(false);
-        audioManager = AudioManager.instancia;
     }
 
-    void Update()
+    private void Update()
     {
-        if (playerInRange && InputManager.Instance.Interact && !uiManager.IsDialogueActive())
+        if (!playerInRange) return;
+
+        if (InputManager.Instance.Interact && !UiManager.Instance.IsDialogueActive())
         {
-            audioManager.PlayNPCTalk();
+            AudioManager.instancia.PlayNPCTalk();
             InputManager.Instance.SwitchToUI();
             Cursor.lockState = CursorLockMode.None;
-            uiManager.StartDialogue(dialogue);
+
+            // Entrega primeiro — assim o diálogo já vê a quest como completa
+            QuestManager.Instance.TryDeliverQuest(npcID);
+
+            // Só reporta TalkToNPC se não tem quest para entregar aqui
+            if (!QuestManager.Instance.HasQuestToDeliver(npcID))
+                QuestManager.Instance.ReportTalkToNPC(npcID);
+
+            UiManager.Instance.StartDialogue(dialogue, npcID);
         }
 
-        if (uiManager.IsDialogueActive() && InputManager.Instance.AdvanceDialogue)
+        if (UiManager.Instance.IsActiveDialogue(dialogue) && InputManager.Instance.AdvanceDialogue)
         {
-            //Lembrete!! Mudar a Forma de trigger dos Dialogos
             Cursor.lockState = CursorLockMode.None;
-            uiManager.DisplayNextSentence();
-            audioManager.PlayNPCTalk();
+            UiManager.Instance.DisplayNextSentence();
+            AudioManager.instancia.PlayNPCTalk();
         }
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player"))
-        {
-            playerInRange = true;
-            if (interactionIcon) interactionIcon.SetActive(true);
-        }
+        if (!other.CompareTag("Player")) return;
+        playerInRange = true;
+        if (interactionIcon) interactionIcon.SetActive(true);
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag("Player"))
-        {
-            playerInRange = false;
-            if (interactionIcon) interactionIcon.SetActive(false);
-            uiManager.EndDialogue();
-        }
+        if (!other.CompareTag("Player")) return;
+        playerInRange = false;
+        if (interactionIcon) interactionIcon.SetActive(false);
+        if (UiManager.Instance.IsActiveDialogue(dialogue))
+            UiManager.Instance.EndDialogue();
     }
 }

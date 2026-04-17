@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c72533e5f118a3498fbd2af4f00f47d, type: 3}
+  m_Name: RobervalDialogo
+  m_EditorClassIdentifier: Assembly-CSharp::DialogueData
+  npcName: Roberval
+  lines:
+  - text: linha de texto
+  beforeQuest:
+  - text: antes da quest
+  duringQuest:
+  - text: durante a quest
+  afterQuest:
+  - text: Cabo a quest
+  quest: {fileID: 11400000, guid: 13c516b7feaeedb41b7e96a9457a596c, type: 2}
+  options:
+  - optionText: Deseja fazer?
+    response:
+    - text: Aceitar ne
