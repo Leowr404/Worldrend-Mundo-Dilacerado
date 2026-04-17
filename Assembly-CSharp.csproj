@@ -121,6 +121,7 @@
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile-2-Pass.shader" />
     <None Include="Assets\Fantasy Skybox FREE\Panoramics\FS003\Skybox.shader" />
     <None Include="Assets\Fantasy Skybox FREE\Readme.txt" />
+    <None Include="Assets\StylizedRocksPackFREE\Documentation\Readme.txt.txt" />
     <None Include="Assets\Fantasy Skybox FREE\ReleaseNotes.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\SDFFunctions.hlsl" />
     <None Include="Assets\TextMesh Pro\Sprites\EmojiOne Attribution.txt" />
