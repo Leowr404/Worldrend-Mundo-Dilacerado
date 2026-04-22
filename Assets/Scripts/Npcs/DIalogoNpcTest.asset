@@ -1,28 +1,3 @@
-%YAML 1.1
-%TAG !u! tag:unity3d.com,2011:
---- !u!114 &11400000
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7c72533e5f118a3498fbd2af4f00f47d, type: 3}
-  m_Name: DIalogoNpcTest
-  m_EditorClassIdentifier: Assembly-CSharp::DialogueData
-  npcName: NPC DE TEST
-  lines: []
-  beforeQuest:
-  - Ola, Me Chamo Npc De Testes, Voce Poderia Coletar Para Mim 5 Esferas Azuis?
-  duringQuest:
-  - Voce Ainda Nao Coletou Todas Esferas
-  afterQuest:
-  - Obrigado Por Coletar As Esferas
-  quest: {fileID: 11400000, guid: c501a5ffa785d8544a806d636282b7d7, type: 2}
-  options:
-  - optionText: Aceitar
-    response:
-    - Obrigado!!
-    acceptQuest: 1
+version https://git-lfs.github.com/spec/v1
+oid sha256:c2af6d896a4149aa59904377780536c30e287c817724cf65e2804ccce2b809a4
+size 858
