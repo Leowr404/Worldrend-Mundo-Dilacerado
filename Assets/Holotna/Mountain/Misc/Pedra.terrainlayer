@@ -6,8 +6,8 @@ TerrainLayer:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Ground01
-  m_DiffuseTexture: {fileID: 2800000, guid: d95a5076c86449942a7b0b13228d944c, type: 3}
+  m_Name: Pedra
+  m_DiffuseTexture: {fileID: 2800000, guid: 2a1f501ec448a0440a48aa7bb6906638, type: 3}
   m_NormalMapTexture: {fileID: 0}
   m_MaskMapTexture: {fileID: 0}
   m_TileSize: {x: 5, y: 5}
