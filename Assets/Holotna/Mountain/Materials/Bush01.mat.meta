@@ -1,15 +1,3 @@
-fileFormatVersion: 2
-guid: 259a490b6635efc4ca7709d24ab87911
-NativeFormatImporter:
-  externalObjects: {}
-  mainObjectFileID: 2100000
-  userData: 
-  assetBundleName: 
-  assetBundleVariant: 
-AssetOrigin:
-  serializedVersion: 1
-  productId: 307488
-  packageName: Mountain - Stylized Fantasy Environment
-  packageVersion: 1.1
-  assetPath: Assets/Holotna/Mountain/Materials/Bush01.mat
-  uploadId: 738207
+version https://git-lfs.github.com/spec/v1
+oid sha256:b7dfeffd0fb1dcdd68d962ad1834c7fc97c31b6649733fc3dc23ee56e56291d9
+size 398

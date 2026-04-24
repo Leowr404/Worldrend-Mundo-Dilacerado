@@ -1,15 +1,3 @@
-fileFormatVersion: 2
-guid: dcd4456febb46234a8c55f9a80c186e9
-NativeFormatImporter:
-  externalObjects: {}
-  mainObjectFileID: 4890085278179872738
-  userData: 
-  assetBundleName: 
-  assetBundleVariant: 
-AssetOrigin:
-  serializedVersion: 1
-  productId: 307488
-  packageName: Mountain - Stylized Fantasy Environment
-  packageVersion: 1.1
-  assetPath: Assets/Holotna/Mountain/Settings/Lighting.lighting
-  uploadId: 738207
+version https://git-lfs.github.com/spec/v1
+oid sha256:03a731d65364a3e82b741344b05c109adda5d34a495e1ec119ceebfc4cdcc243
+size 416

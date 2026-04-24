@@ -1,14 +1,3 @@
-fileFormatVersion: 2
-guid: 66f2e851acea268478d72e0f9f78b2d7
-PrefabImporter:
-  externalObjects: {}
-  userData: 
-  assetBundleName: 
-  assetBundleVariant: 
-AssetOrigin:
-  serializedVersion: 1
-  productId: 307488
-  packageName: Mountain - Stylized Fantasy Environment
-  packageVersion: 1.1
-  assetPath: Assets/Holotna/Mountain/Prefabs/Tree01A.prefab
-  uploadId: 738207
+version https://git-lfs.github.com/spec/v1
+oid sha256:16dbfaa3e7f31f3ee4c94e0776ed3f26aa04e50fd4f286c45484971ce7279217
+size 366

@@ -1,15 +1,3 @@
-fileFormatVersion: 2
-guid: 0bc2784a5d28a684f832fd8f51312b0d
-NativeFormatImporter:
-  externalObjects: {}
-  mainObjectFileID: 2100000
-  userData: 
-  assetBundleName: 
-  assetBundleVariant: 
-AssetOrigin:
-  serializedVersion: 1
-  productId: 307488
-  packageName: Mountain - Stylized Fantasy Environment
-  packageVersion: 1.1
-  assetPath: Assets/Holotna/Mountain/Materials/Rock01C.mat
-  uploadId: 738207
+version https://git-lfs.github.com/spec/v1
+oid sha256:ccce81fb1b7a08c131fd01d65c45c4473627ed7d03131589fa7a4c8bf44148fa
+size 399

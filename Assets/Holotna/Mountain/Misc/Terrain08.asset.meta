@@ -1,15 +1,3 @@
-fileFormatVersion: 2
-guid: d996e40d78fc04c488f86f3d405d7247
-NativeFormatImporter:
-  externalObjects: {}
-  mainObjectFileID: 15600000
-  userData: 
-  assetBundleName: 
-  assetBundleVariant: 
-AssetOrigin:
-  serializedVersion: 1
-  productId: 307488
-  packageName: Mountain - Stylized Fantasy Environment
-  packageVersion: 1.1
-  assetPath: Assets/Holotna/Mountain/Misc/Terrain08.asset
-  uploadId: 738207
+version https://git-lfs.github.com/spec/v1
+oid sha256:dffe41f64ce659a4c7a10f11130635085b69841973465023b33a9bd0ed3cfb73
+size 399

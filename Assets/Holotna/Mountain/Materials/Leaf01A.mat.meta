@@ -1,15 +1,3 @@
-fileFormatVersion: 2
-guid: fb4bfe9c42221584bbe681696d3db197
-NativeFormatImporter:
-  externalObjects: {}
-  mainObjectFileID: 2100000
-  userData: 
-  assetBundleName: 
-  assetBundleVariant: 
-AssetOrigin:
-  serializedVersion: 1
-  productId: 307488
-  packageName: Mountain - Stylized Fantasy Environment
-  packageVersion: 1.1
-  assetPath: Assets/Holotna/Mountain/Materials/Leaf01A.mat
-  uploadId: 738207
+version https://git-lfs.github.com/spec/v1
+oid sha256:a18931267e98e0999e4f219cbc89887a9b2284e1639865630f6503301ab5cffb
+size 399

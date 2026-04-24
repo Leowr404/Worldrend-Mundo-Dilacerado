@@ -1,14 +1,3 @@
-fileFormatVersion: 2
-guid: 92f5ccbf597107f468dccf567066c9cb
-PrefabImporter:
-  externalObjects: {}
-  userData: 
-  assetBundleName: 
-  assetBundleVariant: 
-AssetOrigin:
-  serializedVersion: 1
-  productId: 307488
-  packageName: Mountain - Stylized Fantasy Environment
-  packageVersion: 1.1
-  assetPath: Assets/Holotna/Mountain/Prefabs/Flower01A.prefab
-  uploadId: 738207
+version https://git-lfs.github.com/spec/v1
+oid sha256:460f960fe0a5bae271c8fc2f22596ab87a3064a07749ed41860bd0cd0b037ea5
+size 368
