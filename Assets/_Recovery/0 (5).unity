@@ -16583,63 +16583,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 372034660}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
---- !u!1001 &375625924
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: -8679921383154817045, guid: 10eab0d21b0b070418b367792d5c3c8f, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 145.41849
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 10eab0d21b0b070418b367792d5c3c8f, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.04728213
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 10eab0d21b0b070418b367792d5c3c8f, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -232.79451
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 10eab0d21b0b070418b367792d5c3c8f, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 10eab0d21b0b070418b367792d5c3c8f, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 10eab0d21b0b070418b367792d5c3c8f, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 10eab0d21b0b070418b367792d5c3c8f, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 10eab0d21b0b070418b367792d5c3c8f, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 10eab0d21b0b070418b367792d5c3c8f, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 10eab0d21b0b070418b367792d5c3c8f, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 919132149155446097, guid: 10eab0d21b0b070418b367792d5c3c8f, type: 3}
-      propertyPath: m_Name
-      value: Modelo Humana Pronta
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 10eab0d21b0b070418b367792d5c3c8f, type: 3}
 --- !u!1 &377242412
 GameObject:
   m_ObjectHideFlags: 0
@@ -93309,4 +93252,3 @@ SceneRoots:
   - {fileID: 7146785574942110005}
   - {fileID: 1500773467}
   - {fileID: 889880085}
-  - {fileID: 375625924}
