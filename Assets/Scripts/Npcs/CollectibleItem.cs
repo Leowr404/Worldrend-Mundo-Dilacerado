@@ -3,36 +3,44 @@
 public class CollectibleItem : MonoBehaviour
 {
     [Header("Configuração do item")]
-    public string questName;  // Nome exato da quest no ScriptableObject
-    public int amount = 1;    // Quanto esse item adiciona no progresso
-    public bool destroyOnCollect = true; // se o item some ao coletar
-    [Header("Configuração do item")]
-    public string itemName = "Item Sem Nome";
+    public string itemID;
+    public string itemName = "Item";
+    public int amount = 1;
+    public bool destroyOnCollect = true;
 
-    private void OnCollisionEnter(Collision collision)
+    [Header("Física")]
+    public bool esperarParar = true;      // espera o item parar de cair
+    public float velocidadeMinima = 0.1f; // considera parado abaixo disso
+
+    private bool coletado = false;
+    private bool podeColetar = false;
+    private Rigidbody rb;
+
+    private void Start()
     {
-        if (!collision.collider.CompareTag("Player")) return;
+        rb = GetComponent<Rigidbody>();
 
-        // Procura a quest correspondente
-        Quest quest = QuestManager.Instance.activeQuests.Find(q => q.questName == questName);
+        // Se não precisa esperar, já libera a coleta
+        if (!esperarParar) podeColetar = true;
+    }
 
-        if (quest != null && !quest.isCompleted)
-        {
-            quest.AddProgress(amount);
-            //Debug.Log($"🧺 Coletado +{amount} para a quest: {quest.questName} ({quest.collectedItems}/{quest.requiredItems})");
+    private void Update()
+    {
+        // Libera coleta quando o item parar de se mover
+        if (!podeColetar && rb != null && rb.linearVelocity.magnitude < velocidadeMinima)
+            podeColetar = true;
+    }
 
-            // Verifica se completou
-            if (quest.isCompleted)
-            {
-                //Debug.Log($"✅ Quest '{quest.questName}' completada!");
-                QuestManager.Instance.CompleteQuest(quest);
-            }
+    private void OnTriggerEnter(Collider other)
+    {
+        if (coletado) return;
+        if (!podeColetar) return;
+        if (!other.CompareTag("Player")) return;
 
-            // some com o item se configurado
-            if (destroyOnCollect) Destroy(gameObject);
-            {
-             NotificationUI.Show(itemName + " coletado!");
-            }
-        }
+        coletado = true;
+        QuestManager.Instance.ReportCollect(itemID, amount);
+        UiManager.Notify(itemName + " coletado!");
+
+        if (destroyOnCollect) Destroy(gameObject);
     }
 }

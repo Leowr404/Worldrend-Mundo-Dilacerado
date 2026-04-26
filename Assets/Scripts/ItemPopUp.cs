@@ -10,7 +10,7 @@ public class ItemPopUp : MonoBehaviour
         if (!collision.collider.CompareTag("Player")) return;
 
         // Exibir notificação animada
-        NotificationUI.Show(itemName + " coletado!");
+        UiManager.Notify(itemName + " coletado!");
 
         // Destruir item se configurado
         

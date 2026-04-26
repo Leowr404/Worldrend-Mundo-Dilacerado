@@ -2,58 +2,210 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using UnityEngine.UI;
 using UnityEngine;
-using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class UiManager : MonoBehaviour
 {
-    [Header("UI Elements")]
+    public static UiManager Instance { get; private set; }
+
+    [Header("Diálogo")]
     public GameObject dialoguePanel;
     public TMP_Text speakerNameText;
     public TMP_Text dialogueText;
     public Transform optionsContainer;
     public GameObject optionButtonPrefab;
+
+    [Header("Quest HUD")]
+    public GameObject questHUD;
+    public TMP_Text questHUDName;
+    public TMP_Text questHUDProgress;
+
+    [Header("Journal")]
+    public GameObject journalPanel;
+    public Transform journalActiveContainer;
+    public Transform journalCompletedContainer;
+    public GameObject journalEntryPrefab;
+
+    [Header("Notificações")]
+    public GameObject notificationPrefab;
+    public Transform notificationParent;
+    public float notificationShowTime = 2f;
+    public float notificationMoveUp = 30f;
+    public float notificationFade = 0.5f;
+
+    [Header("Inventário / Stats")]
     public GameObject playerStatsPanel;
     public GameObject backgroundPlayer;
     public GameObject playerInv;
     public GameObject playerStats;
-    public bool playerStatsTab;
 
     [Header("Typing Effect")]
     public float charInterval = 0.03f;
     public float jumpPower = 90f;
     public float jumpDuration = 0.15f;
 
-    private Queue<string> sentences;
+    private Queue<string> sentences = new Queue<string>();
     private Sequence typingSequence;
+    private bool isTyping;
+    private bool playerStatsTab;
 
     private DialogueData currentDialogue;
+    private string currentNPCID;
     private Quest pendingQuest;
-    AudioManager audioManager;
+
+    private List<RectTransform> activeNotifications = new List<RectTransform>();
+
+    private System.Action<Quest> _onQuestAdded;
+    private System.Action<Quest> _onObjectiveCompleted;
+    private System.Action<Quest> _onQuestCompleted;
+
+    // ─────────────────────────────────────────────────────
+    //  LIFECYCLE
+    // ─────────────────────────────────────────────────────
 
     private void Awake()
     {
-        sentences = new Queue<string>();
+        if (Instance == null) Instance = this;
+        else { Destroy(gameObject); return; }
+
         dialoguePanel.SetActive(false);
         playerStatsPanel.SetActive(false);
         backgroundPlayer.SetActive(false);
         playerInv.SetActive(false);
         playerStats.SetActive(false);
-        audioManager = AudioManager.instancia;
-        ToggleInventory(false);
+        questHUD.SetActive(false);
+        journalPanel.SetActive(false);
+    }
+
+    private void OnEnable()
+    {
+        _onQuestAdded = OnQuestAdded;
+        _onObjectiveCompleted = OnObjectiveCompleted;
+        _onQuestCompleted = OnQuestCompleted;
+
+        QuestManager.Instance.OnQuestAdded += _onQuestAdded;
+        QuestManager.Instance.OnObjectiveCompleted += _onObjectiveCompleted;
+        QuestManager.Instance.OnQuestCompleted += _onQuestCompleted;
+    }
+
+    private void OnDisable()
+    {
+        QuestManager.Instance.OnQuestAdded -= _onQuestAdded;
+        QuestManager.Instance.OnObjectiveCompleted -= _onObjectiveCompleted;
+        QuestManager.Instance.OnQuestCompleted -= _onQuestCompleted;
     }
 
     private void Update()
     {
         if (InputManager.Instance.OpenInventory && !playerStatsTab)
             ToggleInventory(true);
-
-        // fechar inventário
         if (InputManager.Instance.CloseInventory && playerStatsTab)
             ToggleInventory(false);
     }
 
+    // ─────────────────────────────────────────────────────
+    //  EVENTOS DO QUESTMANAGER
+    // ─────────────────────────────────────────────────────
+
+    private void OnQuestAdded(Quest quest)
+    {
+        RefreshQuestHUD();
+        RefreshJournal();
+    }
+
+    private void OnObjectiveCompleted(Quest quest)
+    {
+        RefreshQuestHUD();
+    }
+
+    private void OnQuestCompleted(Quest quest)
+    {
+        RefreshQuestHUD();
+        RefreshJournal();
+    }
+
+    // ─────────────────────────────────────────────────────
+    //  NOTIFICAÇÕES
+    // ─────────────────────────────────────────────────────
+
+    public static void Notify(string msg) => Instance.ShowNotification(msg);
+
+    public void ShowNotification(string msg)
+    {
+        GameObject notif = Instantiate(notificationPrefab, notificationParent);
+        RectTransform rect = notif.GetComponent<RectTransform>();
+        TMP_Text text = notif.GetComponent<TMP_Text>();
+
+        text.text = msg;
+        text.alpha = 0f;
+        activeNotifications.Add(rect);
+
+        // Remove o loop de mover para cima — o VerticalLayoutGroup cuida disso
+        Sequence seq = DOTween.Sequence();
+        seq.Append(text.DOFade(1f, notificationFade));
+        seq.AppendInterval(notificationShowTime);
+        seq.Append(text.DOFade(0f, notificationFade));
+        seq.AppendCallback(() =>
+        {
+            activeNotifications.Remove(rect);
+            Destroy(notif);
+        });
+    }
+
+    // ─────────────────────────────────────────────────────
+    //  QUEST HUD
+    // ─────────────────────────────────────────────────────
+
+    private void RefreshQuestHUD()
+    {
+        var quests = QuestManager.Instance.activeQuests;
+        if (quests.Count == 0) { questHUD.SetActive(false); return; }
+
+        var q = quests[0];
+        questHUD.SetActive(true);
+        questHUDName.text = q.questName;
+
+        var obj = q.objective;
+        questHUDProgress.text = q.isReadyToDeliver
+            ? "Entregue ao NPC!"
+            : $"{obj.description} ({obj.currentAmount}/{obj.requiredAmount})";
+    }
+
+    // ─────────────────────────────────────────────────────
+    //  JOURNAL
+    // ─────────────────────────────────────────────────────
+
+    public void ToggleJournal(bool open)
+    {
+        journalPanel.SetActive(open);
+        if (open) RefreshJournal();
+    }
+
+    private void RefreshJournal()
+    {
+        foreach (Transform t in journalActiveContainer) Destroy(t.gameObject);
+        foreach (Transform t in journalCompletedContainer) Destroy(t.gameObject);
+
+        foreach (var q in QuestManager.Instance.activeQuests)
+            SpawnJournalEntry(q, journalActiveContainer, false);
+
+        foreach (var q in QuestManager.Instance.completedQuests)
+            SpawnJournalEntry(q, journalCompletedContainer, true);
+    }
+
+    private void SpawnJournalEntry(Quest q, Transform container, bool completed)
+    {
+        var entry = Instantiate(journalEntryPrefab, container);
+        var label = entry.GetComponentInChildren<TMP_Text>();
+        var obj = q.objective;
+        string status = completed ? "✓" : $"{obj.currentAmount}/{obj.requiredAmount}";
+        label.text = $"{q.questName}\n<size=80%>{obj.description} {status}</size>";
+    }
+
+    // ─────────────────────────────────────────────────────
+    //  INVENTÁRIO / STATS
+    // ─────────────────────────────────────────────────────
 
     private void ToggleInventory(bool open)
     {
@@ -62,102 +214,81 @@ public class UiManager : MonoBehaviour
         backgroundPlayer.SetActive(open);
         playerInv.SetActive(open);
         playerStats.SetActive(false);
-
-        if (open)
-            InputManager.Instance.SwitchToUI();
-        else
-            InputManager.Instance.SwitchToPlayer();
+        if (open) InputManager.Instance.SwitchToUI();
+        else InputManager.Instance.SwitchToPlayer();
     }
 
-    public void OpenStats()
-    {
-        //Debug.Log("funcionja");
-        playerStats.SetActive(true);
-        playerInv.SetActive(false);
-    }
-    public void CloseStats()
-    {
-        playerStats.SetActive(false);
-        playerInv.SetActive(true);
-    }
+    public void OpenStats() { playerStats.SetActive(true); playerInv.SetActive(false); }
+    public void CloseStats() { playerStats.SetActive(false); playerInv.SetActive(true); }
 
+    // ─────────────────────────────────────────────────────
+    //  DIÁLOGO
+    // ─────────────────────────────────────────────────────
 
-    public void StartDialogue(DialogueData data)
+    public void StartDialogue(DialogueData data, string npcID = "")
     {
-        if (data == null)
-        {
-            Debug.LogError("❌ DialogueData não atribuído no NPC!");
-            return;
-        }
+        if (data == null) return;
 
         currentDialogue = data;
+        currentNPCID = npcID;
         pendingQuest = data.quest;
+        sentences.Clear();
+
+        if (data.quest != null)
+        {
+            bool has = QuestManager.Instance.HasQuest(data.quest);
+            bool completed = QuestManager.Instance.IsCompleted(data.quest);
+
+            if (completed) EnqueueLines(data.afterQuest);  // já entregou
+            else if (!has) EnqueueLines(data.beforeQuest); // nunca aceitou
+            else EnqueueLines(data.duringQuest); // em andamento
+        }
+        else
+        {
+            EnqueueLines(data.lines);
+        }
+
+        if (sentences.Count == 0) EnqueueLines(data.lines);
 
         dialoguePanel.SetActive(true);
         speakerNameText.text = data.npcName;
-
         dialoguePanel.transform.localScale = Vector3.zero;
         dialoguePanel.transform.DOScale(Vector3.one, 0.3f).SetEase(Ease.OutBack);
 
-        sentences.Clear();
-
-        // 🔍 Lógica de qual fala usar
-        if (data.quest != null)
-        {
-            bool hasQuest = QuestManager.Instance.HasQuest(data.quest);
-            bool isCompleted = data.quest.isCompleted;
-
-            if (!hasQuest)
-                EnqueueLines(data.beforeQuest);  // antes de aceitar
-            else if (hasQuest && !isCompleted)
-                EnqueueLines(data.duringQuest); // em progresso
-            else
-                EnqueueLines(data.afterQuest);  // depois de completa
-        }
-        else
-        {
-            EnqueueLines(data.lines);
-        }
-
-        // ⚠ Se não carregou nenhuma fala, usa as falas básicas
-        if (sentences.Count == 0)
-            EnqueueLines(data.lines);
-
         DisplayNextSentence();
-        
     }
 
-
-    private void EnqueueLines(List<string> lines)
+    private void EnqueueLines(List<DialogueLine> lines)
     {
-        foreach (string line in lines)
-            sentences.Enqueue(line);
+        if (lines == null) return;
+        foreach (var l in lines)
+            if (!string.IsNullOrEmpty(l.text)) sentences.Enqueue(l.text);
     }
 
     public void DisplayNextSentence()
     {
+        if (isTyping) { SkipTyping(); return; }
+
         if (sentences.Count == 0)
         {
-            // Só mostra opções (ex: aceitar quest) se ainda não foi aceita
-            if (currentDialogue != null && currentDialogue.options != null &&
-                currentDialogue.options.Count > 0 &&
-                (currentDialogue.quest == null || !QuestManager.Instance.HasQuest(currentDialogue.quest)))
-            {
-                ShowOptions(currentDialogue.options);
-                return;
-            }
+            bool temQuest = currentDialogue?.quest != null;
+            bool naoAceitou = temQuest
+                           && !QuestManager.Instance.HasQuest(currentDialogue.quest)
+                           && !QuestManager.Instance.IsCompleted(currentDialogue.quest);
+
+            if (naoAceitou) { ShowQuestButtons(); return; }
 
             EndDialogue();
             return;
         }
 
         string sentence = sentences.Dequeue();
-
         dialogueText.text = sentence;
         dialogueText.maxVisibleCharacters = 0;
 
         if (typingSequence != null) typingSequence.Kill();
         typingSequence = DOTween.Sequence();
+        isTyping = true;
 
         for (int i = 0; i < sentence.Length; i++)
         {
@@ -166,105 +297,54 @@ public class UiManager : MonoBehaviour
             {
                 dialogueText.maxVisibleCharacters = index + 1;
                 dialogueText.ForceMeshUpdate();
-                var animator = new DOTweenTMPAnimator(dialogueText);
-                if (index < animator.textInfo.characterCount)
-                {
-                    animator
-                        .DOOffsetChar(index, new Vector3(0, jumpPower, 0), jumpDuration)
-                        .SetEase(Ease.OutQuad)
-                        .SetLoops(2, LoopType.Yoyo);
-                }
+                var anim = new DOTweenTMPAnimator(dialogueText);
+                if (index < anim.textInfo.characterCount)
+                    anim.DOOffsetChar(index, new Vector3(0, jumpPower, 0), jumpDuration)
+                        .SetEase(Ease.OutQuad).SetLoops(2, LoopType.Yoyo);
             });
             typingSequence.AppendInterval(charInterval);
-            
         }
+        typingSequence.OnComplete(() => isTyping = false);
     }
 
-    private void ShowOptions(List<DialogueOption> options)
+    private void SkipTyping()
     {
-        // Limpa botões antigos
-        foreach (Transform c in optionsContainer)
-            Destroy(c.gameObject);
+        typingSequence?.Kill();
+        dialogueText.maxVisibleCharacters = dialogueText.text.Length;
+        isTyping = false;
+    }
 
-        bool canOfferQuest = pendingQuest != null && !QuestManager.Instance.HasQuest(pendingQuest);
+    private void ShowQuestButtons()
+    {
+        foreach (Transform c in optionsContainer) Destroy(c.gameObject);
 
-        // =====================================================
-        //    1️⃣ SE EXISTE QUEST PENDENTE → MOSTRAR 2 BOTÕES
-        // =====================================================
-        if (canOfferQuest)
+        SpawnButton("Aceitar quest", () =>
         {
-            // -------------------------
-            // BOTÃO ACEITAR QUEST
-            // -------------------------
-            GameObject acceptBtn = Instantiate(optionButtonPrefab, optionsContainer);
-            TMP_Text acceptTxt = acceptBtn.GetComponentInChildren<TMP_Text>();
-            acceptTxt.text = "Aceitar Quest";
+            QuestManager.Instance.AddQuest(pendingQuest);
+            foreach (Transform c in optionsContainer) Destroy(c.gameObject);
+            DisplayNextSentence();
+        });
 
-            acceptBtn.transform.localScale = Vector3.zero;
-            acceptBtn.transform.DOScale(Vector3.one, 0.3f).SetEase(Ease.OutBack);
-
-            acceptBtn.GetComponent<Button>().onClick.AddListener(() =>
-            {
-                QuestManager.Instance.AddQuest(pendingQuest);
-
-                // Remove botões
-                foreach (Transform c in optionsContainer)
-                    Destroy(c.gameObject);
-
-                DisplayNextSentence();
-            });
-
-            // -------------------------
-            // BOTÃO RECUSAR QUEST
-            // -------------------------
-            GameObject declineBtn = Instantiate(optionButtonPrefab, optionsContainer);
-            TMP_Text declineTxt = declineBtn.GetComponentInChildren<TMP_Text>();
-            declineTxt.text = "Recusar";
-
-            declineBtn.transform.localScale = Vector3.zero;
-            declineBtn.transform.DOScale(Vector3.one, 0.3f).SetEase(Ease.OutBack);
-
-            declineBtn.GetComponent<Button>().onClick.AddListener(() =>
-            {
-                // Apenas fecha diálogo
-                foreach (Transform c in optionsContainer)
-                    Destroy(c.gameObject);
-
-                EndDialogue();
-            });
-
-            return;
-        }
-
-        // =====================================================
-        //    2️⃣ SE NÃO É QUEST → MOSTRA OPÇÕES NORMAIS
-        // =====================================================
-        foreach (DialogueOption opt in options)
+        SpawnButton("Recusar", () =>
         {
-            GameObject btnObj = Instantiate(optionButtonPrefab, optionsContainer);
-            TMP_Text btnText = btnObj.GetComponentInChildren<TMP_Text>();
-            btnText.text = opt.optionText;
+            foreach (Transform c in optionsContainer) Destroy(c.gameObject);
+            EndDialogue();
+        });
+    }
 
-            btnObj.transform.localScale = Vector3.zero;
-            btnObj.transform.DOScale(Vector3.one, 0.3f).SetEase(Ease.OutBack);
-
-            Button btn = btnObj.GetComponent<Button>();
-
-            btn.onClick.AddListener(() =>
-            {
-                EnqueueLines(opt.response);
-
-                foreach (Transform c in optionsContainer)
-                    Destroy(c.gameObject);
-
-                DisplayNextSentence();
-            });
-        }
+    private void SpawnButton(string label, UnityEngine.Events.UnityAction callback)
+    {
+        var btn = Instantiate(optionButtonPrefab, optionsContainer);
+        btn.GetComponentInChildren<TMP_Text>().text = label;
+        btn.transform.localScale = Vector3.zero;
+        btn.transform.DOScale(Vector3.one, 0.3f).SetEase(Ease.OutBack);
+        btn.GetComponent<Button>().onClick.AddListener(callback);
     }
 
     public void EndDialogue()
     {
         if (typingSequence != null) typingSequence.Kill();
+        isTyping = false;
 
         dialoguePanel.transform.DOScale(Vector3.zero, 0.2f).SetEase(Ease.InBack)
             .OnComplete(() =>
@@ -272,10 +352,14 @@ public class UiManager : MonoBehaviour
                 dialoguePanel.SetActive(false);
                 speakerNameText.text = "";
                 dialogueText.text = "";
-
+                currentDialogue = null;
+                currentNPCID = "";
+                pendingQuest = null;
+                Cursor.lockState = CursorLockMode.Locked;
                 InputManager.Instance.SwitchToPlayer();
             });
     }
 
+    public bool IsActiveDialogue(DialogueData data) => dialoguePanel.activeSelf && currentDialogue == data;
     public bool IsDialogueActive() => dialoguePanel.activeSelf;
 }

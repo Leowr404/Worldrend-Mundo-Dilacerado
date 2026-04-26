@@ -4,27 +4,25 @@ public enum QuestObjectiveType
 {
     Kill,
     Collect,
-    ReachLocation
+    ExploreArea,
+    TalkToNPC
 }
 
 [System.Serializable]
 public class QuestObjective
 {
     public QuestObjectiveType type;
-    public string targetID;
-    public int requiredAmount;
+    public string targetID;       // ex: "goblin", "herb", "cave_entrance", "npc_elder"
+    public string description;    // ex: "Matar 5 Goblins"
+    public int requiredAmount;    // para Kill e Collect; para Explore/Talk = 1
     public int currentAmount;
 
-    public bool IsComplete()
-    {
-        return currentAmount >= requiredAmount;
-    }
+    public bool IsComplete() => currentAmount >= requiredAmount;
 
-    public void OnAreaReached(string areaID)
+    public void RegisterProgress(QuestObjectiveType progressType, string id, int amount = 1)
     {
-        if (type == QuestObjectiveType.ReachLocation && areaID == targetID)
-        {
-            currentAmount++;
-        }
+        if (IsComplete()) return;
+        if (type != progressType || targetID != id) return;
+        currentAmount = Mathf.Min(currentAmount + amount, requiredAmount);
     }
 }
