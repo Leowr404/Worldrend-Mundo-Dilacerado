@@ -50,9 +50,9 @@ public class Skyboxspin : MonoBehaviour
 
     // horários (em minutos do dia)
     const int H6 = 6 * 60;   // 06:00
-    const int H8 = 8 * 60;   // 08:00
-    const int H18 = 16 * 60;  // 16:00
-    const int H22 = 22 * 60;  // 22:00
+    const int H8 = 9 * 60;   // 08:00
+    const int H18 = 17 * 60;  // 16:00
+    const int H22 = 20 * 60;  // 22:00
     const int DAY_MINUTES = 1440;
 
     void Start()
@@ -88,7 +88,7 @@ public class Skyboxspin : MonoBehaviour
             RotateDualPanoramicSkybox(RenderSettings.skybox, skyboxRotationSpeed);
     }
 
-    float CurrentMinutesOfDay()
+    public float CurrentMinutesOfDay()
     {
         // soma fração do próximo minuto
         return (Hours * 60f + Minutes + minuteAccumulator) % DAY_MINUTES;

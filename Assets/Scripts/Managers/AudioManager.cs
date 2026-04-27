@@ -10,6 +10,7 @@ public class AudioManager : MonoBehaviour
     public AudioMixer mixer;
     [SerializeField] AudioSource loopingSFXSource;
     [SerializeField] AudioSource musicsource;
+    [SerializeField] AudioSource ambientSource;
     [SerializeField] AudioSource SFXsource;
     [SerializeField] Slider SFXSlider;
     [SerializeField] Slider MusicSlider;
@@ -138,5 +139,33 @@ public class AudioManager : MonoBehaviour
         SFXsource.Stop();
         SFXsource.clip = npcTalks[index];
         SFXsource.Play();             // ⬅️ Não use PlayOneShot aqui
+    }
+    public void PlayAmbient(AudioClip clip)
+    {
+        if (ambientSource.clip == clip) return;
+
+        StartCoroutine(FadeAmbient(clip));
+    }
+    IEnumerator FadeAmbient(AudioClip newClip)
+    {
+        float duration = 2f;
+
+        // fade out
+        for (float t = 0; t < duration; t += Time.deltaTime)
+        {
+            ambientSource.volume = Mathf.Lerp(1, 0, t / duration);
+            yield return null;
+        }
+
+        ambientSource.clip = newClip;
+        ambientSource.loop = true;
+        ambientSource.Play();
+
+        // fade in
+        for (float t = 0; t < duration; t += Time.deltaTime)
+        {
+            ambientSource.volume = Mathf.Lerp(0, 1, t / duration);
+            yield return null;
+        }
     }
 }
