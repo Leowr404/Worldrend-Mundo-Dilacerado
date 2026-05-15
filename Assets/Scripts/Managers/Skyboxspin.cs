@@ -38,13 +38,13 @@ public class Skyboxspin : MonoBehaviour
 
     // ---- estado do rel�gio
     [SerializeField] private int minutes;
-    public int Minutes { get => minutes; private set { minutes = value; if (minutes >= 60) { minutes = 0; Hours++; } } }
+    public int Minutes { get => minutes; set { minutes = value; if (minutes >= 60) { minutes = 0; Hours++; } } }
 
     [SerializeField] private int hours;
-    public int Hours { get => hours; private set { hours = (value >= 24) ? 0 : value; } }
+    public int Hours { get => hours; set { hours = (value >= 24) ? 0 : value; } }
 
     [SerializeField] private int days;
-    public int Days { get => days; private set { days = value; } }
+    public int Days { get => days; set { days = value; } }
 
     private float minuteAccumulator; // fra��o do pr�ximo minuto (0..1)
 

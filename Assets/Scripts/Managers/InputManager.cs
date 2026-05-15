@@ -35,7 +35,8 @@ public class InputManager : MonoBehaviour
 
     private void OnEnable()
     {
-        inputActions.Enable();
+        inputActions.Player.Enable();
+        inputActions.UI.Disable();
     }
 
     private void OnDisable()

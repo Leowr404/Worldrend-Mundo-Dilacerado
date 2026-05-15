@@ -20,9 +20,9 @@ public class SaveLoadUI : MonoBehaviour
         Instance = this;
         panel.SetActive(false);
         // Liga eventos dos botões
-        saveButton.onClick.AddListener(OnSavePressed);
-        loadButton.onClick.AddListener(OnLoadPressed);
-        deleteButton.onClick.AddListener(OnDeletePressed);
+       saveButton.onClick.AddListener(OnSavePressed);
+       loadButton.onClick.AddListener(OnLoadPressed);
+       deleteButton.onClick.AddListener(OnDeletePressed);
     }
 
     public void ClearSelection()
@@ -36,6 +36,7 @@ public class SaveLoadUI : MonoBehaviour
 
     public void Open()
     {
+        panel.SetActive(true);
         Debug.Log("abriu");
         panel.SetActive(true);
         RefreshAll();

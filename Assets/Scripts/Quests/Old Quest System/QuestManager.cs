@@ -8,6 +8,9 @@ public class QuestManager : MonoBehaviour
 
     [SerializeField] private PlayerStats player;
 
+    [Header("Todas as quests do jogo (arraste aqui)")]
+    public Quest[] allQuests;
+
     public List<Quest> activeQuests = new List<Quest>();
     public List<Quest> completedQuests = new List<Quest>();
 

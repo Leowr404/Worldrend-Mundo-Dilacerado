@@ -157,6 +157,7 @@ public class UiManager : MonoBehaviour
     //  QUEST HUD
     // ─────────────────────────────────────────────────────
 
+    public void RefreshQuestHUDPublic() => RefreshQuestHUD();
     private void RefreshQuestHUD()
     {
         var quests = QuestManager.Instance.activeQuests;

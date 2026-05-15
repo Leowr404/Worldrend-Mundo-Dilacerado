@@ -1,23 +1,31 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class SaveManager : MonoBehaviour
 {
     public static SaveManager Instance { get; private set; }
 
-    [Header("Configuração")]
-    public int totalSlots = 3; // Número de slots permitidos
+    [Header("Referências")]
+    public InventorySaver inventorySaver;
+    public Transform player;
+    public Transform cameraTransform;
 
-    [Header("Referências de sistemas")]
-    public InventorySaver inventorySaver;   // arraste no Inspector
-    public Transform player;                // arraste o Player no Inspector
-    public Transform cameraTransform;       // arraste a câmera se quiser salvar rotação
-
-    // Tempo total de jogo
-    private float playtimeCounter = 0f;
+    private float playtimeCounter;
 
     private void Awake()
     {
         Instance = this;
+    }
+
+    private void Start()
+    {
+        QuestManager.Instance.OnQuestCompleted += OnQuestCompleted;
+    }
+
+    private void OnDestroy()
+    {
+        if (QuestManager.Instance != null)
+            QuestManager.Instance.OnQuestCompleted -= OnQuestCompleted;
     }
 
     private void Update()
@@ -25,141 +33,217 @@ public class SaveManager : MonoBehaviour
         playtimeCounter += Time.deltaTime;
     }
 
+    private void OnQuestCompleted(Quest quest)
+    {
+        SaveToSlot(0);
+        UiManager.Notify("Jogo salvo automaticamente.");
+    }
+
     // ======================================================
-    // SALVAR SLOT
+    // SALVAR
     // ======================================================
-    public void SaveToSlot(int slotIndex)
+    public void SaveToSlot(int slot)
     {
         SaveData data = new SaveData();
 
-        // SALVAR VIDA DO PLAYER
-        HealthPlayer hp = player.GetComponent<HealthPlayer>();
-        if (hp != null)
+        // Posição e câmera
+        if (player != null) data.playerPosition = player.position;
+        if (cameraTransform != null) data.cameraRotation = cameraTransform.rotation;
+
+        // Vida
+        HealthPlayer hp = player?.GetComponent<HealthPlayer>();
+        if (hp != null) data.playerHealth = hp.CurrentHealth;
+
+        // Stats
+        PlayerStats stats = player?.GetComponent<PlayerStats>();
+        if (stats != null)
         {
-            data.playerHealth = hp.CurrentHealth;
+            data.level = stats.level;
+            data.currentXP = stats.currentXP;
+            data.xpToNextLevel = stats.xpToNextLevel;
+            data.statPoints = stats.statPoints;
+            data.strength = stats.strength;
+            data.defense = stats.defense;
+            data.vitality = stats.vitality;
+            data.endurance = stats.endurance;
+            data.lucky = stats.Lucky;
         }
 
-        // SALVAR POSIÇÃO DO PLAYER
-        if (player != null)
+        // Moeda
+        data.coins = EconomyManager.Instance?.GetMoney() ?? 0;
+
+        // Horário do mundo
+        Skyboxspin sky = FindAnyObjectByType<Skyboxspin>();
+        if (sky != null)
         {
-            data.playerPosition = player.position;
+            data.worldHours = sky.Hours;
+            data.worldMinutes = sky.Minutes;
+            data.worldDays = sky.Days;
         }
 
-        // SALVAR ROTAÇÃO DA CÂMERA
-        if (cameraTransform != null)
+        // Quests completas
+        data.completedQuestNames = new List<string>();
+        foreach (var q in QuestManager.Instance.completedQuests)
+            data.completedQuestNames.Add(q.questName);
+
+        // Quests ativas com progresso
+        data.activeQuestProgress = new List<SaveData.QuestProgress>();
+        foreach (var q in QuestManager.Instance.activeQuests)
         {
-            data.cameraRotation = cameraTransform.rotation;
+            data.activeQuestProgress.Add(new SaveData.QuestProgress
+            {
+                questName = q.questName,
+                currentAmount = q.objective.currentAmount,
+                isReadyToDeliver = q.isReadyToDeliver
+            });
         }
 
-        // SALVAR INVENTÁRIO
+        // Inventário
         if (inventorySaver != null)
-        {
             data.inventory = inventorySaver.SaveInventory();
-        }
 
-        // TEMPO DE JOGO
+        // Tempo e data
         data.playTimeSeconds = Mathf.FloorToInt(playtimeCounter);
-
-        // DATA E HORA DO SAVE
-        string now = System.DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
+        string now = System.DateTime.Now.ToString("dd/MM/yyyy HH:mm");
         data.saveDate = now;
         data.lastSaveDate = now;
 
-        // SERIALIZAR PARA JSON
-        string json = JsonUtility.ToJson(data, true);
-
-        // SALVAR EM ARQUIVO
-        SaveSystem.Save(slotIndex, json);
-
-        //Debug.Log($"💾 Slot {slotIndex} salvo!");
+        SaveSystem.Save(slot, JsonUtility.ToJson(data, true));
     }
 
     // ======================================================
-    // CARREGAR SLOT
+    // CARREGAR
     // ======================================================
-    public void LoadFromSlot(int slotIndex)
+    public void LoadFromSlot(int slot)
     {
-        string json = SaveSystem.Load(slotIndex);
-
-        if (string.IsNullOrEmpty(json))
-        {
-            //Debug.LogWarning($"⚠️ Nenhum save encontrado no slot {slotIndex}");
-            return;
-        }
+        string json = SaveSystem.Load(slot);
+        if (string.IsNullOrEmpty(json)) return;
 
         SaveData data = JsonUtility.FromJson<SaveData>(json);
+        if (data == null) return;
 
-        if (data == null)
+        // Posição
+        if (player != null)
         {
-           // Debug.LogError("SaveManager: Erro ao decodificar SaveData!");
+            CharacterController cc = player.GetComponent<CharacterController>();
+            if (cc) cc.enabled = false;
+            player.position = data.playerPosition;
+            if (cc) cc.enabled = true;
+        }
+
+        // Câmera
+        if (cameraTransform != null)
+            cameraTransform.rotation = data.cameraRotation;
+
+        // Vida
+        HealthPlayer hp = player?.GetComponent<HealthPlayer>();
+        if (hp != null) hp.SetHealth(data.playerHealth);
+
+        // Stats
+        PlayerStats stats = player?.GetComponent<PlayerStats>();
+        if (stats != null)
+        {
+            stats.level = data.level;
+            stats.currentXP = data.currentXP;
+            stats.xpToNextLevel = data.xpToNextLevel;
+            stats.statPoints = data.statPoints;
+            stats.strength = data.strength;
+            stats.defense = data.defense;
+            stats.vitality = data.vitality;
+            stats.endurance = data.endurance;
+            stats.Lucky = data.lucky;
+            stats.RecalculateStats(false);
+        }
+
+        // Moeda
+        if (EconomyManager.Instance != null)
+        {
+            int diff = data.coins - EconomyManager.Instance.GetMoney();
+            if (diff > 0) EconomyManager.Instance.AddMoney(diff);
+            else if (diff < 0) EconomyManager.Instance.RemoveMoney(-diff);
+        }
+
+        // Horário do mundo
+        Skyboxspin sky = FindAnyObjectByType<Skyboxspin>();
+        if (sky != null)
+        {
+            sky.Hours = data.worldHours;
+            sky.Minutes = data.worldMinutes;
+            sky.Days = data.worldDays;
+        }
+
+        // Quests — busca ScriptableObjects por nome
+        Quest[] allQuests = QuestManager.Instance.allQuests;
+
+        if (allQuests == null || allQuests.Length == 0)
+        {
+            Debug.LogError("[SaveManager] allQuests VAZIO! Arraste as quests no Inspector do QuestManager.");
             return;
         }
 
-        // RESTAURAR VIDA DO PLAYER
-        HealthPlayer hp = player.GetComponent<HealthPlayer>();
-        if (hp != null)
-        {
-            hp.SetHealth(data.playerHealth);
-        }
-        // ==========================  
-        CharacterController cc = player.GetComponent<CharacterController>();
-        if (cc != null) cc.enabled = false; // 🔥 DESATIVAR PARA PERMITIR TELEPORTE
-        // ==========================  
+        Debug.Log($"[SaveManager] Resetando {allQuests.Length} quests...");
 
-        // RESTAURAR POSIÇÃO DO PLAYER
-        if (player != null)
+        // reseta estado runtime de TODAS as quests antes de restaurar
+        foreach (var q in allQuests)
         {
-            player.position = data.playerPosition;
+            q.isCompleted = false;
+            q.isReadyToDeliver = false;
+            q.objective.currentAmount = 0;
         }
 
-        // ==========================  
-        if (cc != null) cc.enabled = true;  // 🔥 REATIVAR APÓS TELEPORTE
-        // ==========================  
+        QuestManager.Instance.activeQuests.Clear();
+        QuestManager.Instance.completedQuests.Clear();
 
-        // RESTAURAR ROTAÇÃO DA CÂMERA
-        if (cameraTransform != null)
+        foreach (var saved in data.activeQuestProgress)
         {
-            cameraTransform.rotation = data.cameraRotation;
+            foreach (var q in allQuests)
+            {
+                if (q.questName == saved.questName)
+                {
+                    q.ResetProgress();
+                    q.objective.currentAmount = saved.currentAmount;
+                    q.isReadyToDeliver = saved.isReadyToDeliver;
+                    QuestManager.Instance.activeQuests.Add(q);
+                    break;
+                }
+            }
         }
 
-        // RESTAURAR INVENTÁRIO
+        foreach (var name in data.completedQuestNames)
+        {
+            foreach (var q in allQuests)
+            {
+                if (q.questName == name)
+                {
+                    q.isCompleted = true;
+                    QuestManager.Instance.completedQuests.Add(q);
+                    break;
+                }
+            }
+        }
+
+        // Atualiza UI de quests
+        UiManager.Instance?.RefreshQuestHUDPublic();
+
+        // Inventário
         if (inventorySaver != null)
-        {
             inventorySaver.LoadInventory(data.inventory);
-        }
 
-        // RESTAURAR TEMPO DE JOGO
+        // Tempo de jogo
         playtimeCounter = data.playTimeSeconds;
-
-        //Debug.Log($"📂 Slot {slotIndex} carregado!");
     }
 
     // ======================================================
-    // PEGAR METADADOS (para UI)
+    // UTILITÁRIOS
     // ======================================================
-    public SaveData Peek(int slotIndex)
+    public SaveData Peek(int slot)
     {
-        string json = SaveSystem.Load(slotIndex);
-        if (string.IsNullOrEmpty(json))
-            return null;
-
+        string json = SaveSystem.Load(slot);
+        if (string.IsNullOrEmpty(json)) return null;
         return JsonUtility.FromJson<SaveData>(json);
     }
 
-    // ======================================================
-    // DELETAR SLOT
-    // ======================================================
-    public void DeleteSlot(int slotIndex)
-    {
-        SaveSystem.Delete(slotIndex);
-        //Debug.Log($"🗑️ Slot {slotIndex} deletado!");
-    }
+    public bool SlotExists(int slot) => SaveSystem.Exists(slot);
 
-    // ======================================================
-    // VERIFICAR SE EXISTE SAVE
-    // ======================================================
-    public bool SlotExists(int slotIndex)
-    {
-        return SaveSystem.Exists(slotIndex);
-    }
+    public void DeleteSlot(int slot) => SaveSystem.Delete(slot);
 }

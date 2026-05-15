@@ -5,30 +5,60 @@ using UnityEngine;
 [Serializable]
 public class SaveData
 {
-    // === Dados de mundo / jogador ===
+    // === Posição e câmera ===
     public Vector3 playerPosition;
     public Quaternion cameraRotation;
+
+    // === Vida ===
     public int playerHealth;
-    // Tempo de jogo
+
+    // === Tempo de jogo ===
     public int playTimeSeconds;
 
-    // Data e hora do save
+    // === Data do save ===
     public string saveDate;
     public string lastSaveDate;
 
-    // Lista de itens do inventário
+    // === Moeda ===
+    public int coins;
+
+    // === Stats do player ===
+    public int level;
+    public int currentXP;
+    public int xpToNextLevel;
+    public int statPoints;
+    public int strength;
+    public int defense;
+    public int vitality;
+    public int endurance;
+    public int lucky;
+
+    // === Horário do mundo (Skyboxspin) ===
+    public int worldHours;
+    public int worldMinutes;
+    public int worldDays;
+
+    // === Quests ===
+    public List<string> completedQuestNames = new List<string>();
+    public List<QuestProgress> activeQuestProgress = new List<QuestProgress>();
+
+    [Serializable]
+    public class QuestProgress
+    {
+        public string questName;
+        public int currentAmount;
+        public bool isReadyToDeliver;
+    }
+
+    // === Inventário ===
     public List<InventoryItem> inventory = new List<InventoryItem>();
 
-
-    // -------------------------
-    // Tipo usado para salvar um item do inventário
-    // -------------------------
     [Serializable]
     public class InventoryItem
     {
         public int slotIndex;
-        public int itemId;     // ID ÚNICO DO ITEM
-        public string itemName;   // Nome (apenas para debug)
+        public int itemId;
+        public string itemName;
         public int amount;
 
         public InventoryItem() { }

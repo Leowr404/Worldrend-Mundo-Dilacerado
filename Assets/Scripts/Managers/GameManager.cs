@@ -48,7 +48,9 @@ public class GameManager : MonoBehaviour
 
     public void BackToMenu()
     {
-        SceneManager.LoadScene("MainMenu");
+        LoadingManager.sceneToLoad = "MainMenu";
+        SceneManager.LoadScene("Loading");
+        Time.timeScale = 1.0f;
     }
     public void OpenSettingsGame()
     {
