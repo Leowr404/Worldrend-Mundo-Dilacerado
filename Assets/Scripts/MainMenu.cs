@@ -11,7 +11,8 @@ public class MainMenu : MonoBehaviour
 
     public void StartGame()
     {
-        SceneManager.LoadScene("TestPlace");
+        LoadingManager.sceneToLoad = "TestPlace";
+        SceneManager.LoadScene("Loading");
     }
     public void CloseGame()
     {
