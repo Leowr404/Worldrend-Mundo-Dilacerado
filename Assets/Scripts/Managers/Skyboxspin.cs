@@ -25,8 +25,8 @@ public class Skyboxspin : MonoBehaviour
     [Tooltip("Hora inicial (0-23).")]
     [SerializeField] private int startHour = 5;
 
-    [Header("Transições em MINUTOS de jogo")]
-    [Tooltip("Duração da transição Noite -> Amanhecer (ex.: 30 = meia hora de jogo).")]
+    [Header("Transiï¿½ï¿½es em MINUTOS de jogo")]
+    [Tooltip("Duraï¿½ï¿½o da transiï¿½ï¿½o Noite -> Amanhecer (ex.: 30 = meia hora de jogo).")]
     [SerializeField] private float t_NightToSunrise = 30f;
     [SerializeField] private float t_SunriseToDay = 30f;
     [SerializeField] private float t_DayToSunset = 30f;
@@ -36,7 +36,7 @@ public class Skyboxspin : MonoBehaviour
     [SerializeField] private bool rotateSkybox = true;
     [SerializeField] private float skyboxRotationSpeed = 0.5f;
 
-    // ---- estado do relógio
+    // ---- estado do relï¿½gio
     [SerializeField] private int minutes;
     public int Minutes { get => minutes; private set { minutes = value; if (minutes >= 60) { minutes = 0; Hours++; } } }
 
@@ -46,9 +46,9 @@ public class Skyboxspin : MonoBehaviour
     [SerializeField] private int days;
     public int Days { get => days; private set { days = value; } }
 
-    private float minuteAccumulator; // fração do próximo minuto (0..1)
+    private float minuteAccumulator; // fraï¿½ï¿½o do prï¿½ximo minuto (0..1)
 
-    // horários (em minutos do dia)
+    // horï¿½rios (em minutos do dia)
     const int H6 = 6 * 60;   // 06:00
     const int H8 = 9 * 60;   // 08:00
     const int H18 = 17 * 60;  // 16:00
@@ -60,14 +60,18 @@ public class Skyboxspin : MonoBehaviour
         Hours = Mathf.Clamp(startHour, 0, 23);
         Minutes = 0;
 
-        // seta estado coerente no primeiro frame
+        lightIntensityCurve = new AnimationCurve(
+            new Keyframe(0.00f, 0.8f),
+            new Keyframe(0.50f, 1.0f),
+            new Keyframe(1.00f, 0.8f)
+        );
+
         ApplyStablePhaseImmediate(CurrentMinutesOfDay());
-        //UpdateSunDirection();
     }
 
     void Update()
     {
-        // avança tempo
+        // avanï¿½a tempo
         minuteAccumulator += Time.deltaTime * minutesPerRealSecond;
         while (minuteAccumulator >= 1f)
         {
@@ -76,21 +80,21 @@ public class Skyboxspin : MonoBehaviour
             if (Hours == 0 && Minutes == 0) Days++; // virou o dia
         }
 
-        // minuto do dia (float) com fração
+        // minuto do dia (float) com fraï¿½ï¿½o
         float nowMin = CurrentMinutesOfDay();
 
-        // atualiza skybox (blend contínuo) e luz
+        // atualiza skybox (blend contï¿½nuo) e luz
         UpdateSkyboxBlend(nowMin);
         UpdateLight(nowMin);
 
-        // rotação opcional
+        // rotaï¿½ï¿½o opcional
         if (rotateSkybox && RenderSettings.skybox != null)
             RotateDualPanoramicSkybox(RenderSettings.skybox, skyboxRotationSpeed);
     }
 
     public float CurrentMinutesOfDay()
     {
-        // soma fração do próximo minuto
+        // soma fraï¿½ï¿½o do prï¿½ximo minuto
         return (Hours * 60f + Minutes + minuteAccumulator) % DAY_MINUTES;
     }
 
@@ -100,7 +104,7 @@ public class Skyboxspin : MonoBehaviour
         var sky = RenderSettings.skybox;
         if (!sky) return;
 
-        // blocos de transição por janela de minutos de JOGO
+        // blocos de transiï¿½ï¿½o por janela de minutos de JOGO
         // 1) 06:00 -> fade Night -> Sunrise
         if (InWindow(nowMin, H6, t_NightToSunrise))
         {
@@ -138,7 +142,7 @@ public class Skyboxspin : MonoBehaviour
             return;
         }
 
-        // fora das janelas: fase estável (sem blend)
+        // fora das janelas: fase estï¿½vel (sem blend)
         ApplyStablePhaseImmediate(nowMin);
     }
 
@@ -200,13 +204,17 @@ public class Skyboxspin : MonoBehaviour
     {
         if (!globalLight) return;
 
-        // intensidade ao longo do dia (0..1)
         float dayT = nowMin / DAY_MINUTES;
         globalLight.intensity = lightIntensityCurve.Evaluate(dayT);
+        globalLight.shadows = LightShadows.Soft;
 
-        // direção do sol (elevação no eixo X)
-        float sunX = (dayT * 360f) - 90f;
-        globalLight.transform.rotation = Quaternion.Euler(sunX, 30f, 0f);
+        float sunY = dayT * 360f;
+        bool isNight = nowMin < H6 || nowMin > H22;
+
+        if (isNight)
+            globalLight.color = new Color(0.4f, 0.55f, 0.9f);
+
+        globalLight.transform.rotation = Quaternion.Euler(25f, sunY, 0f);
     }
     /*private void UpdateSunDirection()
     {
@@ -215,7 +223,7 @@ public class Skyboxspin : MonoBehaviour
         float minutesOfDay = Hours * 60f + Minutes;
         float dayT = minutesOfDay / 1440f; // 1440 min = 24h
 
-        // Rotação do sol (elevação). Ajuste o Y se quiser azimute fixo (ex.: 30f).
+        // Rotaï¿½ï¿½o do sol (elevaï¿½ï¿½o). Ajuste o Y se quiser azimute fixo (ex.: 30f).
         float sunX = (dayT * 360f) - 90f;
         globalLight.transform.rotation = Quaternion.Euler(sunX, 0f, 0f);
 
