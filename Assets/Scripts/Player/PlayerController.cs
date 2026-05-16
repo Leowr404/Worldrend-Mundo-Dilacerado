@@ -23,26 +23,42 @@ public class PlayerController : MonoBehaviour
 
     private CharacterController controller;
     private PlayerStats stats;
+    private Animator animator;
     private float currentSpeed, verticalVel, rotVel;
     private float coyoteCounter, jumpBufferCounter;
     private bool isSprinting;
+    private bool isJumping;
 
     private void Awake()
     {
         controller = GetComponent<CharacterController>();
-        stats = GetComponent<PlayerStats>(); // ligação direta com o sistema de status
+        stats = GetComponent<PlayerStats>();
+        animator = GetComponentInChildren<Animator>();
     }
 
     private void Update()
     {
         float dt = Time.deltaTime;
 
-        // Timers QoL
         coyoteCounter = controller.isGrounded ? coyoteTime : Mathf.Max(0f, coyoteCounter - dt);
         jumpBufferCounter = InputManager.Instance.Jump ? jumpBuffer : Mathf.Max(0f, jumpBufferCounter - dt);
 
         HandleMovement(dt);
         HandleJumpAndGravity(dt);
+        HandleAttack();
+        UpdateAnimator();
+    }
+
+    void UpdateAnimator()
+    {
+        if (animator == null) return;
+
+        float normalizedSpeed = currentSpeed / (walkSpeed * sprintMultiplier);
+        animator.SetFloat("Speed", normalizedSpeed);
+
+        if (!controller.isGrounded && verticalVel > 0f) isJumping = true;
+        if (controller.isGrounded) isJumping = false;
+        animator.SetBool("IsJumping", isJumping);
     }
 
     void HandleMovement(float dt)
@@ -94,6 +110,13 @@ public class PlayerController : MonoBehaviour
         Vector3 horizontal = moveDir * currentSpeed;
         Vector3 velocity = horizontal + Vector3.up * verticalVel;
         controller.Move(velocity * dt);
+    }
+
+    void HandleAttack()
+    {
+        if (animator == null) return;
+        if (InputManager.Instance.Attack)
+            animator.SetTrigger("Attack");
     }
 
     void HandleJumpAndGravity(float dt)

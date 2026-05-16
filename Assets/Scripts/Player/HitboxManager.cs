@@ -34,13 +34,6 @@ public class HitboxManager : MonoBehaviour
 
     void Update()
     {
-        // Mantém seu input direto pra testar — trocar por Animation Events depois
-        if (InputManager.Instance.Attack)
-            ActivateHitbox(lightHitbox, playerStats.attackPower, AttackType.Light);
-
-        if (InputManager.Instance.Attack2)
-            ActivateHitbox(heavyHitbox, playerStats.attackPower * 2, AttackType.Heavy); // ← dano maior
-
         if (!isActive) return;
         timer -= Time.deltaTime;
         if (timer <= 0) DeactivateAll();
