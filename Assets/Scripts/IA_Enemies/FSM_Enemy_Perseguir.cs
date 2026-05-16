@@ -20,9 +20,9 @@ public class FSM_Enemy_Perseguir : StateMachineBehaviour
     {
        if (Player !=null)
         {
-            animator.transform.GetComponent<NavMeshAgent>().destination = Player.transform.position;
-           
-            animator.transform.GetComponent<Animator>().SetFloat("distancia", Vector3.Distance(animator.transform.position, Player.transform.position));
+            animator.transform.GetComponentInParent<NavMeshAgent>().destination = Player.transform.position;
+
+            animator.SetFloat("distancia", Vector3.Distance(animator.transform.position, Player.transform.position));
         }
     }
 

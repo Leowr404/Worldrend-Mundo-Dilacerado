@@ -19,7 +19,6 @@ public class FSM_Enemy_Patrulha : StateMachineBehaviour
                 WaypointArea = GameObject.Find(WaypointArea_Name);
                 WaypointArea_Count = WaypointArea.transform.childCount;
                 WaypointArea_Choice = Random.Range( 0, WaypointArea_Count);
-                animator.transform.GetChild(0).transform.rotation = Quaternion.Euler( 90, 0, 0);
             }
         }
     }
@@ -29,13 +28,13 @@ public class FSM_Enemy_Patrulha : StateMachineBehaviour
     {
        if (Player !=null && WaypointArea != null)
         {
-            animator.transform.GetComponent<NavMeshAgent>().destination = WaypointArea.transform.GetChild(WaypointArea_Choice).transform.position;
-           
-            if (Vector3.Distance(animator.transform.position,WaypointArea.transform.GetChild(WaypointArea_Choice).transform.position)<2f)
+            animator.transform.GetComponentInParent<NavMeshAgent>().destination = WaypointArea.transform.GetChild(WaypointArea_Choice).transform.position;
+
+            if (Vector3.Distance(animator.transform.position, WaypointArea.transform.GetChild(WaypointArea_Choice).transform.position) < 2f)
             {
-                WaypointArea_Choice = Random.Range( 0, WaypointArea_Count);
+                WaypointArea_Choice = Random.Range(0, WaypointArea_Count);
             }
-            animator.transform.GetComponent<Animator>().SetFloat("distancia", Vector3.Distance(animator.transform.position, Player.transform.position));
+            animator.SetFloat("distancia", Vector3.Distance(animator.transform.position, Player.transform.position));
         }
     }
 
