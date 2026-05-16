@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class EnemyAnimationEvents : MonoBehaviour
 {
-    public HitboxTrigger hitbox;
+    public EnemyHitboxTrigger hitbox;
 
     void EnableHitbox() => hitbox?.Enable();
     void DisableHitbox() => hitbox?.Disable();
