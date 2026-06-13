@@ -15,6 +15,8 @@ public class WeaponHolder : MonoBehaviour
     // item == null => remove a arma da mão
     public void EquipWeapon(Objects item)
     {
+        Debug.Log($"[WeaponHolder] EquipWeapon item={(item == null ? "NULL" : item.itemName)} | handSocket={(handSocket == null ? "NULL" : handSocket.name)} | worldModel={(item != null && item.worldModel != null ? item.worldModel.name : "NULL")}");
+
         if (item == currentItem) return; // já é a mesma arma
 
         if (currentWeapon != null) Destroy(currentWeapon);
@@ -35,6 +37,7 @@ public class WeaponHolder : MonoBehaviour
     // chamado por Animation Event no meio da anim Draw (mão pega a espada)
     public void ShowWeapon()
     {
+        Debug.Log($"[WeaponHolder] ShowWeapon. currentWeapon={(currentWeapon == null ? "NULL" : currentWeapon.name)}");
         weaponVisible = true;
         if (currentWeapon != null) currentWeapon.SetActive(true);
     }
@@ -42,6 +45,7 @@ public class WeaponHolder : MonoBehaviour
     // chamado por Animation Event no meio da anim Sheath (guarda a espada)
     public void HideWeapon()
     {
+        Debug.Log($"[WeaponHolder] HideWeapon. currentWeapon={(currentWeapon == null ? "NULL" : currentWeapon.name)}");
         weaponVisible = false;
         if (currentWeapon != null) currentWeapon.SetActive(false);
     }

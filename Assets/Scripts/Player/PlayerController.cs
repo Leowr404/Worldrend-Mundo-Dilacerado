@@ -65,7 +65,8 @@ public class PlayerController : MonoBehaviour
         if (combatTimer <= 0f)
         {
             inCombat = false;
-            if (animator != null) animator.SetTrigger("SheathWeapon"); // guarda a espada
+            if (animator != null) animator.SetTrigger("SheathWeapon"); // anim de guardar
+            if (weaponHolder != null) weaponHolder.HideWeapon();        // some com a espada
         }
     }
 
@@ -146,7 +147,11 @@ public class PlayerController : MonoBehaviour
 
             if (hasWeapon)
             {
-                if (!inCombat) animator.SetTrigger("DrawWeapon"); // primeiro golpe = puxa a espada
+                if (!inCombat)
+                {
+                    animator.SetTrigger("DrawWeapon");                 // anim de puxar
+                    if (weaponHolder != null) weaponHolder.ShowWeapon(); // mostra a espada na mão
+                }
                 inCombat = true;
                 combatTimer = combatExitTime; // reseta a contagem a cada golpe
             }
