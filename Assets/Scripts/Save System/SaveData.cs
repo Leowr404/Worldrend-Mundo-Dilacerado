@@ -60,6 +60,8 @@ public class SaveData
         public int itemId;
         public string itemName;
         public int amount;
+        public int rolledDefense;
+        public int rolledAttack;
 
         public InventoryItem() { }
 

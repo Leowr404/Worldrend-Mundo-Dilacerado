@@ -23,6 +23,10 @@ public class InventorySlot :
     public int itemCount;
     public bool isStackable;
 
+    [Header("Atributos rolados (equipável)")]
+    public int rolledDefense;
+    public int rolledAttack;
+
     [Header("Tooltip")]
     public float hoverDelay = 1f;
 
@@ -40,7 +44,7 @@ public class InventorySlot :
             {
                 TooltipUI.Instance.ShowTooltip(
                     currentItem.itemName,
-                    currentItem.descricaoItem
+                    BuildDescription()
                 );
 
                 tooltipVisible = true;
@@ -48,11 +52,24 @@ public class InventorySlot :
         }
     }
 
-    public void SetItem(Objects newItem, int count, bool stackable)
+    // defense/attack < 0 => rola novo valor (item recém-coletado).
+    // >= 0 => usa valor pronto (swap de slots / load de save).
+    public void SetItem(Objects newItem, int count, bool stackable, int defense = -1, int attack = -1)
     {
         currentItem = newItem;
         itemCount = count;
         isStackable = stackable;
+
+        if (newItem.itemType == ItemType.Equipment)
+        {
+            rolledDefense = defense >= 0 ? defense : Random.Range(newItem.minDefense, newItem.maxDefense + 1);
+            rolledAttack = attack >= 0 ? attack : Random.Range(newItem.minAttack, newItem.maxAttack + 1);
+        }
+        else
+        {
+            rolledDefense = 0;
+            rolledAttack = 0;
+        }
 
         itemIcon.sprite = newItem.itemSprite;
         itemIcon.enabled = true;
@@ -65,6 +82,8 @@ public class InventorySlot :
         currentItem = null;
         itemCount = 0;
         isStackable = false;
+        rolledDefense = 0;
+        rolledAttack = 0;
 
         itemIcon.sprite = null;
         itemIcon.enabled = false;
@@ -148,11 +167,13 @@ public class InventorySlot :
         Objects tempItem = currentItem;
         int tempCount = itemCount;
         bool tempStack = isStackable;
+        int tempDef = rolledDefense;
+        int tempAtk = rolledAttack;
 
-        SetItem(from.currentItem, from.itemCount, from.isStackable);
+        SetItem(from.currentItem, from.itemCount, from.isStackable, from.rolledDefense, from.rolledAttack);
 
         if (tempItem != null)
-            from.SetItem(tempItem, tempCount, tempStack);
+            from.SetItem(tempItem, tempCount, tempStack, tempDef, tempAtk);
         else
             from.ClearSlot();
     }
@@ -160,5 +181,24 @@ public class InventorySlot :
     public void DeleteItemConfirmed()
     {
         ClearSlot();
+    }
+
+    // Monta a descrição do tooltip incluindo atributos do item
+    public string BuildDescription()
+    {
+        string desc = currentItem.descricaoItem;
+
+        if (currentItem.itemType == ItemType.Equipment)
+        {
+            if (rolledDefense > 0) desc += $"\n<color=#7FD8FF>Defesa +{rolledDefense}</color>";
+            if (rolledAttack > 0) desc += $"\n<color=#FF8888>Ataque +{rolledAttack}</color>";
+        }
+        else if (currentItem.itemType == ItemType.Consumable)
+        {
+            if (currentItem.healthRestore > 0) desc += $"\n<color=#88FF88>Cura +{currentItem.healthRestore}</color>";
+            if (currentItem.staminaRestore > 0) desc += $"\n<color=#FFFF88>Stamina +{currentItem.staminaRestore}</color>";
+        }
+
+        return desc;
     }
 }

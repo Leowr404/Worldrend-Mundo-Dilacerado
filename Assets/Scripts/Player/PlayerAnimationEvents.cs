@@ -2,6 +2,13 @@ using UnityEngine;
 
 public class PlayerAnimationEvents : MonoBehaviour
 {
+    private WeaponHolder weaponHolder;
+
+    void Awake()
+    {
+        weaponHolder = GetComponentInParent<WeaponHolder>();
+    }
+
     void EnableHitbox()
     {
         var hbm = HitboxManager.Instance;
@@ -12,4 +19,8 @@ public class PlayerAnimationEvents : MonoBehaviour
     }
 
     void DisableHitbox() => HitboxManager.Instance?.DeactivateAll();
+
+    // chamados por Animation Event nas anims Draw / Sheath
+    void ShowWeapon() => weaponHolder?.ShowWeapon();
+    void HideWeapon() => weaponHolder?.HideWeapon();
 }

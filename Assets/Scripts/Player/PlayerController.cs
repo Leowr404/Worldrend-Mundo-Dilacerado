@@ -21,19 +21,26 @@ public class PlayerController : MonoBehaviour
     public float coyoteTime = 0.1f;
     public float jumpBuffer = 0.1f;
 
+    [Header("Combate")]
+    public float combatExitTime = 10f; // segundos sem atacar até guardar a espada
+
     private CharacterController controller;
     private PlayerStats stats;
     private Animator animator;
+    private WeaponHolder weaponHolder;
     private float currentSpeed, verticalVel, rotVel;
     private float coyoteCounter, jumpBufferCounter;
     private bool isSprinting;
     private bool isJumping;
+    private bool inCombat;
+    private float combatTimer;
 
     private void Awake()
     {
         controller = GetComponent<CharacterController>();
         stats = GetComponent<PlayerStats>();
         animator = GetComponentInChildren<Animator>();
+        weaponHolder = GetComponentInChildren<WeaponHolder>();
     }
 
     private void Update()
@@ -46,7 +53,20 @@ public class PlayerController : MonoBehaviour
         HandleMovement(dt);
         HandleJumpAndGravity(dt);
         HandleAttack();
+        HandleCombatState(dt);
         UpdateAnimator();
+    }
+
+    void HandleCombatState(float dt)
+    {
+        if (!inCombat) return;
+
+        combatTimer -= dt;
+        if (combatTimer <= 0f)
+        {
+            inCombat = false;
+            if (animator != null) animator.SetTrigger("SheathWeapon"); // guarda a espada
+        }
     }
 
     void UpdateAnimator()
@@ -59,6 +79,9 @@ public class PlayerController : MonoBehaviour
         if (!controller.isGrounded && verticalVel > 0f) isJumping = true;
         if (controller.isGrounded) isJumping = false;
         animator.SetBool("IsJumping", isJumping);
+
+        animator.SetBool("InCombat", inCombat);
+        animator.SetBool("HasWeapon", weaponHolder != null && weaponHolder.HasWeapon);
     }
 
     void HandleMovement(float dt)
@@ -116,7 +139,18 @@ public class PlayerController : MonoBehaviour
     {
         if (animator == null) return;
         if (InputManager.Instance.Attack)
+        {
+            bool hasWeapon = weaponHolder != null && weaponHolder.HasWeapon;
+
             animator.SetTrigger("Attack");
+
+            if (hasWeapon)
+            {
+                if (!inCombat) animator.SetTrigger("DrawWeapon"); // primeiro golpe = puxa a espada
+                inCombat = true;
+                combatTimer = combatExitTime; // reseta a contagem a cada golpe
+            }
+        }
     }
 
     void HandleJumpAndGravity(float dt)

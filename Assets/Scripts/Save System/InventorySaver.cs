@@ -32,6 +32,8 @@ public class InventorySaver : MonoBehaviour
                     itemName: slot.currentItem.itemName,    // ← Nome amigável
                     amount: slot.itemCount
                 );
+                entry.rolledDefense = slot.rolledDefense;
+                entry.rolledAttack = slot.rolledAttack;
 
                 list.Add(entry);
             }
@@ -63,7 +65,7 @@ public class InventorySaver : MonoBehaviour
 
             if (obj != null)
             {
-                slot.SetItem(obj, data.amount, obj.isStackable);
+                slot.SetItem(obj, data.amount, obj.isStackable, data.rolledDefense, data.rolledAttack);
             }
             else
             {

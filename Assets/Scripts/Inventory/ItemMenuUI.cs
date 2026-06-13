@@ -66,7 +66,37 @@ public class ItemMenuUI : MonoBehaviour
 
     public void OnUseItem()
     {
-        Debug.Log("Usou o item: " + currentSlot.currentItem.itemName);
+        if (currentSlot == null || currentSlot.currentItem == null) { Close(); return; }
+
+        Objects item = currentSlot.currentItem;
+
+        if (item.itemType == ItemType.Consumable)
+        {
+            PlayerStats player = FindAnyObjectByType<PlayerStats>();
+            if (player != null)
+            {
+                if (item.healthRestore > 0) player.Heal(item.healthRestore);
+                if (item.staminaRestore > 0) player.RestoreStamina(item.staminaRestore);
+            }
+
+            // consome 1 unidade
+            currentSlot.itemCount--;
+            if (currentSlot.itemCount <= 0)
+                currentSlot.ClearSlot();
+            else
+                currentSlot.itemCountText.text = currentSlot.itemCount.ToString();
+
+            UiManager.Notify($"{item.itemName} usado!");
+        }
+        else if (item.itemType == ItemType.Equipment)
+        {
+            UiManager.Notify("Arraste a peça para o slot de equipamento.");
+        }
+        else
+        {
+            UiManager.Notify("Esse item não pode ser usado.");
+        }
+
         Close();
     }
 

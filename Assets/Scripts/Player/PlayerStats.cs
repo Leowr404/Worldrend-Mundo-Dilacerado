@@ -29,6 +29,10 @@ public class PlayerStats : MonoBehaviour
     public int attackPower;
     public int defensePower;
 
+    [Header("Bônus de Equipamento (somente leitura)")]
+    public int equipmentDefenseBonus = 0;
+    public int equipmentAttackBonus = 0;
+
     [Header("Regeneração")]
     [Tooltip("Quanto de HP regenera a cada intervalo")]
     public int healthRegenAmount = 10;
@@ -82,8 +86,8 @@ public class PlayerStats : MonoBehaviour
 
         maxHealth = 150 + vitality * 25;
         maxStamina = 300 + endurance * 10;
-        attackPower = 15 + strength * 3 + level * 2;
-        defensePower = 5 + defense * 2;
+        attackPower = 15 + strength * 3 + level * 2 + equipmentAttackBonus;
+        defensePower = 5 + defense * 2 + equipmentDefenseBonus;
 
         if (!refill)
         {
@@ -172,6 +176,21 @@ public class PlayerStats : MonoBehaviour
         currentHealth += amount;
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
         UpdateUI();
+    }
+
+    public void RestoreStamina(int amount)
+    {
+        currentStamina += amount;
+        currentStamina = Mathf.Clamp(currentStamina, 0, maxStamina);
+        UpdateUI();
+    }
+
+    // 🛡️ Aplica bônus total dos equipamentos (chamado pelo EquipmentManager)
+    public void ApplyEquipmentBonus(int defenseBonus, int attackBonus)
+    {
+        equipmentDefenseBonus = defenseBonus;
+        equipmentAttackBonus = attackBonus;
+        RecalculateStats(false);
     }
 
     // 🧾 XP e Level Up
