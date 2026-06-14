@@ -1,52 +1,48 @@
 using UnityEngine;
 
-// Mostra o modelo 3D da arma equipada na mão do player.
+// Mostra a arma equipada. Guardada fica no backSocket (costas),
+// em combate vai pro handSocket (mão). A troca é feita por Animation Events.
 public class WeaponHolder : MonoBehaviour
 {
-    [Header("Onde a arma aparece (osso/empty da mão)")]
-    public Transform handSocket;
+    [Header("Sockets")]
+    public Transform handSocket; // mão (em combate)
+    public Transform backSocket; // costas (guardada)
 
     private GameObject currentWeapon;
     private Objects currentItem;
-    private bool weaponVisible = false; // começa guardada (fora de combate)
 
     public bool HasWeapon => currentItem != null;
 
-    // item == null => remove a arma da mão
+    // Chamado pelo EquipmentManager ao equipar/desequipar.
     public void EquipWeapon(Objects item)
     {
-        Debug.Log($"[WeaponHolder] EquipWeapon item={(item == null ? "NULL" : item.itemName)} | handSocket={(handSocket == null ? "NULL" : handSocket.name)} | worldModel={(item != null && item.worldModel != null ? item.worldModel.name : "NULL")}");
-
-        if (item == currentItem) return; // já é a mesma arma
+        if (item == currentItem) return;
 
         if (currentWeapon != null) Destroy(currentWeapon);
         currentWeapon = null;
-        currentItem = null;
-
-        if (item == null || item.worldModel == null || handSocket == null) return;
-
-        currentWeapon = Instantiate(item.worldModel, handSocket);
-        currentWeapon.transform.localPosition = Vector3.zero;
-        currentWeapon.transform.localRotation = Quaternion.identity;
         currentItem = item;
 
-        // respeita o estado atual: se está fora de combate, nasce escondida
-        currentWeapon.SetActive(weaponVisible);
+        if (item == null || item.worldModel == null) return;
+
+        AttachTo(backSocket); // nasce guardada nas costas
     }
 
-    // chamado por Animation Event no meio da anim Draw (mão pega a espada)
-    public void ShowWeapon()
-    {
-        Debug.Log($"[WeaponHolder] ShowWeapon. currentWeapon={(currentWeapon == null ? "NULL" : currentWeapon.name)}");
-        weaponVisible = true;
-        if (currentWeapon != null) currentWeapon.SetActive(true);
-    }
+    // Animation Event no meio da anim Draw (mão pega a espada das costas)
+    public void ShowWeapon() => AttachTo(handSocket);
 
-    // chamado por Animation Event no meio da anim Sheath (guarda a espada)
-    public void HideWeapon()
+    // Animation Event no meio da anim Sheath (guarda a espada nas costas)
+    public void HideWeapon() => AttachTo(backSocket);
+
+    private void AttachTo(Transform socket)
     {
-        Debug.Log($"[WeaponHolder] HideWeapon. currentWeapon={(currentWeapon == null ? "NULL" : currentWeapon.name)}");
-        weaponVisible = false;
-        if (currentWeapon != null) currentWeapon.SetActive(false);
+        if (currentItem == null || socket == null) return;
+
+        if (currentWeapon == null)
+            currentWeapon = Instantiate(currentItem.worldModel, socket);
+        else
+            currentWeapon.transform.SetParent(socket);
+
+        currentWeapon.transform.localPosition = Vector3.zero;
+        currentWeapon.transform.localRotation = Quaternion.identity;
     }
 }

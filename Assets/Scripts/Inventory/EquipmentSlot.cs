@@ -28,14 +28,10 @@ public class EquipmentSlot :
     public void OnDrop(PointerEventData eventData)
     {
         InventorySlot from = DragItem.Instance.sourceSlot;
-        Debug.Log($"[EquipSlot {slotType}] OnDrop. sourceSlot={(from == null ? "NULL" : from.name)}");
-
-        if (from == null || from.currentItem == null) { Debug.Log("[EquipSlot] sem item de origem"); return; }
-
-        Debug.Log($"[EquipSlot] item={from.currentItem.itemName} type={from.currentItem.itemType} equipSlot={from.currentItem.equipSlot} | slotType={slotType}");
+        if (from == null || from.currentItem == null) return;
 
         // só aceita equipamento do tipo certo
-        if (from.currentItem.itemType != ItemType.Equipment) { Debug.Log("[EquipSlot] item não é Equipment"); return; }
+        if (from.currentItem.itemType != ItemType.Equipment) return;
         if (from.currentItem.equipSlot != slotType)
         {
             UiManager.Notify("Esse item não vai nesse slot.");

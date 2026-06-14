@@ -65,8 +65,7 @@ public class PlayerController : MonoBehaviour
         if (combatTimer <= 0f)
         {
             inCombat = false;
-            if (animator != null) animator.SetTrigger("SheathWeapon"); // anim de guardar
-            if (weaponHolder != null) weaponHolder.HideWeapon();        // some com a espada
+            if (animator != null) animator.SetTrigger("SheathWeapon"); // anim guardar; Animation Event HideWeapon move pras costas
         }
     }
 
@@ -139,23 +138,29 @@ public class PlayerController : MonoBehaviour
     void HandleAttack()
     {
         if (animator == null) return;
-        if (InputManager.Instance.Attack)
+        if (!InputManager.Instance.Attack) return;
+
+        bool hasWeapon = weaponHolder != null && weaponHolder.HasWeapon;
+
+        if (!hasWeapon)
         {
-            bool hasWeapon = weaponHolder != null && weaponHolder.HasWeapon;
-
-            animator.SetTrigger("Attack");
-
-            if (hasWeapon)
-            {
-                if (!inCombat)
-                {
-                    animator.SetTrigger("DrawWeapon");                 // anim de puxar
-                    if (weaponHolder != null) weaponHolder.ShowWeapon(); // mostra a espada na mão
-                }
-                inCombat = true;
-                combatTimer = combatExitTime; // reseta a contagem a cada golpe
-            }
+            animator.SetTrigger("Attack"); // desarmado = soco
+            return;
         }
+
+        if (!inCombat)
+        {
+            // arma guardada: puxa das costas (o Animator emenda o golpe via Draw -> Ataque_Espada)
+            animator.SetTrigger("DrawWeapon");
+        }
+        else
+        {
+            // já em combate: golpe direto
+            animator.SetTrigger("Attack");
+        }
+
+        inCombat = true;
+        combatTimer = combatExitTime; // reseta a contagem a cada golpe
     }
 
     void HandleJumpAndGravity(float dt)
