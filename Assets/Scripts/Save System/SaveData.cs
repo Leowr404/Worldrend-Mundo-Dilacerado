@@ -50,6 +50,18 @@ public class SaveData
         public bool isReadyToDeliver;
     }
 
+    // === Equipamento equipado ===
+    public List<EquippedItem> equipment = new List<EquippedItem>();
+
+    [Serializable]
+    public class EquippedItem
+    {
+        public int slotType;   // (int)EquipSlotType
+        public int itemId;
+        public int rolledDefense;
+        public int rolledAttack;
+    }
+
     // === Inventário ===
     public List<InventoryItem> inventory = new List<InventoryItem>();
 

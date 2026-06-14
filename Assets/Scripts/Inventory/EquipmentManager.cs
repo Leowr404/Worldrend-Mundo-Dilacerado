@@ -77,4 +77,53 @@ public class EquipmentManager : MonoBehaviour
         UiManager.Notify("Inventário cheio!");
         return false;
     }
+
+    // ===================== SAVE / LOAD =====================
+    public System.Collections.Generic.List<SaveData.EquippedItem> SaveEquipment()
+    {
+        var list = new System.Collections.Generic.List<SaveData.EquippedItem>();
+
+        foreach (var slot in equipmentSlots)
+        {
+            if (slot != null && slot.currentItem != null)
+            {
+                list.Add(new SaveData.EquippedItem
+                {
+                    slotType = (int)slot.slotType,
+                    itemId = slot.currentItem.itemId,
+                    rolledDefense = slot.rolledDefense,
+                    rolledAttack = slot.rolledAttack
+                });
+            }
+        }
+
+        return list;
+    }
+
+    public void LoadEquipment(System.Collections.Generic.List<SaveData.EquippedItem> saved)
+    {
+        // limpa todos os slots
+        foreach (var slot in equipmentSlots)
+            if (slot != null) slot.Clear();
+
+        if (saved != null)
+        {
+            foreach (var e in saved)
+            {
+                Objects item = ItemDatabase.Instance.GetItemById(e.itemId);
+                if (item == null) continue;
+
+                foreach (var slot in equipmentSlots)
+                {
+                    if (slot != null && (int)slot.slotType == e.slotType)
+                    {
+                        slot.Equip(item, e.rolledDefense, e.rolledAttack);
+                        break;
+                    }
+                }
+            }
+        }
+
+        RecalculateBonus(); // reaplica bônus + reposiciona arma
+    }
 }

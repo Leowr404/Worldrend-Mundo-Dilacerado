@@ -102,6 +102,10 @@ public class SaveManager : MonoBehaviour
         if (inventorySaver != null)
             data.inventory = inventorySaver.SaveInventory();
 
+        // Equipamento equipado
+        if (EquipmentManager.Instance != null)
+            data.equipment = EquipmentManager.Instance.SaveEquipment();
+
         // Tempo e data
         data.playTimeSeconds = Mathf.FloorToInt(playtimeCounter);
         string now = System.DateTime.Now.ToString("dd/MM/yyyy HH:mm");
@@ -228,6 +232,10 @@ public class SaveManager : MonoBehaviour
         // Inventário
         if (inventorySaver != null)
             inventorySaver.LoadInventory(data.inventory);
+
+        // Equipamento equipado (depois dos stats, pra reaplicar bônus por cima)
+        if (EquipmentManager.Instance != null)
+            EquipmentManager.Instance.LoadEquipment(data.equipment);
 
         // Tempo de jogo
         playtimeCounter = data.playTimeSeconds;
