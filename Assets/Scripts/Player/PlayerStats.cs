@@ -162,12 +162,34 @@ public class PlayerStats : MonoBehaviour
     }
 
     // ☠️ Dano e cura
+    private bool isDead = false;
+    public bool IsDead => isDead;
+
     public void TakeDamage(int amount)
     {
+        if (isDead) return;
+
         int dmg = Mathf.Max(amount - defensePower, 1);
         currentHealth -= dmg;
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
         lastHitTime = Time.time;
+        UpdateUI();
+
+        if (currentHealth <= 0)
+            Die();
+    }
+
+    private void Die()
+    {
+        isDead = true;
+        DeathScreenUI.Instance?.ShowDeathScreen();
+    }
+
+    // Chamado ao reviver (Tentar Novamente)
+    public void Revive()
+    {
+        isDead = false;
+        currentHealth = maxHealth;
         UpdateUI();
     }
 

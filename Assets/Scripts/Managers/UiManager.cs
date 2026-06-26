@@ -169,7 +169,7 @@ public class UiManager : MonoBehaviour
 
         var obj = q.objective;
         questHUDProgress.text = q.isReadyToDeliver
-            ? "Entregue ao NPC!"
+            ? "Quest Concluída! Volte ao NPC"
             : $"{obj.description} ({obj.currentAmount}/{obj.requiredAmount})";
     }
 

@@ -14,9 +14,16 @@ public class FSM_Enemy_Patrulha : StateMachineBehaviour
        if (GameObject.Find ("Player"))
         {
             Player = GameObject.Find("Player");
-            if(GameObject.Find(WaypointArea_Name))
-            {
+
+            // 1º: área definida pelo spawner (por inimigo). 2º: fallback pelo nome (cena fixa).
+            EnemyPatrolArea patrol = animator.GetComponentInParent<EnemyPatrolArea>();
+            if (patrol != null && patrol.waypointArea != null)
+                WaypointArea = patrol.waypointArea.gameObject;
+            else if (GameObject.Find(WaypointArea_Name))
                 WaypointArea = GameObject.Find(WaypointArea_Name);
+
+            if (WaypointArea != null)
+            {
                 WaypointArea_Count = WaypointArea.transform.childCount;
                 WaypointArea_Choice = Random.Range( 0, WaypointArea_Count);
             }

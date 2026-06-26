@@ -111,7 +111,11 @@ public class EquipmentManager : MonoBehaviour
             foreach (var e in saved)
             {
                 Objects item = ItemDatabase.Instance.GetItemById(e.itemId);
-                if (item == null) continue;
+                if (item == null)
+                {
+                    Debug.LogWarning($"[EquipmentManager] itemId '{e.itemId}' não encontrado no ItemDatabase. Adicione a peça na lista do ItemDatabase.");
+                    continue;
+                }
 
                 foreach (var slot in equipmentSlots)
                 {

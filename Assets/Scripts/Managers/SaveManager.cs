@@ -5,6 +5,9 @@ public class SaveManager : MonoBehaviour
 {
     public static SaveManager Instance { get; private set; }
 
+    // setado pelo MainMenu: true = carregar o save 0 ao entrar na cena (Continuar)
+    public static bool loadOnStart = false;
+
     [Header("Referências")]
     public InventorySaver inventorySaver;
     public Transform player;
@@ -20,6 +23,13 @@ public class SaveManager : MonoBehaviour
     private void Start()
     {
         QuestManager.Instance.OnQuestCompleted += OnQuestCompleted;
+
+        // veio do botão "Continuar" no menu
+        if (loadOnStart)
+        {
+            loadOnStart = false;
+            LoadFromSlot(0);
+        }
     }
 
     private void OnDestroy()
@@ -50,14 +60,11 @@ public class SaveManager : MonoBehaviour
         if (player != null) data.playerPosition = player.position;
         if (cameraTransform != null) data.cameraRotation = cameraTransform.rotation;
 
-        // Vida
-        HealthPlayer hp = player?.GetComponent<HealthPlayer>();
-        if (hp != null) data.playerHealth = hp.CurrentHealth;
-
-        // Stats
+        // Stats (PlayerStats é o sistema real de vida usado no combate)
         PlayerStats stats = player?.GetComponent<PlayerStats>();
         if (stats != null)
         {
+            data.playerHealth = stats.currentHealth;
             data.level = stats.level;
             data.currentXP = stats.currentXP;
             data.xpToNextLevel = stats.xpToNextLevel;
@@ -139,11 +146,7 @@ public class SaveManager : MonoBehaviour
         if (cameraTransform != null)
             cameraTransform.rotation = data.cameraRotation;
 
-        // Vida
-        HealthPlayer hp = player?.GetComponent<HealthPlayer>();
-        if (hp != null) hp.SetHealth(data.playerHealth);
-
-        // Stats
+        // Stats + vida (PlayerStats é o sistema real de combate)
         PlayerStats stats = player?.GetComponent<PlayerStats>();
         if (stats != null)
         {
@@ -157,6 +160,9 @@ public class SaveManager : MonoBehaviour
             stats.endurance = data.endurance;
             stats.Lucky = data.lucky;
             stats.RecalculateStats(false);
+
+            // restaura a vida salva DEPOIS do recalc (senão fica proporcional)
+            stats.currentHealth = Mathf.Clamp(data.playerHealth, 0, stats.maxHealth);
         }
 
         // Moeda
@@ -181,53 +187,57 @@ public class SaveManager : MonoBehaviour
 
         if (allQuests == null || allQuests.Length == 0)
         {
-            Debug.LogError("[SaveManager] allQuests VAZIO! Arraste as quests no Inspector do QuestManager.");
-            return;
+            // não aborta o resto do load (inventário/equipamento continuam)
+            Debug.LogError("[SaveManager] allQuests VAZIO! Arraste as quests no Inspector do QuestManager. (quests não serão restauradas)");
         }
-
-        Debug.Log($"[SaveManager] Resetando {allQuests.Length} quests...");
-
-        // reseta estado runtime de TODAS as quests antes de restaurar
-        foreach (var q in allQuests)
+        else
         {
-            q.isCompleted = false;
-            q.isReadyToDeliver = false;
-            q.objective.currentAmount = 0;
-        }
-
-        QuestManager.Instance.activeQuests.Clear();
-        QuestManager.Instance.completedQuests.Clear();
-
-        foreach (var saved in data.activeQuestProgress)
-        {
+            // reseta estado runtime de TODAS as quests antes de restaurar
             foreach (var q in allQuests)
             {
-                if (q.questName == saved.questName)
-                {
-                    q.ResetProgress();
-                    q.objective.currentAmount = saved.currentAmount;
-                    q.isReadyToDeliver = saved.isReadyToDeliver;
-                    QuestManager.Instance.activeQuests.Add(q);
-                    break;
-                }
+                q.isCompleted = false;
+                q.isReadyToDeliver = false;
+                q.objective.currentAmount = 0;
             }
-        }
 
-        foreach (var name in data.completedQuestNames)
-        {
-            foreach (var q in allQuests)
+            QuestManager.Instance.activeQuests.Clear();
+            QuestManager.Instance.completedQuests.Clear();
+
+            foreach (var saved in data.activeQuestProgress)
             {
-                if (q.questName == name)
+                foreach (var q in allQuests)
                 {
-                    q.isCompleted = true;
-                    QuestManager.Instance.completedQuests.Add(q);
-                    break;
+                    if (q.questName == saved.questName)
+                    {
+                        q.ResetProgress();
+                        q.objective.currentAmount = saved.currentAmount;
+                        q.isReadyToDeliver = saved.isReadyToDeliver;
+                        QuestManager.Instance.activeQuests.Add(q);
+                        break;
+                    }
                 }
             }
+
+            foreach (var name in data.completedQuestNames)
+            {
+                foreach (var q in allQuests)
+                {
+                    if (q.questName == name)
+                    {
+                        q.isCompleted = true;
+                        QuestManager.Instance.completedQuests.Add(q);
+                        break;
+                    }
+                }
+            }
+
+            // Atualiza UI de quests
+            UiManager.Instance?.RefreshQuestHUDPublic();
         }
 
-        // Atualiza UI de quests
-        UiManager.Instance?.RefreshQuestHUDPublic();
+        // Re-checa as paredes de quest (libera/bloqueia conforme o estado carregado)
+        foreach (var barrier in FindObjectsByType<QuestBarrier>(FindObjectsSortMode.None))
+            barrier.Refresh();
 
         // Inventário
         if (inventorySaver != null)

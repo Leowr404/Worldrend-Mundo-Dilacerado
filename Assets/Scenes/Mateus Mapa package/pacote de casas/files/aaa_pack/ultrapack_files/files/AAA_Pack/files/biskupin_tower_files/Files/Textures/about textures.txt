@@ -1,0 +1,1 @@
+We use only TILEABLE, SEAMLESS textures so feel free to switch them to your own :)

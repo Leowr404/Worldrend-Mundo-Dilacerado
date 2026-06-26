@@ -1,0 +1,14 @@
+# Blender MTL File: 'LODs_biskupin_tower.blend'
+# Material Count: 1
+
+newmtl thatch_opacity
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 0.000000
+illum 1
+map_Kd C:\Users\Grzegorz\Desktop\ENTERABLES\PRE-MEDIEVAL\ASSETS\Biskupin Tower\EXPORT\Textures\thatch_opacity.png
+map_d C:\\Users\\Grzegorz\\Desktop\\ENTERABLES\\PRE-MEDIEVAL\\ASSETS\\Biskupin Tower\\EXPORT\\Textures\\thatch_opacity.png

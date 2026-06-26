@@ -27,6 +27,10 @@ public class ItemCollector : MonoBehaviour
         {
             Debug.Log($"Item coletado: {item.itemName}");
             audioManager.PlaySFX(AudioManager.instancia.Coletavel);
+
+            // avisa as quests de Collect (Target ID da quest = itemId do item)
+            QuestManager.Instance?.ReportCollect(item.itemId.ToString(), 1);
+
             Destroy(other.gameObject); // remove o item da cena
         }
         else

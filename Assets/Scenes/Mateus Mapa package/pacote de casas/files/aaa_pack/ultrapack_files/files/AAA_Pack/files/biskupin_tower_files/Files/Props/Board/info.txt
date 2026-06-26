@@ -1,0 +1,1 @@
+Boards got only 1 LOD since it is simple mesh and there is no need to add unnecessary polygons.

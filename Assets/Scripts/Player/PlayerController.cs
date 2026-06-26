@@ -22,7 +22,8 @@ public class PlayerController : MonoBehaviour
     public float jumpBuffer = 0.1f;
 
     [Header("Combate")]
-    public float combatExitTime = 10f; // segundos sem atacar até guardar a espada
+    public float combatExitTime = 10f;  // segundos sem atacar até guardar a espada
+    public float attackCooldown = 0.6f; // delay mínimo entre golpes
 
     private CharacterController controller;
     private PlayerStats stats;
@@ -34,6 +35,7 @@ public class PlayerController : MonoBehaviour
     private bool isJumping;
     private bool inCombat;
     private float combatTimer;
+    private float attackTimer;
 
     private void Awake()
     {
@@ -138,7 +140,16 @@ public class PlayerController : MonoBehaviour
     void HandleAttack()
     {
         if (animator == null) return;
+
+        if (attackTimer > 0f) attackTimer -= Time.deltaTime;
+
         if (!InputManager.Instance.Attack) return;
+        if (attackTimer > 0f) return; // ainda em cooldown
+
+        // gasta stamina; sem stamina, não ataca
+        if (!stats.SpendStamina(PlayerStats.StaminaAction.Attack)) return;
+
+        attackTimer = attackCooldown; // reinicia o delay a cada golpe
 
         bool hasWeapon = weaponHolder != null && weaponHolder.HasWeapon;
 
@@ -167,7 +178,9 @@ public class PlayerController : MonoBehaviour
     {
         if (controller.isGrounded && verticalVel < 0f) verticalVel = -2f;
 
-        if (coyoteCounter > 0f && jumpBufferCounter > 0f)
+        // pula só se tiver stamina (SpendStamina gasta e retorna false se faltar)
+        if (coyoteCounter > 0f && jumpBufferCounter > 0f &&
+            stats.SpendStamina(PlayerStats.StaminaAction.Jump))
         {
             verticalVel = Mathf.Sqrt(jumpHeight * -2f * gravity);
             coyoteCounter = 0f; jumpBufferCounter = 0f;
