@@ -15,6 +15,7 @@ public class QuestManager : MonoBehaviour
     public List<Quest> completedQuests = new List<Quest>();
 
     public event Action<Quest> OnQuestAdded;
+    public event Action<Quest> OnObjectiveProgress;
     public event Action<Quest> OnObjectiveCompleted;
     public event Action<Quest> OnQuestCompleted;
 
@@ -51,14 +52,35 @@ public class QuestManager : MonoBehaviour
 
     private void ReportProgress(QuestObjectiveType type, string id, int amount = 1)
     {
-        foreach (var quest in activeQuests)
+        // loop reverso pra poder remover da lista (auto-complete)
+        for (int i = activeQuests.Count - 1; i >= 0; i--)
         {
+            var quest = activeQuests[i];
+
+            int before = quest.objective.currentAmount;
             quest.objective.RegisterProgress(type, id, amount);
+
+            // progrediu (ex: 5/10) → atualiza o HUD
+            if (quest.objective.currentAmount != before)
+                OnObjectiveProgress?.Invoke(quest);
 
             if (quest.TryCompleteObjective())
             {
-                UiManager.Notify($"Objetivo completo!\nVolte ao NPC para entregar.");
                 OnObjectiveCompleted?.Invoke(quest);
+
+                if (quest.autoComplete)
+                {
+                    // conclui na hora, sem voltar ao NPC
+                    activeQuests.RemoveAt(i);
+                    completedQuests.Add(quest);
+                    quest.DeliverAndReward(player);
+                    UiManager.Notify($"Quest concluída: {quest.questName}!");
+                    OnQuestCompleted?.Invoke(quest);
+                }
+                else
+                {
+                    UiManager.Notify($"Objetivo completo!\nVolte ao NPC para entregar.");
+                }
             }
         }
     }

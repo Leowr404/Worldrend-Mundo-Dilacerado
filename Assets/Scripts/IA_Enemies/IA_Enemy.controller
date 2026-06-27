@@ -186,7 +186,7 @@ AnimatorController:
   m_AnimatorParameters:
   - m_Name: distancia
     m_Type: 1
-    m_DefaultFloat: 20
+    m_DefaultFloat: 10
     m_DefaultInt: 0
     m_DefaultBool: 0
     m_Controller: {fileID: 9100000}
@@ -295,7 +295,7 @@ AnimatorStateTransition:
   m_Conditions:
   - m_ConditionMode: 3
     m_ConditionEvent: distancia
-    m_EventTreshold: 25
+    m_EventTreshold: 20
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -7286064404445462586}
   m_Solo: 0

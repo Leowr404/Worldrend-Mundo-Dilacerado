@@ -79,6 +79,7 @@ Referência rápida pra não se perder. Consulta antes de criar item/quest/inimi
 
 **Entrega:**
 - `Delivery NPCID` → ⚠️ ID do NPC onde entrega a quest. **Tem que bater com o `Npc ID` do DialogueTrigger** desse NPC
+- `Auto Complete` → **marca** se a quest conclui sozinha ao terminar o objetivo (sem voltar ao NPC). Desmarcado = precisa entregar no NPC
 
 **Recompensas:**
 - `Xp Reward` → XP ao concluir

@@ -239,6 +239,10 @@ public class SaveManager : MonoBehaviour
         foreach (var barrier in FindObjectsByType<QuestBarrier>(FindObjectsSortMode.None))
             barrier.Refresh();
 
+        // Re-checa os desbloqueios de quest (NPC->Loja etc)
+        foreach (var unlock in FindObjectsByType<QuestUnlock>(FindObjectsSortMode.None))
+            unlock.Refresh();
+
         // Inventário
         if (inventorySaver != null)
             inventorySaver.LoadInventory(data.inventory);

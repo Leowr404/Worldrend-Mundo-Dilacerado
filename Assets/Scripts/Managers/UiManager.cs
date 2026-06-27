@@ -85,6 +85,7 @@ public class UiManager : MonoBehaviour
         _onQuestCompleted = OnQuestCompleted;
 
         QuestManager.Instance.OnQuestAdded += _onQuestAdded;
+        QuestManager.Instance.OnObjectiveProgress += _onObjectiveCompleted; // atualiza HUD no progresso
         QuestManager.Instance.OnObjectiveCompleted += _onObjectiveCompleted;
         QuestManager.Instance.OnQuestCompleted += _onQuestCompleted;
     }
@@ -92,6 +93,7 @@ public class UiManager : MonoBehaviour
     private void OnDisable()
     {
         QuestManager.Instance.OnQuestAdded -= _onQuestAdded;
+        QuestManager.Instance.OnObjectiveProgress -= _onObjectiveCompleted;
         QuestManager.Instance.OnObjectiveCompleted -= _onObjectiveCompleted;
         QuestManager.Instance.OnQuestCompleted -= _onQuestCompleted;
     }
@@ -251,6 +253,8 @@ public class UiManager : MonoBehaviour
 
         if (sentences.Count == 0) EnqueueLines(data.lines);
 
+        Debug.Log($"[Dialogo] StartDialogue: {sentences.Count} falas | quest={(data.quest != null ? data.quest.questName : "nenhuma")}");
+
         dialoguePanel.SetActive(true);
         speakerNameText.text = data.npcName;
         dialoguePanel.transform.localScale = Vector3.zero;
@@ -344,6 +348,7 @@ public class UiManager : MonoBehaviour
 
     public void EndDialogue()
     {
+        Debug.Log($"[Dialogo] EndDialogue chamado\n{System.Environment.StackTrace}");
         if (typingSequence != null) typingSequence.Kill();
         isTyping = false;
 

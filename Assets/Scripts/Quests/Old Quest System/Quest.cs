@@ -12,6 +12,7 @@ public class Quest : ScriptableObject
 
     [Header("Entrega")]
     public string deliveryNPCID; // ID do NPC que entrega a recompensa
+    public bool autoComplete;    // conclui sozinha ao terminar o objetivo (sem voltar ao NPC)
 
     [Header("Recompensas")]
     public int xpReward;

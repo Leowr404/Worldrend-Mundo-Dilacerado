@@ -7,6 +7,7 @@ public class FSM_Enemy_Patrulha : StateMachineBehaviour
     private GameObject Player;
     private GameObject WaypointArea;
     private int WaypointArea_Count = 0, WaypointArea_Choice = 0;
+    private float stuckTimer;
 
     //OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -33,14 +34,32 @@ public class FSM_Enemy_Patrulha : StateMachineBehaviour
     //OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-       if (Player !=null && WaypointArea != null)
+       if (Player != null && WaypointArea != null)
         {
-            animator.transform.GetComponentInParent<NavMeshAgent>().destination = WaypointArea.transform.GetChild(WaypointArea_Choice).transform.position;
+            NavMeshAgent agent = animator.transform.GetComponentInParent<NavMeshAgent>();
+            if (agent == null) return;
 
-            if (Vector3.Distance(animator.transform.position, WaypointArea.transform.GetChild(WaypointArea_Choice).transform.position) < 2f)
+            agent.isStopped = false; // garante que não ficou travado de outro estado
+
+            Transform target = WaypointArea.transform.GetChild(WaypointArea_Choice);
+            agent.destination = target.position;
+
+            // chegou ao destino (distância no caminho, não em linha reta)
+            bool chegou = !agent.pathPending && agent.remainingDistance <= 2f;
+
+            // travou: parado sem chegar (caminho bloqueado/inalcançável)
+            if (!agent.pathPending && agent.velocity.sqrMagnitude < 0.05f && agent.remainingDistance > 2f)
+                stuckTimer += Time.deltaTime;
+            else
+                stuckTimer = 0f;
+
+            // chegou OU travou por 1.5s → escolhe outro waypoint
+            if (chegou || stuckTimer > 1.5f)
             {
                 WaypointArea_Choice = Random.Range(0, WaypointArea_Count);
+                stuckTimer = 0f;
             }
+
             animator.SetFloat("distancia", Vector3.Distance(animator.transform.position, Player.transform.position));
         }
     }
