@@ -92,7 +92,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1254f17710c9d7b4b8ebcd26eca272ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FSM_Enemy_Patrulha
-  WaypointArea_Name: WayPoint_Area1
+  WaypointArea_Name: WayPoint_Area5
 --- !u!1107 &-5100465791676125156
 AnimatorStateMachine:
   serializedVersion: 6
