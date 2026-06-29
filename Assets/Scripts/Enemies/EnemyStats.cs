@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class EnemyStats : MonoBehaviour
 {
@@ -7,14 +8,16 @@ public class EnemyStats : MonoBehaviour
     public string enemyName = "Inimigo";
     public string enemyID = "inimigo";
     public int level = 1;
+    public bool isFinalBoss = false;          // ao morrer, carrega a cena de vitÃ³ria
+    public string victorySceneName = "Vitoria"; // nome da cena de vitÃ³ria
 
-    [Header("Stats Base (nível 1)")]
+    [Header("Stats Base (nï¿½vel 1)")]
     public int baseHealth = 100;
     public int baseDefense = 3;
     public int baseAttackPower = 10;
     public int baseXpReward = 50;
 
-    [Header("Escalonamento por nível")]
+    [Header("Escalonamento por nï¿½vel")]
     public float healthPerLevel = 20f;
     public float defensePerLevel = 1f;
     public float attackPerLevel = 2f;
@@ -73,6 +76,14 @@ public class EnemyStats : MonoBehaviour
 
         foreach (var drop in drops)
             drop.TryDrop(transform.position);
+
+        if (isFinalBoss)
+        {
+            Time.timeScale = 1f; // garante tempo normal na cena nova
+            LoadingManager.sceneToLoad = victorySceneName;
+            SceneManager.LoadScene("Loading");
+            return; // a cena vai trocar, nÃ£o precisa destruir
+        }
 
         Destroy(gameObject);
     }
